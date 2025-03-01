@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import teacherImg from "../assets/teacher-img.avif";
+import genImg from "../assets/genai-img.jpeg";
+import probImg from "../assets/prob-img.webp";
+import mlfImg from "../assets/mlfunda-img.jpg";
+import nImg from "../assets/neural-img.png";
 
 import {
   LineChart,
@@ -39,9 +43,9 @@ import {
 
 // Sample data for demonstration purposes
 const teacherData = {
-  name: "Dr. Sarah Miller",
-  avatar: "/api/placeholder/100/100",
-  subject: "Physics",
+  name: "Dr. Rohit Sharma",
+  avatar: teacherImg,
+  subject: "Data Scientist",
   joinDate: "August 2023",
   totalPlaylists: 14,
   totalVideos: 87,
@@ -64,52 +68,52 @@ const viewsData = [
 const playlistData = [
   {
     id: 1,
-    title: "Advanced Quantum Mechanics",
+    title: "ML fundamentals",
     videos: 12,
-    thumbnail: "/api/placeholder/160/90",
+    thumbnail: mlfImg,
     views: 8720,
     created: "Jan 15, 2025",
     lastUpdated: "Feb 20, 2025",
-    category: "Advanced Physics",
+    category: "Intermediate ",
     status: "Published",
     rating: 4.8,
     engagement: 87,
   },
   {
     id: 2,
-    title: "Fundamentals of Thermodynamics",
+    title: "Probability and Statistics",
     videos: 8,
-    thumbnail: "/api/placeholder/160/90",
+    thumbnail: probImg,
     views: 12450,
     created: "Nov 10, 2024",
     lastUpdated: "Jan 05, 2025",
-    category: "Intermediate Physics",
+    category: "Begineer ",
     status: "Published",
     rating: 4.7,
     engagement: 92,
   },
   {
     id: 3,
-    title: "Introduction to Electromagnetism",
+    title: "Neural Networks",
     videos: 15,
-    thumbnail: "/api/placeholder/160/90",
+    thumbnail: nImg,
     views: 15280,
     created: "Aug 22, 2024",
     lastUpdated: "Dec 12, 2024",
-    category: "Beginner Physics",
+    category: "Intermediate ",
     status: "Published",
     rating: 4.9,
     engagement: 95,
   },
   {
     id: 4,
-    title: "Classical Mechanics Deep Dive",
+    title: "Gen AI",
     videos: 10,
-    thumbnail: "/api/placeholder/160/90",
+    thumbnail: genImg,
     views: 9470,
     created: "Feb 08, 2025",
     lastUpdated: "Feb 15, 2025",
-    category: "Intermediate Physics",
+    category: "Intermediate ",
     status: "Draft",
     rating: null,
     engagement: null,
@@ -117,11 +121,9 @@ const playlistData = [
 ];
 
 const videoInsights = [
-  { name: "Quantum Wave Functions", views: 1250 },
-  { name: "Entropy & The Second Law", views: 980 },
-  { name: "Maxwell's Equations", views: 1420 },
-  { name: "Newton's Laws Applied", views: 850 },
-  { name: "Particle-Wave Duality", views: 1050 },
+  { name: "Data Preprocessing", views: 1250 },
+  { name: "Supervised Learning", views: 980 },
+  { name: "Gen AI", views: 1420 },
 ];
 
 const TeacherDashboard = () => {
@@ -183,11 +185,13 @@ const TeacherDashboard = () => {
     setCurrentPlaylist(playlist);
   };
 
-  function signouthandler()
-  {
-    localStorage.removeItem('token');
-    navigate('/')
+  function signouthandler() {
+    localStorage.removeItem("token");
+    navigate("/");
   }
+  const handleAddPlaylist = () => {
+    navigate("/dashboard/instructor/playlist");
+  };
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -267,9 +271,12 @@ const TeacherDashboard = () => {
               <p className="text-gray-600">Manage your educational content</p>
             </div>
 
-            <button className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition flex items-center">
+            <button
+              className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition flex items-center"
+              onClick={handleAddPlaylist}
+            >
               <Plus className="mr-2" size={18} />
-              New Playlist
+              New Vedio
             </button>
           </div>
 
