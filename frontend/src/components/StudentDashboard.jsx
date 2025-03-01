@@ -178,7 +178,7 @@ const StudentDashboard = () => {
     navigate("/");
   }
   const handleleaderboard = () => {
-    navigate("/leaderboard");
+    navigate("/dashboard/student/leaderboard");
   };
 
   return (
