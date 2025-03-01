@@ -79,7 +79,7 @@ npm run dev
 ---
 
 
-## **🤝 Contributing**
+## **🤝 Contribution**
 We welcome contributions! To contribute:
 1. Fork the repository.
 2. Create a new branch (`feature-xyz`).
