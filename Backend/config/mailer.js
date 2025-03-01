@@ -34,6 +34,8 @@ const sendMail = async (title,email,body)=>{
       subject : title,
       html : body,
     })
+
+    return response;
   }
   catch(error)
   {
