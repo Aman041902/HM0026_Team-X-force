@@ -413,11 +413,14 @@ const CoursePlaylistPage = () => {
                 <div className="absolute inset-0 rounded-full border-4 border-indigo-200"></div>
                 <div 
                   className="absolute inset-0 rounded-full border-4 border-indigo-600"
-                  style={{ 
-                    clipPath: `polygon(0 0, 100% 0, 100% 100%, 0% 100%)`,
-                    clipPath: `path('M 50,50 m 0,-45 a 45,45 0 1 1 0,90 a 45,45 0 1 1 0,-90')`,
-                    clipPath: `path('M 50,50 m 0,-45 a 45,45 0 ${progressPercentage / 100 * 360 <= 180 ? 0 : 1} 1 ${Math.sin(progressPercentage / 100 * Math.PI * 2) * 45 + 50},${-Math.cos(progressPercentage / 100 * Math.PI * 2) * 45 + 50} a 45,45 0 ${progressPercentage / 100 * 360 <= 180 ? 0 : 1} 1 ${-Math.sin(progressPercentage / 100 * Math.PI * 2) * 45},${Math.cos(progressPercentage / 100 * Math.PI * 2) * 45}')`,
+                  style={{
+                    clipPath: progressPercentage === 0
+                      ? `polygon(0 0, 100% 0, 100% 100%, 0% 100%)`  // Default square shape
+                      : progressPercentage === 100
+                      ? `path('M 50,50 m 0,-45 a 45,45 0 1 1 0,90 a 45,45 0 1 1 0,-90')`  // Full circle
+                      : `path('M 50,50 m 0,-45 a 45,45 0 ${progressPercentage / 100 * 360 <= 180 ? 0 : 1} 1 ${Math.sin(progressPercentage / 100 * Math.PI * 2) * 45 + 50},${-Math.cos(progressPercentage / 100 * Math.PI * 2) * 45 + 50} a 45,45 0 ${progressPercentage / 100 * 360 <= 180 ? 0 : 1} 1 ${-Math.sin(progressPercentage / 100 * Math.PI * 2) * 45},${Math.cos(progressPercentage / 100 * Math.PI * 2) * 45}')`  // Partial circle
                   }}
+                  
                 ></div>
                 <div className="absolute inset-0 flex items-center justify-center text-sm font-bold text-indigo-600">
                   {Math.round(progressPercentage)}%

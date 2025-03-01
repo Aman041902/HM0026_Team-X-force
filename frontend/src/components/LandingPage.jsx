@@ -1,22 +1,24 @@
 import React, { useState } from 'react';
-import {Link,NavLink} from 'react-router-dom'
-import { Search, Trophy, Video, BookOpen, User, LogIn, UserPlus } from 'lucide-react';
+import { Link, NavLink } from 'react-router-dom'
+import { Search, Trophy, Video, BookOpen, User, LogIn, UserPlus,Mail, Info } from 'lucide-react';
 
 const LandingPage = () => {
   const [selectedRole, setSelectedRole] = useState('student');
 
   const trendingVideos = [
-    { id: 1, title: 'Introduction to Machine Learning', views: '45K', author: 'Dr. Smith', duration: '18:42', thumbnail: '/api/placeholder/320/180' },
-    { id: 2, title: 'Advanced Calculus Explained', views: '32K', author: 'Prof. Johnson', duration: '24:15', thumbnail: '/api/placeholder/320/180' },
-    { id: 3, title: 'World History: Ancient Civilizations', views: '28K', author: 'Ms. Williams', duration: '32:10', thumbnail: '/api/placeholder/320/180' },
-    { id: 4, title: 'The Science of Climate Change', views: '37K', author: 'Dr. Garcia', duration: '21:35', thumbnail: '/api/placeholder/320/180' },
+    { id: 1, title: 'Introduction to Machine Learning', views: '45K', author: 'Dr. Sharma', duration: '18:42', thumbnail: '/src/assets/ML.jpg' },
+    { id: 2, title: 'Advanced Calculus Explained', views: '32K', author: 'Prof. Iyer', duration: '24:15', thumbnail: '/src/assets/Calculus.jpg' },
+    { id: 3, title: 'World History: Ancient Civilizations', views: '28K', author: 'Ms. Verma', duration: '32:10', thumbnail: '/src/assets/Ancient.jpg' },
+    { id: 4, title: 'The Science of Climate Change', views: '37K', author: 'Dr. Nair', duration: '21:35', thumbnail: '/src/assets/climate.jpg' },
   ];
 
+
   const topStudents = [
-    { id: 1, name: 'Alex Thompson', points: 2840, badges: 12 },
-    { id: 2, name: 'Jamie Rodriguez', points: 2715, badges: 10 },
-    { id: 3, name: 'Taylor Wilson', points: 2690, badges: 11 },
+    { id: 1, name: 'Aman Jain', points: 2840, badges: 12 },
+    { id: 2, name: 'Onkar Jondhale', points: 2715, badges: 10 },
+    { id: 3, name: 'Brijmohan Gour', points: 2690, badges: 11 },
   ];
+
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -28,6 +30,20 @@ const LandingPage = () => {
             <span className="ml-2 text-2xl font-bold text-gray-900">EduStream</span>
           </div>
           <div className="flex space-x-4">
+
+            <button className="px-4 py-2 rounded-md text-gray-600 hover:text-gray-900 flex items-center">
+              <Info className="h-5 w-5 mr-1" />
+              <NavLink to='/about-us'>
+                <span>About Us</span>
+              </NavLink>
+            </button>
+            <button className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 flex items-center">
+              <Mail className="h-5 w-5 mr-1" />
+              <NavLink to='/contact'>
+                <span>Contact</span>
+              </NavLink>
+            </button>
+
             <button className="px-4 py-2 rounded-md text-gray-600 hover:text-gray-900 flex items-center">
               <LogIn className="h-5 w-5 mr-1" />
               <NavLink to='/login'>
@@ -74,9 +90,9 @@ const LandingPage = () => {
         {/* Search Bar */}
         <div className="max-w-3xl mx-auto mb-16">
           <div className="relative">
-            <input 
-              type="text" 
-              placeholder="Search for educational videos, playlists, and more..." 
+            <input
+              type="text"
+              placeholder="Search for educational videos, playlists, and more..."
               className="w-full py-4 pl-12 pr-4 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
             />
             <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
@@ -166,10 +182,15 @@ const LandingPage = () => {
               <p className="mt-4 text-lg leading-6 text-indigo-200">Join thousands of students and teachers on our platform to access the best educational content.</p>
               <div className="mt-8 flex space-x-4">
                 <button className="bg-white border border-transparent rounded-md shadow px-6 py-3 text-base font-medium text-indigo-600 hover:bg-indigo-50">
-                  Register Now
+                  
+                <NavLink to='/signup'>
+                <span>Register</span>
+              </NavLink>
                 </button>
                 <button className="bg-indigo-800 border border-transparent rounded-md shadow px-6 py-3 text-base font-medium text-white hover:bg-indigo-900">
-                  Learn More
+                <NavLink to='/about-us'>
+                <span>Learn more</span>
+              </NavLink>
                 </button>
               </div>
             </div>

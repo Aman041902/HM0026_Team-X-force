@@ -3,15 +3,16 @@ import { Bell, Award, Users, ChevronUp, ChevronDown, Filter, Trophy } from 'luci
 
 // Sample data - in a real app this would come from your API
 const sampleStudents = [
-  { id: 1, name: "Alex Johnson", avatar: "/api/placeholder/50/50", points: 2450, badges: 12, rank: 1, prevRank: 2, region: "North", subjects: ["Math", "Science"] },
-  { id: 2, name: "Jamie Smith", avatar: "/api/placeholder/50/50", points: 2300, badges: 10, rank: 2, prevRank: 1, region: "East", subjects: ["History", "English"] },
-  { id: 3, name: "Taylor Brown", avatar: "/api/placeholder/50/50", points: 2100, badges: 9, rank: 3, prevRank: 3, region: "West", subjects: ["Science", "Art"] },
-  { id: 4, name: "Morgan Wilson", avatar: "/api/placeholder/50/50", points: 1950, badges: 8, rank: 4, prevRank: 6, region: "South", subjects: ["Math", "Music"] },
-  { id: 5, name: "Casey Miller", avatar: "/api/placeholder/50/50", points: 1820, badges: 7, rank: 5, prevRank: 4, region: "North", subjects: ["English", "History"] },
-  { id: 6, name: "Jordan Lee", avatar: "/api/placeholder/50/50", points: 1700, badges: 7, rank: 6, prevRank: 5, region: "East", subjects: ["Science", "Math"] },
-  { id: 7, name: "Riley Davis", avatar: "/api/placeholder/50/50", points: 1650, badges: 6, rank: 7, prevRank: 8, region: "West", subjects: ["Art", "Music"] },
-  { id: 8, name: "Quinn Thomas", avatar: "/api/placeholder/50/50", points: 1580, badges: 5, rank: 8, prevRank: 7, region: "South", subjects: ["History", "Science"] },
+  { id: 1, name: "Aarav Sharma", avatar: "/api/placeholder/50/50", points: 2450, badges: 12, rank: 1, prevRank: 2, region: "North", subjects: ["Math", "Science"] },
+  { id: 2, name: "Ishita Patel", avatar: "/api/placeholder/50/50", points: 2300, badges: 10, rank: 2, prevRank: 1, region: "East", subjects: ["History", "English"] },
+  { id: 3, name: "Rohan Verma", avatar: "/api/placeholder/50/50", points: 2100, badges: 9, rank: 3, prevRank: 3, region: "West", subjects: ["Science", "Art"] },
+  { id: 4, name: "Neha Nair", avatar: "/api/placeholder/50/50", points: 1950, badges: 8, rank: 4, prevRank: 6, region: "South", subjects: ["Math", "Music"] },
+  { id: 5, name: "Priya Mehta", avatar: "/api/placeholder/50/50", points: 1820, badges: 7, rank: 5, prevRank: 4, region: "North", subjects: ["English", "History"] },
+  { id: 6, name: "Arjun Kumar", avatar: "/api/placeholder/50/50", points: 1700, badges: 7, rank: 6, prevRank: 5, region: "East", subjects: ["Science", "Math"] },
+  { id: 7, name: "Sneha Reddy", avatar: "/api/placeholder/50/50", points: 1650, badges: 6, rank: 7, prevRank: 8, region: "West", subjects: ["Art", "Music"] },
+  { id: 8, name: "Kabir Malhotra", avatar: "/api/placeholder/50/50", points: 1580, badges: 5, rank: 8, prevRank: 7, region: "South", subjects: ["History", "Science"] },
 ];
+
 
 const sampleBadges = [
   { id: 1, name: "Math Master", icon: "🧮", earned: true, date: "2025-02-15" },
