@@ -13,52 +13,94 @@ import { jwtDecode } from "jwt-decode";
 
 import Login from "./components/Login";
 import Signup from "./components/Signup";
-import Contact from "./components/Contact";
-import { About } from "./components/About";
-import Error from "./components/Error"
+import Contact from "./components/Contact.jsx";
+import { About } from "./components/About.jsx";
+import Error from "./components/Error";
 import AdminDashboard from "./components/AdminDashboard";
+import TeachersPlaylistManagement from "./components/TeachersPlaylistManagement";
+import VideoUploadApprovalPage from "./components/VideoUploadApprovalPage";
 
 function App() {
   const token = useSelector((state) => state.auth.token);
 
-
   let role = null;
 
-  if(token)
-  {
+  if (token) {
     const decodedToken = jwtDecode(token);
     role = decodedToken.role;
   }
-  
-  console.log(token,role);
+
+  console.log(token, role);
   return (
     <div>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/contact" element={<Contact />} />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/about-us" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
 
-            {
-              token && role==='student' && 
-              <Route path="/dashboard/student" element={<StudentDashboard />} />
-            }
+          {token && role === "student" && (
+            <Route path="/dashboard/student" element={<StudentDashboard />} />
+          )}
 
-            {
-              token && role==='instructor' && 
-              <Route path="/dashboard/instructor" element={<TeacherDashboard />} />
-            }
+          {token && role === "instructor" && (
+            <Route
+              path="/dashboard/instructor"
+              element={<TeacherDashboard />}
+            />
+          )}
 
-            {
-              token && role==='admin' && 
-              <Route path="/dashboard/admin" element={<AdminDashboard />} />
-            }
+          {token && role === "admin" && (
+            <Route path="/dashboard/admin" element={<AdminDashboard />} />
+          )}
 
-            <Route path="*" element={<Error />} />
-          </Routes>
-        </BrowserRouter>
+          {token && role === "instructor" && (
+            <Route
+              path="/dashboard/instructor/playlist"
+              element={<TeachersPlaylistManagement />}
+            />
+          )}
+
+          {token && role === "admin" && (
+            <Route
+              path="/dashboard/admin/approval"
+              element={<VideoUploadApprovalPage />}
+            />
+          )}
+
+          {token && role === "student" && (
+            <Route
+              path="/dashboard/student/progress"
+              element={<ProfileProgressPage />}
+            />
+          )}
+
+          {token && role === "student" && (
+            <Route
+              path="/dashboard/student/progress"
+              element={<ProfileProgressPage />}
+            />
+          )}
+
+          {token && role === "student" && (
+            <Route
+              path="/dashboard/student/leaderboard"
+              element={<LeaderboardBadgeShowcase />}
+            />
+          )}
+
+          {token && role === "student" && (
+            <Route
+              path="/dashboard/student/playlist"
+              element={<CoursePlaylistPage />}
+            />
+          )}
+
+          <Route path="*" element={<Error />} />
+        </Routes>
+      </BrowserRouter>
     </div>
   );
 }
