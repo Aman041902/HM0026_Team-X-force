@@ -53,7 +53,7 @@ EduStream is an advanced **e-learning video platform** designed to make online e
 ---
 
 ## 🎥 Video URL  
-📹 [Watch Demo Video](video_url)  
+📹 [Watch Demo Video]((https://drive.google.com/file/d/1abwQ_yGkTgQZaGLRK6Bsa3LWdf06VacN/view?usp=drive_link)  
 
 ---
 
