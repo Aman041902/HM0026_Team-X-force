@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import adminImg from "../assets/admi-img.jpeg";
 import {
   Bell,
   CheckCircle,
@@ -8,10 +9,13 @@ import {
   UserCheck,
   Video,
   Users,
+  LogOut,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const AdminDashboard = () => {
   // Sample data - in a real app this would come from an API
+  const navigate = useNavigate();
   const [pendingVideos, setPendingVideos] = useState([
     {
       id: 1,
@@ -22,16 +26,9 @@ const AdminDashboard = () => {
     },
     {
       id: 2,
-      title: "Introduction to Biology",
+      title: "Introduction to database",
       creator: "Dr. Johnson",
       duration: "32:15",
-      submitted: "2025-03-01",
-    },
-    {
-      id: 3,
-      title: "History of Ancient Rome",
-      creator: "Ms. Williams",
-      duration: "28:40",
       submitted: "2025-03-01",
     },
   ]);
@@ -47,16 +44,16 @@ const AdminDashboard = () => {
     {
       id: 1,
       type: "Inappropriate Content",
-      video: "Chemistry Basics",
+      video: "Data Science",
       reportedBy: "user123",
       date: "2025-02-27",
     },
     {
       id: 2,
       type: "Copyright Issue",
-      video: "Piano Lessons",
+      video: "Introduction to Calculus",
       reportedBy: "teacher456",
-      date: "2025-02-28",
+      date: "2025-02-28 basics",
     },
   ]);
 
@@ -108,13 +105,18 @@ const AdminDashboard = () => {
     setReports(reports.filter((report) => report.id !== id));
   };
 
+  function signouthandler() {
+    localStorage.removeItem("token");
+    navigate("/");
+  }
+
   return (
     <div className="bg-gray-100 min-h-screen">
       {/* Header */}
       <header className="bg-blue-600 text-white p-4 shadow-md">
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-bold">EdVideo Admin Panel</h1>
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-4">
             <div className="relative">
               <Bell className="w-6 h-6 cursor-pointer" />
               {alertsCount > 0 && (
@@ -125,12 +127,19 @@ const AdminDashboard = () => {
             </div>
             <div className="flex items-center space-x-2">
               <img
-                src="/api/placeholder/35/35"
-                alt="Admin"
-                className="rounded-full"
+                src={adminImg}
+                alt=""
+                className="rounded-full object-cover w-10 h-10"
               />
-              <span>Admin User</span>
+              <span>Admin </span>
             </div>
+            <button
+              onClick={signouthandler}
+              className="flex items-center space-x-1 bg-blue-700 hover:bg-blue-800 px-3 py-1 rounded transition-colors"
+            >
+              <LogOut className="w-4 h-4" />
+              <span>Logout</span>
+            </button>
           </div>
         </div>
       </header>
