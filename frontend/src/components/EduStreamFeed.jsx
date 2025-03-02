@@ -1,69 +1,56 @@
 import React from "react";
 import { Clock, MoreVertical, Search } from "lucide-react";
 import { Link } from "react-router-dom";
+import mlImg from "../assets/ml-app.png";
+import reImg from "../assets/react-logo.svg";
+import cssImg from "../assets/css.png";
+import aiImg from "../assets/aif.jpeg";
+import techImg from "../assets/tech.webp";
+import wizImg from "../assets/wizard.png";
+import jsImg from "../assets/js-img.jpeg";
 
 const EduStreamFeed = () => {
   // Mock data representing educational videos
   const videos = [
     {
       id: 1,
-      thumbnail: "/api/placeholder/640/360",
+      thumbnail: reImg,
       title: "How to Build a React Application from Scratch",
       channelName: "React Masters",
-      channelImage: "/api/placeholder/48/48",
+      channelImage: reImg,
       views: "1.2M",
       timeAgo: "3 weeks ago",
       duration: "18:24",
     },
     {
       id: 2,
-      thumbnail: "/api/placeholder/640/360",
+      thumbnail: cssImg,
       title: "Learn CSS Grid in 20 Minutes | Easy Tutorial 2025",
       channelName: "CSS Pro Tips",
-      channelImage: "/api/placeholder/48/48",
+      channelImage: cssImg,
       views: "458K",
       timeAgo: "6 days ago",
       duration: "21:32",
     },
     {
       id: 3,
-      thumbnail: "/api/placeholder/640/360",
+      thumbnail: aiImg,
       title: "The Future of AI in 2025 | What You Need to Know",
       channelName: "Tech Insights",
-      channelImage: "/api/placeholder/48/48",
+      channelImage: techImg,
       views: "2.8M",
       timeAgo: "1 month ago",
       duration: "15:07",
     },
     {
       id: 4,
-      thumbnail: "/api/placeholder/640/360",
+      thumbnail: jsImg,
       title: "Advanced JavaScript Techniques Every Developer Should Know",
       channelName: "JS Wizards",
-      channelImage: "/api/placeholder/48/48",
+      channelImage: wizImg,
       views: "763K",
       timeAgo: "2 weeks ago",
       duration: "24:18",
-    },
-    {
-      id: 5,
-      thumbnail: "/api/placeholder/640/360",
-      title: "Machine Learning Fundamentals Explained Simply",
-      channelName: "AI Academy",
-      channelImage: "/api/placeholder/48/48",
-      views: "1.5M",
-      timeAgo: "1 month ago",
-      duration: "32:45",
-    },
-    {
-      id: 6,
-      thumbnail: "/api/placeholder/640/360",
-      title: "The Complete Guide to Data Structures and Algorithms",
-      channelName: "CS Fundamentals",
-      channelImage: "/api/placeholder/48/48",
-      views: "893K",
-      timeAgo: "2 weeks ago",
-      duration: "45:12",
     },
   ];
 
@@ -129,16 +116,7 @@ const EduStreamFeed = () => {
           Data Science
         </div>
         <div className="bg-gray-200 rounded-full px-4 py-1 whitespace-nowrap">
-          Mathematics
-        </div>
-        <div className="bg-gray-200 rounded-full px-4 py-1 whitespace-nowrap">
-          Languages
-        </div>
-        <div className="bg-gray-200 rounded-full px-4 py-1 whitespace-nowrap">
-          Business
-        </div>
-        <div className="bg-gray-200 rounded-full px-4 py-1 whitespace-nowrap">
-          Arts
+          Cyber Security
         </div>
       </div>
 
