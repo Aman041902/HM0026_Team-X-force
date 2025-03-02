@@ -1,8 +1,10 @@
 import React, { useState } from "react";
+import { useEffect } from "react";
 import profileImg from "../assets/profile-img.jpg";
 import mlImg from "../assets/ml-app.png";
 import reactImg from "../assets/react-logo.svg";
 import jsimg from "../assets/js-img.jpeg";
+import axios from 'axios';
 
 <img src={profileImg} alt="User avatar" className="h-10 w-10 rounded-full" />;
 
@@ -24,10 +26,11 @@ import {
   Trophy,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const StudentDashboard = () => {
   const navigate = useNavigate();
-
+  const token = useSelector((state)=>state.auth.token);
   // Mock data
   const userData = {
     name: "Aman Jain",
@@ -180,6 +183,23 @@ const StudentDashboard = () => {
   const handleleaderboard = () => {
     navigate("/dashboard/student/leaderboard");
   };
+
+  useEffect(()=>{
+      async function getData()
+      {
+        console.log("fetching data...",token)
+        const response = await fetch('http://localhost:3000/user/getuserdata',{
+          method : "POST",
+          headers : 
+          {
+              'Content-Type' : 'application/json'
+          },
+          body : JSON.stringify(token)
+      })
+      }
+
+      getData();
+  },[])
 
   return (
     <div className="min-h-screen bg-gray-50">

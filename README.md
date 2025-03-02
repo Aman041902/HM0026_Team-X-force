@@ -1,11 +1,11 @@
 # **HM0026**  **Team-X-force**
 
-## **📌 EduVision: Curated Educational Video Platform with Progress Tracking**
+## **📌 EduStream: Curated Educational Video Platform with Progress Tracking**
 
 ---
 
 ## **📖 Description**
-EduVision is an advanced **e-learning video platform** designed to make online education more engaging and structured. It allows students to access **curated learning playlists**, complete **quizzes**, earn **badges**, and track progress using a **graphical learning dashboard**. Teachers can **upload and manage course content**, while admins **ensure content quality** by approving educational videos. With **AI-driven recommendations** and a **leaderboard system**, EduVision creates a **personalized and competitive learning experience**.
+EduStream is an advanced **e-learning video platform** designed to make online education more engaging and structured. It allows students to access **curated learning playlists**, complete **quizzes**, earn **badges**, and track progress using a **graphical learning dashboard**. Teachers can **upload and manage course content**, while admins **ensure content quality** by approving educational videos. With **AI-driven recommendations** and a **leaderboard system**, EduVision creates a **personalized and competitive learning experience**.
 
 ---
 

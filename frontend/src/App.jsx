@@ -6,9 +6,7 @@ import ProfileProgressPage from "./components/ProfileProgressPage";
 import LeaderboardBadgeShowcase from "./components/LeaderboardBadgeShowcase";
 import TeacherDashboard from "./components/TeacherDashboard";
 
-import { configureStore } from "@reduxjs/toolkit";
-import rootreducer from "./Redux/reducer";
-import { Provider, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 
@@ -100,6 +98,13 @@ function App() {
           {token && role === "student" && (
             <Route
               path="/dashboard/student/playlist"
+              element={<CoursePlaylistPage />}
+            />
+          )}
+
+          {token && role === "instructor" && (
+            <Route
+              path="/dashboard/student/videos"
               element={<CoursePlaylistPage />}
             />
           )}
