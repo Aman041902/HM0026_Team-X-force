@@ -35,7 +35,7 @@ EduVision is an advanced **e-learning video platform** designed to make online e
 - **Backend:** Node.js + Express.js
 - **Database:** MongoDB
 - **Authentication:** JWT
-- **Video Streaming:** AWS S3 / Cloudinary
+- **Video Streaming:**  Cloudinary
 
 ---
 ## 📸 Screenshots  
