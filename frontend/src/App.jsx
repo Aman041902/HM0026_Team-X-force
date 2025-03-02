@@ -98,6 +98,13 @@ function App() {
             />
           )}
 
+          {token && role === "instructor" && (
+            <Route
+              path="/dashboard/student/videos"
+              element={<CoursePlaylistPage />}
+            />
+          )}
+
           <Route path="*" element={<Error />} />
         </Routes>
       </BrowserRouter>
