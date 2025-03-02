@@ -6,7 +6,11 @@ exports.contact = async (req,res)=>{
         const {title,email,body} = req.body;
         const response = await sendMail(title,email,body);
 
-        return response;
+        return res.status(200).json({
+            success : true,
+            message : "Mail sent successfully",
+            data : response
+        });
     }
     catch(error)
     {
