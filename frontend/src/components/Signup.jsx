@@ -43,7 +43,7 @@ const Signup = () => {
     if (validateForm()) {
       // Submit form data to server
       console.log("Form submitted:", formData);
-      axios.put('http://localhost:3000/user/signup', formData).then(res => {
+      axios.put('https://edu-backend-try.onrender.com/user/signup', formData).then(res => {
         console.log(res.data);
         navigate('/login');
       }).catch(err => {

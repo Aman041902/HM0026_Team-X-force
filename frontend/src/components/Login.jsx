@@ -12,7 +12,7 @@ import { setEmail } from "../Redux/slices/authslice";
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
- 
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -54,23 +54,18 @@ const Login = () => {
       // Submit login credentials to server
       console.log("Login submitted:", formData);
       axios
-        .post("http://localhost:3000/user/login", formData)
+        .post("https://edu-backend-try.onrender.com/user/login", formData)
         .then((res) => {
           console.log(res.data.token);
           localStorage.setItem("token", res.data.token);
           dispatch(setToken(res.data.token));
           const role = tokendecryption(res.data.token);
-          
 
-          if(role === "student")
-          {
-            navigate("/dashboard/student");
-          }
-          else if(role==="instructor")
-          {
+          if (role === "student") {
+            navigate("/feed");
+          } else if (role === "instructor") {
             navigate("/dashboard/instructor");
-          }
-          else {
+          } else {
             navigate("/dashboard/admin");
           }
         })

@@ -5,9 +5,8 @@ import CoursePlaylistPage from "./components/CoursePlaylistPage";
 import ProfileProgressPage from "./components/ProfileProgressPage";
 import LeaderboardBadgeShowcase from "./components/LeaderboardBadgeShowcase";
 import TeacherDashboard from "./components/TeacherDashboard";
-import { configureStore } from "@reduxjs/toolkit";
-import rootreducer from "./Redux/reducer";
-import { Provider, useSelector } from "react-redux";
+
+import { useSelector } from "react-redux";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 
@@ -19,6 +18,7 @@ import Error from "./components/Error";
 import AdminDashboard from "./components/AdminDashboard";
 import TeachersPlaylistManagement from "./components/TeachersPlaylistManagement";
 import VideoUploadApprovalPage from "./components/VideoUploadApprovalPage";
+import EduStreamFeed from "./components/EduStreamFeed.jsx";
 
 function App() {
   const token = useSelector((state) => state.auth.token);
@@ -41,8 +41,12 @@ function App() {
           <Route path="/about-us" element={<About />} />
           <Route path="/contact" element={<Contact />} />
 
+
           {token && role === "student" && (
             <Route path="/dashboard/student" element={<StudentDashboard />} />
+          )}
+          {token && role === "student" && (
+            <Route path="/feed" element={<EduStreamFeed />} />
           )}
 
           {token && role === "instructor" && (
@@ -94,6 +98,13 @@ function App() {
           {token && role === "student" && (
             <Route
               path="/dashboard/student/playlist"
+              element={<CoursePlaylistPage />}
+            />
+          )}
+
+          {token && role === "instructor" && (
+            <Route
+              path="/dashboard/student/videos"
               element={<CoursePlaylistPage />}
             />
           )}

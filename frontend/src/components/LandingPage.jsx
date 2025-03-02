@@ -31,20 +31,20 @@ const LandingPage = () => {
           </div>
           <div className="flex space-x-4">
 
-            <button className="px-4 py-2 rounded-md text-gray-600 hover:text-gray-900 flex items-center">
+            <button className="px-4 py-2 rounded-md text-white bg-blue-600 hover:bg-blue-900 flex items-center">
               <Info className="h-5 w-5 mr-1" />
               <NavLink to='/about-us'>
                 <span>About Us</span>
               </NavLink>
             </button>
-            <button className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 flex items-center">
+            <button className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 flex items-center">
               <Mail className="h-5 w-5 mr-1" />
               <NavLink to='/contact'>
                 <span>Contact</span>
               </NavLink>
             </button>
 
-            <button className="px-4 py-2 rounded-md text-gray-600 hover:text-gray-900 flex items-center">
+            <button className="px-4 py-2 rounded-md text-white bg-gray-600 hover:bg-gray-900 flex items-center">
               <LogIn className="h-5 w-5 mr-1" />
               <NavLink to='/login'>
                 <span>Login</span>
