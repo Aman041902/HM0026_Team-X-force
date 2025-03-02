@@ -24,7 +24,6 @@ lerna-debug.log*
 *.tsbuildinfo
 
 # Build Output
-dist/
 build/
 .cache/
 out/
