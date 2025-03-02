@@ -1,17 +1,11 @@
+# **HM0026**  **Team-X-force**
 
-# **📌 EduVision – The Future of Online Learning**
-
-![GitHub repo size](https://img.shields.io/github/repo-size/Aman041902/platform-edu)
-![GitHub contributors](https://img.shields.io/github/contributors/Aman041902/platform-edu)
-![GitHub forks](https://img.shields.io/github/forks/Aman041902/platform-edu?style=social)
-![GitHub stars](https://img.shields.io/github/stars/Aman041902/platform-edu?style=social)
-![GitHub last commit](https://img.shields.io/github/last-commit/Aman041902/platform-edu)
+## **📌 EduStream: Curated Educational Video Platform with Progress Tracking**
 
 ---
 
-
-## **📖 Overview**
-EduVision is a cutting-edge **educational video platform** designed to revolutionize online learning. With structured video playlists, interactive quizzes, personalized recommendations, and gamified leaderboards, EduVision creates an engaging learning experience for students. Teachers can curate and upload courses, while admins ensure high-quality educational content is maintained.
+## **📖 Description**
+EduStream is an advanced **e-learning video platform** designed to make online education more engaging and structured. It allows students to access **curated learning playlists**, complete **quizzes**, earn **badges**, and track progress using a **graphical learning dashboard**. Teachers can **upload and manage course content**, while admins **ensure content quality** by approving educational videos. With **AI-driven recommendations** and a **leaderboard system**, EduVision creates a **personalized and competitive learning experience**.
 
 ---
 
@@ -41,59 +35,33 @@ EduVision is a cutting-edge **educational video platform** designed to revolutio
 - **Backend:** Node.js + Express.js
 - **Database:** MongoDB
 - **Authentication:** JWT
-- **Video Streaming:** AWS S3 / Cloudinary
+- **Video Streaming:**  Cloudinary
+
+---
+## 📸 Screenshots  
+![ EduVision Homepage](https://github.com/brijmohan17/Images/blob/main/Landingpage.png)  
+![ Student Dashboard](https://github.com/brijmohan17/Images/blob/main/Student_Dashboard.png)  
+![ Teacher Portal](https://github.com/brijmohan17/Images/blob/main/Teachear%20Dashboard.png)  
+![ Admin Portal](https://github.com/brijmohan17/Images/blob/main/Admin.png)  
 
 ---
 
-## **📂 Installation & Setup**
-
-### **Prerequisites**
-Ensure you have the following installed:
-- [Node.js](https://nodejs.org/)
-- [MongoDB](https://www.mongodb.com/)
-
-### **Clone the Repository**
-```bash
-git clone https://github.com/Aman041902/platform-edu.git
-cd hackmatrix
-```
-
-### **Install Dependencies**
-```bash
-npm install
-```
-
-### **Start the Development Server**
-```bash
-npm run dev
-```
+## 🌍 Deployed URL  
+🔗 [Live Demo](https://github.com/Aman041902/HM0026_Team-X-force/tree/master)  
+🔗 [Backend](https://edu-backend-try.onrender.com/)
 
 ---
 
-## **🎯 Future Enhancements**
-- 🤖 **AI-powered Smart Recommendations**
-- 🎤 **Live Q&A Sessions with Teachers**
-- 💬 **Community Discussion Forums**
-- 📅 **Interactive Learning Schedules**
+## 🎥 Video URL  
+📹 [Watch Demo Video](video_url)  
+
+---
+
+## 💬 Remarks  
+- 🚀 **Future Enhancements:** Future updates will include Global Quiz Matchmaking, an AI-Powered Recommendation System, and an AI Video Summarizer for key takeaways. 
+- 💡 **Open for Contributions!** Help improve the learning experience.  
 
 ---
 
 
-## **🤝 Contribution**
-We welcome contributions! To contribute:
-1. Fork the repository.
-2. Create a new branch (`feature-xyz`).
-3. Commit your changes.
-4. Push the branch and submit a Pull Request.
-
----
-
-## **📩 Contact**
-For any queries or suggestions, feel free to reach out:
-📧 **Email:** aman.jain@example.com  
-🔗 **GitHub:** [Aman041902](https://github.com/Aman041902)
-
----
-
-🚀 **EduVision – Learn, Engage, and Succeed!**
 
