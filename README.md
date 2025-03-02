@@ -57,7 +57,7 @@ EduStream is an advanced **e-learning video platform** designed to make online e
 ---
 
 ## 💬 Remarks  
-- 🚀 **Future Enhancements:** AI-driven learning schedules, live Q&A, community discussions.  
+- 🚀 **Future Enhancements:** Future updates will include Global Quiz Matchmaking, an AI-Powered Recommendation System, and an AI Video Summarizer for key takeaways. 
 - 💡 **Open for Contributions!** Help improve the learning experience.  
 
 ---
