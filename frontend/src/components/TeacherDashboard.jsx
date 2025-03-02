@@ -276,7 +276,7 @@ const TeacherDashboard = () => {
               onClick={handleAddPlaylist}
             >
               <Plus className="mr-2" size={18} />
-              New Vedio
+              New Video
             </button>
           </div>
 
