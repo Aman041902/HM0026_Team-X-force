@@ -9,7 +9,7 @@ const schema = new mongoose.Schema({
     type: String,
     enum: ["instructor", "admin", "student"],
   },
-  videoplaylist: [
+  playlist: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Video'

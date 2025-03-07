@@ -9,8 +9,8 @@ const videoSchema = new mongoose.Schema({
   views: { type: Number , default : 0},
   likes: { type: Number , default : 0},
   uploadDate: { type: Date, default: Date.now },
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User'},
-  email : {type : String},
+  instructor: { type: mongoose.Schema.Types.ObjectId, ref: 'User'},
+  isVerified : { type: Boolean , default : false},
   tags: [
     {
         type : String
