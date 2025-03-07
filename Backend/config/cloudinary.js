@@ -80,7 +80,7 @@ const fileUpload = async (req, res) => {
         },{new : true}
       )
 
-      console.log("a is ",a,"b is ",b);
+      // console.log("a is ",a,"b is ",b);
 
       return res.status(200).json({
         success: true,

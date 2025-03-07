@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Clock, MoreVertical, Search } from "lucide-react";
+import {useSelector} from 'react-redux'
 import { Link } from "react-router-dom";
 import mlImg from "../assets/ml-app.png";
 import reImg from "../assets/react-logo.svg";
@@ -11,48 +12,48 @@ import jsImg from "../assets/js-img.jpeg";
 
 const EduStreamFeed = () => {
   // Mock data representing educational videos
-  const videos = [
+
+  const token = useSelector((state)=>state.auth.token)
+
+  const [videos,setVideos] = useState([]);
+
+  useEffect(()=>{
+
+    async function getVideos()
     {
-      id: 1,
-      thumbnail: reImg,
-      title: "How to Build a React Application from Scratch",
-      channelName: "React Masters",
-      channelImage: reImg,
-      views: "1.2M",
-      timeAgo: "3 weeks ago",
-      duration: "18:24",
-    },
-    {
-      id: 2,
-      thumbnail: cssImg,
-      title: "Learn CSS Grid in 20 Minutes | Easy Tutorial 2025",
-      channelName: "CSS Pro Tips",
-      channelImage: cssImg,
-      views: "458K",
-      timeAgo: "6 days ago",
-      duration: "21:32",
-    },
-    {
-      id: 3,
-      thumbnail: aiImg,
-      title: "The Future of AI in 2025 | What You Need to Know",
-      channelName: "Tech Insights",
-      channelImage: techImg,
-      views: "2.8M",
-      timeAgo: "1 month ago",
-      duration: "15:07",
-    },
-    {
-      id: 4,
-      thumbnail: jsImg,
-      title: "Advanced JavaScript Techniques Every Developer Should Know",
-      channelName: "JS Wizards",
-      channelImage: wizImg,
-      views: "763K",
-      timeAgo: "2 weeks ago",
-      duration: "24:18",
-    },
-  ];
+      try 
+      {
+        const response = await fetch('http://localhost:3000/user/getvideos',{
+          method : 'POST',
+          headers: {
+            'Content-Type': 'application/json', 
+          },
+          body : JSON.stringify({token : token})
+        })
+
+        const value = await response.json();
+
+        console.log(value.data);
+        console.log(value.data[0].instructor.avatar)
+        setVideos(value.data);
+      }
+      catch(error)
+      {
+        console.log(error.message)
+      }
+    }
+
+    getVideos();
+  },[])
+
+  function getDaysAgo(uploadDate) {
+    const uploadDateObj = new Date(uploadDate);
+    const currentDate = new Date();
+    const timeDiff = currentDate - uploadDateObj; // Difference in milliseconds
+    const daysDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24)); // Convert to days
+  
+    return `${daysDiff} days ago`;
+  }
 
   return (
     <div className="max-w-6xl mx-auto bg-gray-50 min-h-screen font-sans">
@@ -122,9 +123,9 @@ const EduStreamFeed = () => {
 
       {/* Video Grid - responsive with different column counts */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 p-4">
-        {videos.map((video) => (
+        {videos.map((video,index) => (
           <div
-            key={video.id}
+            key={index}
             className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow"
           >
             {/* Video Thumbnail */}
@@ -135,9 +136,10 @@ const EduStreamFeed = () => {
                 className="w-full h-auto"
               />
               <div className="absolute bottom-1 right-1 bg-black bg-opacity-80 text-white text-xs px-1 rounded">
-                {video.duration}
+                {parseInt(video.duration/60)} {":"} {parseInt(video.duration%60)}
               </div>
             </div>
+            {/* getDaysAgo(uploadDate) */}
 
             {/* Video Info */}
             <div className="p-3 flex">
@@ -145,8 +147,8 @@ const EduStreamFeed = () => {
               <div className="mr-3 flex-shrink-0">
                 <div className="w-9 h-9 rounded-full overflow-hidden">
                   <img
-                    src={video.channelImage}
-                    alt={video.channelName}
+                    src={video.instructor.avatar}
+                    alt={video.instructor.firstname}
                     className="w-full h-full object-cover"
                   />
                 </div>
@@ -158,12 +160,12 @@ const EduStreamFeed = () => {
                   {video.title}
                 </h3>
                 <p className="text-gray-600 text-xs mt-1">
-                  {video.channelName}
+                  {video.instructor.firstname} {" "} {video.instructor.lastname}
                 </p>
                 <div className="flex items-center text-gray-600 text-xs mt-1">
                   <span>{video.views} views</span>
                   <span className="mx-1">•</span>
-                  <span>{video.timeAgo}</span>
+                  <span>{getDaysAgo(video.uploadDate)}</span>
                 </div>
               </div>
 

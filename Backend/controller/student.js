@@ -29,7 +29,8 @@ exports.getLeaderBoard = async (req, res) => {
 exports.getVideos = async (req, res) => {
     try 
     {
-        const videos = await Video.find({});
+        const videos = await Video.find({}).populate('instructor')
+        .exec();
 
         return res.status(200).json({
             success : true,
