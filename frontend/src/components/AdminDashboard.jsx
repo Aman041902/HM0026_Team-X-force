@@ -1,7 +1,6 @@
-import React, { useState } from "react";
-import { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import adminImg from "../assets/admi-img.jpeg";
-import {useSelector} from 'react-redux';
+import { useSelector } from "react-redux";
 import {
   Bell,
   CheckCircle,
@@ -12,47 +11,48 @@ import {
   Video,
   Users,
   LogOut,
+  X,
+  Play,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const AdminDashboard = () => {
   // Sample data - in a real app this would come from an API
   const navigate = useNavigate();
-  const token = useSelector((state)=>state.auth.token);
+  const token = useSelector((state) => state.auth.token);
   const [pendingVideos, setPendingVideos] = useState([]);
+  const [selectedVideo, setSelectedVideo] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  
-  function getDate(timestamp)
-  {
-    const dateOnly = timestamp.split('T')[0];
+  function getDate(timestamp) {
+    const dateOnly = timestamp.split("T")[0];
     return dateOnly;
   }
 
-  useEffect(()=>{
-    async function getPendingVideo()
-    {
-      try 
-      {
-        const response = await fetch('http://localhost:3000/user/getpendingvideo',{
-          method : 'POST',
-          headers: {
-            'Content-Type': 'application/json', 
-          },
-          body : JSON.stringify({token : token})
-        })
+  useEffect(() => {
+    async function getPendingVideo() {
+      try {
+        const response = await fetch(
+          "http://localhost:3000/user/getpendingvideo",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ token: token }),
+          }
+        );
 
         const value = await response.json();
-        setPendingVideos(value.data)
+        setPendingVideos(value.data);
         console.log(value.data);
-      }
-      catch(error)
-      {
+      } catch (error) {
         console.log(error.message);
       }
     }
 
     getPendingVideo();
-  },[]);
+  }, [token]);
 
   const [analytics, setAnalytics] = useState({
     totalVideos: 452,
@@ -67,6 +67,7 @@ const AdminDashboard = () => {
       type: "Inappropriate Content",
       video: "Data Science",
       reportedBy: "user123",
+      link: "#",
       date: "2025-02-27",
     },
     {
@@ -74,6 +75,7 @@ const AdminDashboard = () => {
       type: "Copyright Issue",
       video: "Introduction to Calculus",
       reportedBy: "teacher456",
+      link: "#",
       date: "2025-02-28 basics",
     },
   ]);
@@ -81,23 +83,28 @@ const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState("pending");
   const [alertsCount, setAlertsCount] = useState(3);
 
-  async function approveVideo(id)
-    {
-      try 
-      {
-        const response = await fetch('http://localhost:3000/user/flagvideos',{
-          method : 'POST',
-          headers: {
-            'Content-Type': 'application/json', 
-          },
-          body : JSON.stringify({token : token, videoId : id})
-        })
-      }
-      catch(error)
-      {
-        console.log(error.message);
-      }
+  const openVideoModal = (video) => {
+    setSelectedVideo(video);
+    setIsModalOpen(true);
+  };
+
+  const closeVideoModal = () => {
+    setIsModalOpen(false);
+  };
+
+  async function approveVideo(id) {
+    try {
+      await fetch("http://localhost:3000/user/flagvideos", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ token: token, videoId: id }),
+      });
+    } catch (error) {
+      console.log(error.message);
     }
+  }
 
   const handleApprove = (id, section) => {
     if (section === "videos") {
@@ -108,17 +115,29 @@ const AdminDashboard = () => {
       setAnalytics({ ...analytics, activeUsers: analytics.activeUsers + 1 });
     }
     setAlertsCount(Math.max(0, alertsCount - 1));
+
+    // Close modal if it's open
+    if (isModalOpen) {
+      setIsModalOpen(false);
+    }
   };
 
   const handleReject = (id, section) => {
     if (section === "videos") {
       setPendingVideos(pendingVideos.filter((video) => video._id !== id));
     } else if (section === "teachers") {
-      setTeacherVerifications(
-        teacherVerifications.filter((teacher) => teacher.id !== id)
-      );
+      // This was in the original code, keeping for compatibility
+      // but needs to be defined or removed in a real implementation
+      // setTeacherVerifications(
+      //   teacherVerifications.filter((teacher) => teacher.id !== id)
+      // );
     }
     setAlertsCount(Math.max(0, alertsCount - 1));
+
+    // Close modal if it's open
+    if (isModalOpen) {
+      setIsModalOpen(false);
+    }
   };
 
   const handleResolve = (id) => {
@@ -212,9 +231,102 @@ const AdminDashboard = () => {
               </span>
             )}
           </button>
-
         </nav>
       </div>
+
+      {/* Video Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-black bg-opacity-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg w-full max-w-3xl shadow-xl">
+            <div className="flex justify-between items-center p-4 border-b">
+              <h3 className="text-lg font-medium">
+                {selectedVideo?.title || "Video Preview"}
+              </h3>
+              <button
+                onClick={closeVideoModal}
+                className="p-1 hover:bg-gray-200 rounded-full"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="p-4">
+              {/* Video Player */}
+              <div className="aspect-w-16 aspect-h-9 bg-gray-900 rounded overflow-hidden mb-4">
+                {selectedVideo?.link ? (
+                  <iframe
+                    src={selectedVideo.link}
+                    className="w-full h-72"
+                    title={selectedVideo.title}
+                    allowFullScreen
+                  ></iframe>
+                ) : (
+                  <div className="flex items-center justify-center h-72 bg-gray-800 text-white">
+                    No video available
+                  </div>
+                )}
+              </div>
+
+              {/* Video Details */}
+              <div className="space-y-2 mb-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-sm text-gray-500 font-medium">
+                      Instructor
+                    </p>
+                    <p>
+                      {selectedVideo?.instructor?.firstname}{" "}
+                      {selectedVideo?.instructor?.lastname}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500 font-medium">
+                      Duration
+                    </p>
+                    <p>{selectedVideo?.duration}</p>
+                  </div>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500 font-medium">Uploaded</p>
+                  <p>
+                    {selectedVideo?.uploadDate
+                      ? getDate(selectedVideo.uploadDate)
+                      : "Unknown"}
+                  </p>
+                </div>
+              </div>
+
+              {/* Actions */}
+              <div className="flex justify-end space-x-3 mt-6 pt-4 border-t">
+                <button
+                  onClick={closeVideoModal}
+                  className="px-4 py-2 border border-gray-300 rounded text-gray-700 hover:bg-gray-50"
+                >
+                  Close
+                </button>
+                <button
+                  onClick={() =>
+                    selectedVideo && handleApprove(selectedVideo._id, "videos")
+                  }
+                  className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded flex items-center"
+                >
+                  <CheckCircle className="w-4 h-4 mr-2" />
+                  Approve
+                </button>
+                <button
+                  onClick={() =>
+                    selectedVideo && handleReject(selectedVideo._id, "videos")
+                  }
+                  className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded flex items-center"
+                >
+                  <XCircle className="w-4 h-4 mr-2" />
+                  Reject
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Main Content */}
       <main className="p-6">
@@ -248,7 +360,7 @@ const AdminDashboard = () => {
                         Submitted
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Link
+                        Preview
                       </th>
                       <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Actions
@@ -256,7 +368,7 @@ const AdminDashboard = () => {
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
-                    {pendingVideos.map((video,index) => (
+                    {pendingVideos.map((video, index) => (
                       <tr key={index}>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center">
@@ -273,13 +385,23 @@ const AdminDashboard = () => {
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {video.instructor.firstname}{" "}{video.instructor.lastname}
+                          {video.instructor.firstname}{" "}
+                          {video.instructor.lastname}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                           {video.duration}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                           {getDate(video.uploadDate)}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          <button
+                            onClick={() => openVideoModal(video)}
+                            className="flex items-center text-blue-600 hover:text-blue-800"
+                          >
+                            <Play className="w-4 h-4 mr-1" />
+                            <span>View Video</span>
+                          </button>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                           <button

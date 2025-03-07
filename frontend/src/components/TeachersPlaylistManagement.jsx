@@ -8,6 +8,7 @@ import {
   Plus,
   Edit,
   Trash2,
+  Upload
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -26,7 +27,7 @@ const TeachersPlaylistManagement = () => {
           id: 1,
           title: "Variables and Constants",
           description: "Learn about variables and constants in algebra",
-          url: "https://example.com/video1",
+          file: "variables-constants.mp4",
           thumbnail: "https://example.com/thumbnail1.jpg",
           duration: 625, // in seconds (10:25)
           views: 158,
@@ -50,7 +51,7 @@ const TeachersPlaylistManagement = () => {
           id: 3,
           title: "Data cleaning",
           description: "Learn techniques for cleaning messy datasets",
-          url: "https://example.com/video3",
+          file: "data-cleaning.mp4",
           thumbnail: "https://example.com/thumbnail3.jpg",
           duration: 765, // in seconds (12:45)
           views: 132,
@@ -71,7 +72,8 @@ const TeachersPlaylistManagement = () => {
     title: "",
     description: "",
     tags: "",
-    url: "",
+    videoFile: null,
+    videoFileName: "",
     thumbnail: "",
     duration: "",
     instructor: "",
@@ -92,6 +94,18 @@ const TeachersPlaylistManagement = () => {
     });
   };
 
+  // Handle file upload for video
+  const handleVideoUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setNewPlaylist({
+        ...newPlaylist,
+        videoFile: file,
+        videoFileName: file.name,
+      });
+    }
+  };
+
   // Handle playlist creation
   const handleCreatePlaylist = () => {
     const tagsArray = newPlaylist.tags.split(",").map((tag) => tag.trim());
@@ -100,7 +114,7 @@ const TeachersPlaylistManagement = () => {
       title: newPlaylist.title,
       description: newPlaylist.description,
       tags: tagsArray,
-      url: newPlaylist.url,
+      file: newPlaylist.videoFileName,
       thumbnail: newPlaylist.thumbnail,
       duration: parseInt(newPlaylist.duration) || 0,
       views: 0,
@@ -117,7 +131,8 @@ const TeachersPlaylistManagement = () => {
       title: "",
       description: "",
       tags: "",
-      url: "",
+      videoFile: null,
+      videoFileName: "",
       thumbnail: "",
       duration: "",
       instructor: "",
@@ -190,16 +205,24 @@ const TeachersPlaylistManagement = () => {
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Video URL
+              Upload Video
             </label>
-            <input
-              type="text"
-              name="url"
-              value={newPlaylist.url}
-              onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="https://example.com/video"
-            />
+            <div className="flex items-center">
+              <label className="flex items-center justify-center w-full px-4 py-2 border border-gray-300 border-dashed rounded-md cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors">
+                <input
+                  type="file"
+                  accept="video/*"
+                  onChange={handleVideoUpload}
+                  className="hidden"
+                />
+                <Upload className="h-5 w-5 text-gray-500 mr-2" />
+                {newPlaylist.videoFileName ? (
+                  <span className="text-gray-700">{newPlaylist.videoFileName}</span>
+                ) : (
+                  <span className="text-gray-500">Choose video file</span>
+                )}
+              </label>
+            </div>
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -257,147 +280,7 @@ const TeachersPlaylistManagement = () => {
   };
 
   // Render playlist details view
-  const renderPlaylistDetails = () => {
-    if (!selectedPlaylist) return null;
-
-    return (
-      <div className="bg-white rounded-lg shadow p-6">
-        <div className="flex justify-between items-start mb-6">
-          <div>
-            <h2 className="text-2xl font-semibold">{selectedPlaylist.title}</h2>
-            <p className="text-gray-600 mt-1">{selectedPlaylist.description}</p>
-            <div className="flex flex-wrap mt-2">
-              {selectedPlaylist.tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded mr-2 mb-1"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-          </div>
-          <button
-            onClick={() => setSelectedPlaylist(null)}
-            className="text-gray-500 hover:text-gray-700"
-          >
-            Back to All Playlists
-          </button>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-          <div className="bg-blue-50 p-4 rounded-lg">
-            <h3 className="text-lg font-medium text-blue-800 mb-2">
-              Completion Rate
-            </h3>
-            <div className="flex items-center">
-              <div className="w-full bg-gray-200 rounded-full h-4 mr-4">
-                <div
-                  className="bg-blue-600 h-4 rounded-full"
-                  style={{ width: `${selectedPlaylist.completionRate}%` }}
-                ></div>
-              </div>
-              <span className="text-blue-800 font-semibold">
-                {selectedPlaylist.completionRate}%
-              </span>
-            </div>
-          </div>
-
-          <div className="bg-green-50 p-4 rounded-lg">
-            <h3 className="text-lg font-medium text-green-800 mb-2">
-              Reward Badge
-            </h3>
-            <div className="flex items-center">
-              <Award className="h-6 w-6 text-green-600 mr-2" />
-              <input
-                type="text"
-                value={selectedPlaylist.rewards.badge}
-                className="flex-1 px-3 py-1 border border-green-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                placeholder="Add badge name"
-              />
-            </div>
-          </div>
-
-          <div className="bg-purple-50 p-4 rounded-lg">
-            <h3 className="text-lg font-medium text-purple-800 mb-2">
-              Bonus Points
-            </h3>
-            <div className="flex items-center">
-              <Star className="h-6 w-6 text-purple-600 mr-2" />
-              <input
-                type="number"
-                value={selectedPlaylist.rewards.points}
-                className="flex-1 px-3 py-1 border border-purple-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                placeholder="Add points"
-              />
-            </div>
-          </div>
-        </div>
-
-        <div className="mb-6">
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="text-xl font-semibold">Videos</h3>
-            <button className="bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700 transition-colors text-sm flex items-center">
-              <Plus className="h-4 w-4 mr-1" />
-              Add Video
-            </button>
-          </div>
-
-          <div className="bg-gray-50 p-4 rounded-lg">
-            {selectedPlaylist.videos.length === 0 ? (
-              <p className="text-gray-500 text-center py-4">
-                No videos added yet
-              </p>
-            ) : (
-              <div className="space-y-3">
-                {selectedPlaylist.videos.map((video, index) => (
-                  <div
-                    key={video.id}
-                    className="bg-white p-3 rounded-md shadow-sm flex justify-between items-center"
-                  >
-                    <div className="flex items-center">
-                      <div className="bg-gray-200 rounded-md w-8 h-8 flex items-center justify-center mr-3">
-                        {index + 1}
-                      </div>
-                      <div>
-                        <h4 className="font-medium">{video.title}</h4>
-                        <p className="text-gray-500 text-sm">
-                          {Math.floor(video.duration / 60)}:
-                          {(video.duration % 60).toString().padStart(2, "0")}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex items-center">
-                      <div className="flex items-center mr-4 text-sm text-gray-600">
-                        <Video className="h-4 w-4 mr-1" />
-                        {video.views}
-                      </div>
-                      <div className="flex items-center mr-4 text-sm text-gray-600">
-                        <Star className="h-4 w-4 mr-1" />
-                        {video.likes}
-                      </div>
-                      <div className="flex items-center mr-4 text-sm text-gray-600">
-                        <BarChart className="h-4 w-4 mr-1" />
-                        {video.engagement}%
-                      </div>
-                      <div className="flex space-x-1">
-                        <button className="p-1 text-gray-500 hover:text-blue-600 rounded">
-                          <Edit className="h-4 w-4" />
-                        </button>
-                        <button className="p-1 text-gray-500 hover:text-red-600 rounded">
-                          <Trash2 className="h-4 w-4" />
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-    );
-  };
+  
 
   return (
     <div className="min-h-screen bg-gray-100">
