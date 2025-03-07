@@ -43,7 +43,7 @@ const VideoPlayer = () => {
 
         const value = await response.json();
         const video = value.data[0];
-        console.log(video)
+        // console.log(video)
         setActiveVideo(video);
       } catch(error) {
         console.log(error.message);
@@ -67,7 +67,7 @@ const VideoPlayer = () => {
         const video = value.data;
         const newVideo = video.slice(0, 10);
         
-        console.log(newVideo);
+        // console.log(newVideo);
         setRelatedVideos(newVideo);
        }
        catch(error)

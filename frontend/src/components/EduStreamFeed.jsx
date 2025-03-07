@@ -44,9 +44,26 @@ const EduStreamFeed = () => {
     getVideos();
   }, [])
 
-  function clickhandler(e)
+  async function clickhandler(e)
   {
     const id = videos[e.target.parentNode.parentNode.id]._id;
+
+    try 
+    {
+      const response = await fetch('http://localhost:3000/user/videoisclicked',{
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ token: token,videoId : id })
+      })
+
+    }
+    catch(error)
+    {
+      console.log(error.message);
+    }
+
     navigate(`/feed/${id}`)
   }
 
@@ -103,7 +120,7 @@ const EduStreamFeed = () => {
               <img
                 src={video.thumbnail}
                 alt={`Thumbnail for ${video.title}`}
-                className="w-full h-auto"
+                className="h-60 w-full"
               />
               <div className="absolute bottom-1 right-1 bg-black bg-opacity-80 text-white text-xs px-1 rounded">
                 {parseInt(video.duration / 60)} {":"} {parseInt(video.duration % 60)}

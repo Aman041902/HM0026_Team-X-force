@@ -17,7 +17,7 @@ const Contact = () => {
 
   const navigate = useNavigate();
 
-  const handleChange = (e) => {
+  const handleChange =  (e) => {
     const { name, value } = e.target;
     setFormData((prevState) => ({
       ...prevState,
@@ -25,7 +25,7 @@ const Contact = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Basic validation
@@ -51,6 +51,23 @@ const Contact = () => {
 
     // Here you would typically send the form data to your backend
     console.log("Form submitted:", formData);
+
+    try 
+    {
+      const response = await fetch('http://localhost:3000/contact',{
+        method : 'POST',
+        headers : {
+          "Content-Type": "application/json",
+        },
+        body : JSON.stringify(formData)
+      });
+
+      console.log(response);
+    }
+    catch(error)
+    {
+      console.log(error.message);
+    }
 
     setFormStatus({
       submitted: true,
