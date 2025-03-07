@@ -163,3 +163,24 @@ exports.searchVideos = async (req,res) => {
         })
     }
 };
+
+exports.getUserCount = async (req,res) =>{
+    try 
+    {
+        const a = await User.find({});
+
+        return res.status(200).json({
+            success : true,
+            message : "All users fetched successfully",
+            data : a
+        })
+    }
+    catch(error)
+    {
+        console.log(error.message);
+        return res.status(500).json({
+            success : false,
+            message : "Internal server error"
+        })
+    }
+}

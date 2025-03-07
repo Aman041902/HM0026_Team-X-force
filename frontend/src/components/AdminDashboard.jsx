@@ -18,6 +18,8 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import { ResponsiveContainer,BarChart,CartesianGrid,XAxis,YAxis,Tooltip,Bar} from "recharts";
+
 
 const AdminDashboard = () => {
   // Sample data - in a real app this would come from an API
@@ -75,11 +77,21 @@ const AdminDashboard = () => {
   }, [token]);
 
   const [analytics, setAnalytics] = useState({
-    totalVideos: 452,
-    activeUsers: 1875,
-    dailyViews: 4328,
-    avgEngagement: "18:45",
+    totalVideos: 0,
+    activeUsers: 0,
+    dailyViews: 0,
+    avgEngagement: 0,
   });
+
+  const learningData = [
+    { day: "Sun", views: 1 },
+    { day: "Mon", views: 4 },
+    { day: "Tue", views: 2 },
+    { day: "Wed", views: 6 },
+    { day: "Thu", views: 2 },
+    { day: "Fri", views: Math.random()*2 },
+    { day: "Sat", views: 4 },
+  ];
 
   const [reports, setReports] = useState([
     {
@@ -128,9 +140,36 @@ const AdminDashboard = () => {
     }
   }
 
-  function getAnalyticsData() {
-    // Placeholder for analytics data fetching
-  }
+
+  useEffect(()=>{
+    async function getAnalyticsData() {
+      // Placeholder for analytics data fetching
+      try {
+        const response = await fetch("http://localhost:3000/user/admin/getvideos", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ token: token}),
+        });
+
+        const res = await fetch("http://localhost:3000/user/getuserdata",{
+          method : 'GET'
+        });
+
+        const val = await res.json();
+  
+        const value = await response.json();
+        console.log(value.data);
+        
+        setAnalytics({totalVideos:value.data.length,activeUsers:val.data.length,dailyViews : parseInt(Math.random()*10),avgEngagement : parseInt(Math.random()*10)})
+      } catch (error) {
+        console.log(error.message);
+      }
+    }
+
+    getAnalyticsData();
+  },[])
 
   const handleApprove = (id, section) => {
     if (section === "videos") {
@@ -663,31 +702,29 @@ const AdminDashboard = () => {
                         transition={{ delay: 0.8 }}
                         className="text-2xl font-semibold"
                       >
-                        {analytics.avgEngagement}
+                        {analytics.avgEngagement} {"hr"}
                       </motion.p>
                     </div>
                   </div>
                 </motion.div>
               </div>
 
-              <motion.div
-                variants={itemVariants}
-                className="bg-white p-6 rounded-lg shadow-md"
-              >
-                <h3 className="font-medium text-gray-700 mb-4">
-                  Video Approval Statistics
-                </h3>
-                <motion.div 
-                  initial={{ scaleY: 0 }}
-                  animate={{ scaleY: 1 }}
-                  transition={{ duration: 0.5 }}
-                  className="h-64 bg-gray-100 rounded flex items-center justify-center overflow-hidden"
-                >
-                  <p className="text-gray-500">
-                    Chart visualization would appear here
-                  </p>
-                </motion.div>
-              </motion.div>
+              <div className="w-[90%] sm:w-1/2 mt-8flex items-end justify-between h-48 space-x-2">
+                            <ResponsiveContainer width="100%" height={200} className={'-left-12 '}>
+                          <BarChart data={learningData} layout="horizontal">
+                              <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                              <XAxis type="category" dataKey="day" />
+                              <YAxis type="number" />
+                              <Tooltip />
+                              <Bar
+                                  dataKey="views"
+                                  fill="#6366f1"
+                                  barSize={20}
+                                  radius={[4, 4, 0, 0]}
+                              />
+                          </BarChart>
+                      </ResponsiveContainer>
+                            </div>
             </motion.div>
           )}
         </AnimatePresence>
