@@ -20,6 +20,7 @@ import AdminDashboard from "./components/AdminDashboard";
 import TeachersPlaylistManagement from "./components/TeachersPlaylistManagement";
 import VideoUploadApprovalPage from "./components/VideoUploadApprovalPage";
 import EduStreamFeed from "./components/EduStreamFeed.jsx";
+import VideoPlayer from "./components/VideoPlayer.jsx"
 
 function App() {
   const token = useSelector((state) => state.auth.token);
@@ -51,6 +52,10 @@ function App() {
           )}
           {token && role === "student" && (
             <Route path="/feed" element={<EduStreamFeed />} />
+          )}
+
+          {token && role === "student" && (
+            <Route path="/feed/:id" element={<VideoPlayer />} />
           )}
 
           {token && role === "instructor" && (

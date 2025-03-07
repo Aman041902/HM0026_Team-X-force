@@ -113,3 +113,26 @@ exports.watchHistory = async(req, res) => {
         })
     }
 }
+
+exports.getVideoById = async(req,res) =>{
+    try 
+    {
+        const videoId = req.params.id
+        const response = await Video.find({_id : videoId});
+
+        console.log(response);
+        return res.status(200).json({
+            success : true,
+            message : "Video data fetched successfully",
+            data : response
+        })
+    }
+    catch(error)
+    {
+        console.log(error.message)
+        return res.status(500).json({
+            success : false,
+            message : "Internal server error"
+        })
+    }
+}

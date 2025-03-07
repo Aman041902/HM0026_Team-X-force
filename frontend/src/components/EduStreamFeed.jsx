@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Clock, MoreVertical, Search } from "lucide-react";
 import {useSelector} from 'react-redux'
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import VideoPlayer from "./VideoPlayer"
 import mlImg from "../assets/ml-app.png";
 import reImg from "../assets/react-logo.svg";
@@ -15,6 +15,7 @@ const EduStreamFeed = () => {
   // Mock data representing educational videos
 
   const token = useSelector((state)=>state.auth.token)
+  const navigate = useNavigate();
 
   const [videos,setVideos] = useState([]);
 
@@ -34,8 +35,6 @@ const EduStreamFeed = () => {
 
         const value = await response.json();
 
-        console.log(value.data);
-        console.log(value.data[0].instructor.avatar)
         setVideos(value.data);
       }
       catch(error)
@@ -47,9 +46,10 @@ const EduStreamFeed = () => {
     getVideos();
   },[])
 
-  function clickhandler()
+  function clickhandler(e)
   {
-    console.log("clicked")
+    const id = videos[e.target.parentNode.parentNode.id]._id;
+    navigate(`/feed/${id}`)
   }
 
   function getDaysAgo(uploadDate) {
@@ -132,6 +132,7 @@ const EduStreamFeed = () => {
         {videos.map((video,index) => (
           <div
             key={index}
+            id={index}
             className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow"
             onClick={clickhandler}
           >

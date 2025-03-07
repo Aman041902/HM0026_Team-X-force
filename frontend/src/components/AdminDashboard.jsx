@@ -258,10 +258,10 @@ const AdminDashboard = () => {
             <div className="p-4">
               {/* Video Player */}
               <div className="aspect-w-16 aspect-h-9 bg-gray-900 rounded overflow-hidden mb-4">
-                {selectedVideo?.link ? (
+                {selectedVideo?.url ? (
                   <iframe
-                    src={selectedVideo.link}
-                    className="w-full h-72"
+                    src={selectedVideo.url}
+                    className="w-full h-96"
                     title={selectedVideo.title}
                     allowFullScreen
                   ></iframe>

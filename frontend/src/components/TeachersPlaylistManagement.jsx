@@ -236,6 +236,8 @@ const TeachersPlaylistManagement = () => {
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="https://example.com/thumbnail.jpg"
             />
+
+
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
