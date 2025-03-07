@@ -3,7 +3,7 @@ const router = express.Router();
 
 const { signup,login ,getUserData} = require('../controller/signup')
 const {auth,isStudent,isInstructor,isAdmin} = require('../middleware/auth');
-const { getLeaderBoard, getVideos, videoIsClicked, watchHistory } = require('../controller/student');
+const { getLeaderBoard, getVideos, videoIsClicked, watchHistory,getVideoById } = require('../controller/student');
 const { getInstructorVideo } = require('../controller/instructor');
 const { getPendingVideo, flagVideos } = require('../controller/admin');
 const { fileUpload } = require('../config/cloudinary')
@@ -14,7 +14,8 @@ router.post('/login',login);
 
 // Student feed (done)
 router.post('/getvideos', auth, isStudent, getVideos);
-router.post('/videoisclicked', auth, isStudent, videoIsClicked) 
+router.post('/videoisclicked', auth, isStudent, videoIsClicked);
+router.post('/feed/:id',auth,isStudent,getVideoById); 
 
 // student dashboard (done)
 router.post('/getuserdata/student',auth, isStudent, getUserData);

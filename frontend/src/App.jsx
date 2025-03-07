@@ -58,6 +58,10 @@ function App() {
             <Route path="/feed" element={<EduStreamFeed />} />
           )}
 
+          {token && role === "student" && (
+            <Route path="/feed/:id" element={<VideoPlayer />} />
+          )}
+
           {token && role === "instructor" && (
             <Route
               path="/dashboard/instructor"

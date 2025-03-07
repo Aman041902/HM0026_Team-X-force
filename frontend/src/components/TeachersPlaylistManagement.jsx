@@ -364,6 +364,21 @@ const TeachersPlaylistManagement = () => {
             </div>
           </div>
           <div>
+<<<<<<< HEAD
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Thumbnail URL
+            </label>
+            <input
+              type="text"
+              name="thumbnail"
+              value={newPlaylist.thumbnail}
+              onChange={handleInputChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="https://example.com/thumbnail.jpg"
+            />
+
+
+=======
             <div className="flex justify-between items-center mb-1">
               <label className="block text-sm font-medium text-gray-700">
                 Thumbnail
@@ -416,6 +431,7 @@ const TeachersPlaylistManagement = () => {
                 )}
               </label>
             </div>
+>>>>>>> 9de2b692cfd7f90388f8a77290d6c8ea17ec5b91
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>

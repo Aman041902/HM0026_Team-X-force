@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Clock, MoreVertical, Search } from "lucide-react";
+<<<<<<< HEAD
+import {useSelector} from 'react-redux'
+import { Link, useNavigate } from "react-router-dom";
+=======
 import { useSelector } from 'react-redux'
 import { Link } from "react-router-dom";
+>>>>>>> 9de2b692cfd7f90388f8a77290d6c8ea17ec5b91
 import VideoPlayer from "./VideoPlayer"
 import mlImg from "../assets/ml-app.png";
 import reImg from "../assets/react-logo.svg";
@@ -15,7 +20,12 @@ import Navbar1 from "./Navbar1";
 const EduStreamFeed = () => {
   // Mock data representing educational videos
 
+<<<<<<< HEAD
+  const token = useSelector((state)=>state.auth.token)
+  const navigate = useNavigate();
+=======
   const token = useSelector((state) => state.auth.token)
+>>>>>>> 9de2b692cfd7f90388f8a77290d6c8ea17ec5b91
 
   const [videos, setVideos] = useState([]);
 
@@ -33,8 +43,6 @@ const EduStreamFeed = () => {
 
         const value = await response.json();
 
-        console.log(value.data);
-        console.log(value.data[0].instructor.avatar)
         setVideos(value.data);
       }
       catch (error) {
@@ -45,8 +53,15 @@ const EduStreamFeed = () => {
     getVideos();
   }, [])
 
+<<<<<<< HEAD
+  function clickhandler(e)
+  {
+    const id = videos[e.target.parentNode.parentNode.id]._id;
+    navigate(`/feed/${id}`)
+=======
   function clickhandler() {
     console.log("clicked")
+>>>>>>> 9de2b692cfd7f90388f8a77290d6c8ea17ec5b91
   }
 
   function getDaysAgo(uploadDate) {
@@ -65,12 +80,12 @@ const EduStreamFeed = () => {
       <Navbar1/>
 
       {/* Page Title */}
-      <div className="bg-white py-3 px-4 border-b border-gray-200">
+      {/* <div className="bg-white py-3 px-4 border-b border-gray-200">
         <h1 className="text-2xl font-bold text-gray-800">EduStream</h1>
-      </div>
+      </div> */}
 
       {/* Categories - horizontally scrollable */}
-      <div className="flex gap-2 overflow-x-auto p-3 bg-white mb-4 shadow-sm">
+      <div className="flex gap-2 overflow-x-auto p-3 bg-white mb-4 shadow-sm mt-20">
         <div className="bg-blue-600 text-white rounded-full px-4 py-1 whitespace-nowrap">
           All
         </div>
@@ -93,6 +108,7 @@ const EduStreamFeed = () => {
         {videos.map((video, index) => (
           <div
             key={index}
+            id={index}
             className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow"
             onClick={clickhandler}
           >

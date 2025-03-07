@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
-const VideoPlayer = () => {
+const YouTubeStylePlayer = () => {
+  const token = useSelector((state) => state.auth.token);
+  const navigate = useNavigate();
+
   const [activeVideo, setActiveVideo] = useState({
     id: 1,
     title: "Big Buck Bunny",
@@ -12,7 +18,67 @@ const VideoPlayer = () => {
     likes: 285000,
     dislikes: 12500
   });
+
+
+  const [relatedVideos,setRelatedVideos] = useState([{ id: 2, title: "Sintel - Open Source Movie", thumbnail: "/api/placeholder/180/100", channel: "Blender Foundation", views: "8.2M views", uploadDate: "3 years ago" }]);
   
+  
+  const location = useLocation();
+  const segments = location.pathname.split('/');
+  const videoId = segments[segments.length - 1];
+
+  // State for description expand/collapse
+  const [showFullDescription, setShowFullDescription] = useState(false);
+
+  useEffect(() => {
+    async function getVideoInformation() {
+      try {
+        const response = await fetch('http://localhost:3000/user/feed/67cac2823d7ad8025f42ac34', {
+          method: 'POST',
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ token: token })
+        });
+
+        const value = await response.json();
+        const video = value.data[0];
+        setActiveVideo(video);
+      } catch(error) {
+        console.log(error.message);
+      }
+    }
+
+    async function getRelativeVideo()
+    {
+       try 
+       {
+        const response = await fetch('http://localhost:3000/user/getvideos',{
+          method : 'POST',
+          headers :
+          {
+            "Content-Type" : "application/json"
+          },
+          body : JSON.stringify({token : token})
+        })
+
+        const value = await response.json();
+        const video = value.data;
+        const newVideo = video.slice(0, 10);
+        
+        console.log(newVideo);
+        setRelatedVideos(newVideo);
+       }
+       catch(error)
+       {
+        console.log(error.message);
+       }
+    }
+
+    getVideoInformation();
+    getRelativeVideo();
+  }, [token]);
+
   const [comments, setComments] = useState([
     { id: 1, user: "VideoFan123", text: "This is one of my favorite animated shorts! The animation quality is amazing.", likes: 432, time: "2 months ago" },
     { id: 2, user: "AnimationLover", text: "I can't believe this was made so many years ago. Still holds up today!", likes: 215, time: "3 months ago" },
@@ -20,13 +86,17 @@ const VideoPlayer = () => {
   ]);
   
   const [commentText, setCommentText] = useState("");
-  const [isSmallScreen, setIsSmallScreen] = useState(false);
-  const [isMediumScreen, setIsMediumScreen] = useState(false);
+  const [screenSize, setScreenSize] = useState('large');
   
   useEffect(() => {
     const handleResize = () => {
-      setIsSmallScreen(window.innerWidth < 640);
-      setIsMediumScreen(window.innerWidth >= 640 && window.innerWidth < 1024);
+      if (window.innerWidth < 640) {
+        setScreenSize('small');
+      } else if (window.innerWidth < 1024) {
+        setScreenSize('medium');
+      } else {
+        setScreenSize('large');
+      }
     };
     
     // Initial check
@@ -39,14 +109,7 @@ const VideoPlayer = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
   
-  const relatedVideos = [
-    { id: 2, title: "Sintel - Open Source Movie", thumbnail: "/api/placeholder/180/100", channel: "Blender Foundation", views: "8.2M views", uploadDate: "3 years ago" },
-    { id: 3, title: "Tears of Steel", thumbnail: "/api/placeholder/180/100", channel: "Blender Foundation", views: "5.4M views", uploadDate: "2 years ago" },
-    { id: 4, title: "Elephants Dream", thumbnail: "/api/placeholder/180/100", channel: "Blender Foundation", views: "7.1M views", uploadDate: "5 years ago" },
-    { id: 5, title: "Animation Workflows", thumbnail: "/api/placeholder/180/100", channel: "TutorialsPlus", views: "2.3M views", uploadDate: "1 year ago" },
-    { id: 6, title: "3D Character Rigging", thumbnail: "/api/placeholder/180/100", channel: "AnimationSchool", views: "1.8M views", uploadDate: "8 months ago" }
-  ];
-  
+ 
   const addComment = () => {
     if (!commentText.trim()) return;
     
@@ -62,9 +125,26 @@ const VideoPlayer = () => {
     setCommentText("");
   };
 
+  // Toggle description visibility
+  const toggleDescription = () => {
+    setShowFullDescription(!showFullDescription);
+  };
+
+  function clickhandler(e)
+  {
+    const id = relatedVideos[e.target.parentNode.parentNode.id]._id;
+    navigate(`/feed/${id}`)
+  }
+
+  function getDate(timestamp) {
+    const dateOnly = timestamp.split("T")[0];
+    return dateOnly;
+  }
+
+
   return (
-    <div className="bg-gray-100 w-full max-w-6xl mx-auto p-2 sm:p-4">
-      <div className="flex flex-col lg:flex-row gap-4">
+    <div className="bg-gray-100 w-full mx-auto p-1 sm:p-2 md:p-4 max-w-7xl">
+      <div className="flex flex-col lg:flex-row gap-2 md:gap-4">
         {/* Main content area */}
         <div className="w-full lg:w-8/12 flex flex-col">
           {/* Video player */}
@@ -73,72 +153,66 @@ const VideoPlayer = () => {
               className="w-full h-full" 
               src={activeVideo.url} 
               controls 
+              autoPlay
               poster="/api/placeholder/640/360"
             />
           </div>
           
           {/* Video info */}
-          <div className="mt-3">
-            <h1 className="text-lg sm:text-xl font-bold">{activeVideo.title}</h1>
-            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mt-2 gap-3">
+          <div className="mt-2 md:mt-3">
+            <h1 className="text-base sm:text-lg md:text-xl font-bold">{activeVideo.title}</h1>
+            <div className="flex flex-wrap items-center justify-between mt-1 md:mt-2 gap-2">
               <div className="flex items-center">
-                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gray-300"></div>
+                <div className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 rounded-full bg-gray-300"></div>
                 <div className="ml-2">
-                  <p className="font-medium text-sm sm:text-base">{activeVideo.channel}</p>
-                  <p className="text-xs sm:text-sm text-gray-600">1.2M subscribers</p>
+                  <p className="font-medium text-xs sm:text-sm md:text-base">{activeVideo.channel}</p>
                 </div>
-                <button className="ml-2 sm:ml-4 bg-red-600 text-white px-2 py-1 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm font-medium">Subscribe</button>
+                <button className="ml-2 md:ml-4 bg-red-600 text-white px-2 py-1 md:px-4 md:py-2 rounded-full text-xs sm:text-sm font-medium">Subscribe</button>
               </div>
               
-              <div className="flex items-center flex-wrap gap-2">
-                <div className="flex">
-                  <button className="flex items-center bg-gray-200 px-2 py-1 sm:px-3 rounded-l-full text-xs sm:text-sm">
-                    <span className="material-icons text-sm sm:text-base">thumb_up</span>
-                    <span className="ml-1">{activeVideo.likes.toLocaleString()}</span>
-                  </button>
-                  <button className="flex items-center bg-gray-200 px-2 py-1 sm:px-3 rounded-r-full border-l border-gray-300 text-xs sm:text-sm">
-                    <span className="material-icons text-sm sm:text-base">thumb_down</span>
-                    <span className="ml-1">{activeVideo.dislikes.toLocaleString()}</span>
-                  </button>
-                </div>
-                <button className="flex items-center bg-gray-200 px-2 py-1 sm:px-3 rounded-full text-xs sm:text-sm">
-                  <span className="material-icons text-sm sm:text-base">share</span>
-                  <span className="ml-1">Share</span>
-                </button>
-                <button className="flex items-center bg-gray-200 px-2 py-1 sm:px-3 rounded-full text-xs sm:text-sm">
-                  <span className="material-icons text-sm sm:text-base">more_horiz</span>
+              <div className="flex items-center">
+                <button className="flex items-center bg-gray-200 px-2 py-1 md:px-3 rounded-full text-xs sm:text-sm">
+                  <span className="material-icons text-xs sm:text-sm md:text-base">thumb_up</span>
+                  <span className="ml-1">{activeVideo.likes.toLocaleString()}</span>
                 </button>
               </div>
             </div>
           </div>
           
-          {/* Video description */}
-          <div className="mt-4 bg-gray-200 p-2 sm:p-3 rounded-lg text-sm sm:text-base">
-            <div className="flex items-center text-xs sm:text-sm text-gray-600">
+          {/* Video description - with proper overflow handling */}
+          <div className="mt-3 md:mt-4 bg-gray-200 p-2 md:p-3 rounded-lg text-xs sm:text-sm md:text-base">
+            <div className="flex items-center text-xs md:text-sm text-gray-600">
               <span>{activeVideo.views}</span>
-              <span className="mx-1">•</span>
-              <span>{activeVideo.uploadDate}</span>
+              <span className="mx-1"> views •</span>
+              <span>{getDate(activeVideo.uploadDate)}</span>
             </div>
-            <p className="mt-2">{activeVideo.description}</p>
-            <button className="mt-2 text-gray-700 font-medium text-sm">Show more</button>
+            <div className={`mt-1 md:mt-2 ${showFullDescription ? '' : 'line-clamp-2'} overflow-hidden`}>
+              <p>{activeVideo.description}</p>
+            </div>
+            <button 
+              onClick={toggleDescription}
+              className="mt-1 md:mt-2 text-gray-700 font-medium text-xs sm:text-sm"
+            >
+              {showFullDescription ? "Show less" : "Show more"}
+            </button>
           </div>
           
           {/* Comments section */}
-          <div className="mt-4 sm:mt-6">
-            <h2 className="text-base sm:text-lg font-bold mb-2 sm:mb-4">{comments.length} Comments</h2>
+          <div className="mt-3 md:mt-6">
+            <h2 className="text-sm md:text-lg font-bold mb-2 md:mb-4">{comments.length} Comments</h2>
             
             {/* Add comment */}
-            <div className="flex items-start mb-4 sm:mb-6">
-              <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-gray-300 flex-shrink-0"></div>
-              <div className="ml-2 sm:ml-3 flex-grow">
+            <div className="flex items-start mb-3 md:mb-6">
+              <div className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-gray-300 flex-shrink-0"></div>
+              <div className="ml-2 flex-grow">
                 <input
                   type="text"
                   placeholder="Add a comment..."
-                  className="w-full p-1 sm:p-2 border-b border-gray-300 focus:border-blue-500 outline-none bg-transparent text-sm sm:text-base"
+                  className="w-full p-1 md:p-2 border-b border-gray-300 focus:border-blue-500 outline-none bg-transparent text-xs sm:text-sm"
                   value={commentText}
                   onChange={(e) => setCommentText(e.target.value)}
                 />
-                <div className="flex justify-end mt-1 sm:mt-2">
+                <div className="flex justify-end mt-1 md:mt-2">
                   <button className="px-2 py-1 mr-2 rounded-full text-gray-500 text-xs sm:text-sm">Cancel</button>
                   <button 
                     className="px-2 py-1 rounded-full bg-blue-500 text-white disabled:bg-gray-300 text-xs sm:text-sm"
@@ -152,11 +226,11 @@ const VideoPlayer = () => {
             </div>
             
             {/* Comments list */}
-            <div className="space-y-3 sm:space-y-4">
+            <div className="space-y-2 md:space-y-4">
               {comments.map((comment) => (
                 <div key={comment.id} className="flex">
-                  <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-gray-300 flex-shrink-0"></div>
-                  <div className="ml-2 sm:ml-3">
+                  <div className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-gray-300 flex-shrink-0"></div>
+                  <div className="ml-2">
                     <div className="flex items-center">
                       <span className="font-medium text-xs sm:text-sm">{comment.user}</span>
                       <span className="ml-2 text-xs text-gray-500">{comment.time}</span>
@@ -164,11 +238,11 @@ const VideoPlayer = () => {
                     <p className="mt-1 text-xs sm:text-sm">{comment.text}</p>
                     <div className="flex items-center mt-1 text-xs">
                       <button className="flex items-center mr-3">
-                        <span className="material-icons text-xs sm:text-sm">thumb_up</span>
+                        <span className="material-icons text-xs">thumb_up</span>
                         <span className="ml-1">{comment.likes}</span>
                       </button>
                       <button className="flex items-center mr-3">
-                        <span className="material-icons text-xs sm:text-sm">thumb_down</span>
+                        <span className="material-icons text-xs">thumb_down</span>
                       </button>
                       <button>Reply</button>
                     </div>
@@ -179,50 +253,50 @@ const VideoPlayer = () => {
           </div>
         </div>
         
-        {/* Sidebar with related videos - on small screens, becomes horizontal scrolling */}
-        <div className="w-full lg:w-4/12">
-          <h2 className="text-base sm:text-lg font-bold mb-2 sm:mb-3">Related Videos</h2>
+        {/* Sidebar with related videos - adapts to different screen sizes */}
+        <div className="w-full lg:w-4/12 mt-3 lg:mt-0">
+          <h2 className="text-sm md:text-lg font-bold mb-2">Related Videos</h2>
           
-          {isSmallScreen ? (
-            <div className="flex overflow-x-auto pb-2 space-x-3">
-              {relatedVideos.map((video) => (
-                <div key={video.id} className="flex-shrink-0 w-64 cursor-pointer hover:bg-gray-200 rounded p-2">
-                  <div className="w-full h-36 bg-gray-300">
+          {screenSize === 'small' ? (
+            <div className="flex overflow-x-auto pb-2 space-x-2 scrollbar-hide">
+              {relatedVideos.map((video,index) => (
+                <div key={index} id={index} className="flex-shrink-0 w-56 cursor-pointer hover:bg-gray-200 rounded p-1" onClick={clickhandler}>
+                  <div className="w-full h-32 bg-gray-300">
                     <img src={video.thumbnail} alt={video.title} className="w-full h-full object-cover" />
                   </div>
                   <div className="mt-1">
-                    <h3 className="font-medium text-xs sm:text-sm line-clamp-2">{video.title}</h3>
-                    <p className="text-xs text-gray-600 mt-1">{video.channel}</p>
+                    <h3 className="font-medium text-xs line-clamp-2">{video.title}</h3>
+                    <p className="text-xs text-gray-600">{video.channel}</p>
                     <p className="text-xs text-gray-600">{video.views} • {video.uploadDate}</p>
                   </div>
                 </div>
               ))}
             </div>
-          ) : isMediumScreen ? (
+          ) : screenSize === 'medium' ? (
             <div className="grid grid-cols-2 gap-2">
-              {relatedVideos.map((video) => (
-                <div key={video.id} className="cursor-pointer hover:bg-gray-200 rounded p-2">
+              {relatedVideos.map((video,index) => (
+                <div key={index} id={index} className="cursor-pointer hover:bg-gray-200 rounded p-1" onClick={clickhandler}>
                   <div className="w-full aspect-video bg-gray-300">
                     <img src={video.thumbnail} alt={video.title} className="w-full h-full object-cover" />
                   </div>
                   <div className="mt-1">
-                    <h3 className="font-medium text-xs sm:text-sm line-clamp-2">{video.title}</h3>
-                    <p className="text-xs text-gray-600 mt-1">{video.channel}</p>
+                    <h3 className="font-medium text-xs line-clamp-2">{video.title}</h3>
+                    <p className="text-xs text-gray-600">{video.channel}</p>
                     <p className="text-xs text-gray-600">{video.views} • {video.uploadDate}</p>
                   </div>
                 </div>
               ))}
             </div>
           ) : (
-            <div className="space-y-3">
-              {relatedVideos.map((video) => (
-                <div key={video.id} className="flex cursor-pointer hover:bg-gray-200 rounded p-2">
-                  <div className="w-32 sm:w-40 h-20 sm:h-24 bg-gray-300 flex-shrink-0">
+            <div className="space-y-2">
+              {relatedVideos.map((video,index) => (
+                <div key={index} id={index} className="flex cursor-pointer hover:bg-gray-200 rounded p-1" onClick={clickhandler}>
+                  <div className="w-28 sm:w-32 md:w-40 h-16 sm:h-20 md:h-24 bg-gray-300 flex-shrink-0">
                     <img src={video.thumbnail} alt={video.title} className="w-full h-full object-cover" />
                   </div>
                   <div className="ml-2 flex-grow overflow-hidden">
-                    <h3 className="font-medium text-xs sm:text-sm line-clamp-2">{video.title}</h3>
-                    <p className="text-xs text-gray-600 mt-1">{video.channel}</p>
+                    <h3 className="font-medium text-xs line-clamp-2">{video.title}</h3>
+                    <p className="text-xs text-gray-600">{video.channel}</p>
                     <p className="text-xs text-gray-600">{video.views} • {video.uploadDate}</p>
                   </div>
                 </div>
