@@ -9,11 +9,12 @@ require('dotenv').config()
 exports.getLeaderBoard = async (req, res) => {
     try 
     {
-        await User.find({}).sort({points : -1}).limit(10);
+        const response = await User.find({}).sort({points : -1}).limit(10);
 
         return res.status(200).json({
             success : true,
-            message : "Leaderboard fetched successfully"
+            message : "Leaderboard fetched successfully",
+            data : response
         })
     }
     catch(error)
@@ -32,7 +33,8 @@ exports.getVideos = async (req, res) => {
 
         return res.status(200).json({
             success : true,
-            message : "Videos fetched successfully"
+            message : "Videos fetched successfully",
+            data : videos
         })
     }
     catch(error)

@@ -7,7 +7,7 @@ const filerouter = require('../Backend/routes/fileroute');
 const { connectCloud } = require('../Backend/config/cloudinary');
 const fileUpload = require('express-fileupload');
 const cors = require("cors");
-const app = express();
+const app = express(); 
 
 app.use(cors());
 
