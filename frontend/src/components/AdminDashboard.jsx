@@ -1,5 +1,7 @@
 import React, { useState } from "react";
+import { useEffect } from "react";
 import adminImg from "../assets/admi-img.jpeg";
+import {useSelector} from 'react-redux';
 import {
   Bell,
   CheckCircle,
@@ -16,24 +18,41 @@ import { useNavigate } from "react-router-dom";
 const AdminDashboard = () => {
   // Sample data - in a real app this would come from an API
   const navigate = useNavigate();
-  const [pendingVideos, setPendingVideos] = useState([
+  const token = useSelector((state)=>state.auth.token);
+  const [pendingVideos, setPendingVideos] = useState([]);
+
+  
+  function getDate(timestamp)
+  {
+    const dateOnly = timestamp.split('T')[0];
+    return dateOnly;
+  }
+
+  useEffect(()=>{
+    async function getPendingVideo()
     {
-      id: 1,
-      title: "Advanced Algebra Concepts",
-      creator: "Prof. Smith",
-      duration: "45:22",
-      link: "#",
-      submitted: "2025-02-28",
-    },
-    {
-      id: 2,
-      title: "Introduction to database",
-      creator: "Dr. Johnson",
-      duration: "32:15",
-      link: "#",
-      submitted: "2025-03-01",
-    },
-  ]);
+      try 
+      {
+        const response = await fetch('http://localhost:3000/user/getpendingvideo',{
+          method : 'POST',
+          headers: {
+            'Content-Type': 'application/json', 
+          },
+          body : JSON.stringify({token : token})
+        })
+
+        const value = await response.json();
+        setPendingVideos(value.data)
+        console.log(value.data);
+      }
+      catch(error)
+      {
+        console.log(error.message);
+      }
+    }
+
+    getPendingVideo();
+  },[]);
 
   const [analytics, setAnalytics] = useState({
     totalVideos: 452,
@@ -62,10 +81,29 @@ const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState("pending");
   const [alertsCount, setAlertsCount] = useState(3);
 
+  async function approveVideo(id)
+    {
+      try 
+      {
+        const response = await fetch('http://localhost:3000/user/flagvideos',{
+          method : 'POST',
+          headers: {
+            'Content-Type': 'application/json', 
+          },
+          body : JSON.stringify({token : token, videoId : id})
+        })
+      }
+      catch(error)
+      {
+        console.log(error.message);
+      }
+    }
+
   const handleApprove = (id, section) => {
     if (section === "videos") {
-      setPendingVideos(pendingVideos.filter((video) => video.id !== id));
+      setPendingVideos(pendingVideos.filter((video) => video._id !== id));
       setAnalytics({ ...analytics, totalVideos: analytics.totalVideos + 1 });
+      approveVideo(id);
     } else if (section === "teachers") {
       setAnalytics({ ...analytics, activeUsers: analytics.activeUsers + 1 });
     }
@@ -74,7 +112,11 @@ const AdminDashboard = () => {
 
   const handleReject = (id, section) => {
     if (section === "videos") {
-      setPendingVideos(pendingVideos.filter((video) => video.id !== id));
+      setPendingVideos(pendingVideos.filter((video) => video._id !== id));
+    } else if (section === "teachers") {
+      setTeacherVerifications(
+        teacherVerifications.filter((teacher) => teacher.id !== id)
+      );
     }
     setAlertsCount(Math.max(0, alertsCount - 1));
   };
@@ -135,9 +177,9 @@ const AdminDashboard = () => {
           >
             <Video className="w-5 h-5" />
             <span>Pending Videos</span>
-            {pendingVideos.length > 0 && (
+            {pendingVideos && pendingVideos.length > 0 && (
               <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">
-                {pendingVideos.length}
+                {pendingVideos ? pendingVideos.length : 0}
               </span>
             )}
           </button>
@@ -171,14 +213,6 @@ const AdminDashboard = () => {
             )}
           </button>
 
-          <button
-            className={`px-6 py-4 font-medium flex items-center space-x-2 ${
-              activeTab === "teachers"
-                ? "border-b-2 border-blue-600 text-blue-600"
-                : "text-gray-600"
-            }`}
-            onClick={() => setActiveTab("teachers")}
-          ></button>
         </nav>
       </div>
 
@@ -192,11 +226,11 @@ const AdminDashboard = () => {
                 Review Pending Video Uploads
               </h2>
               <div className="text-sm text-gray-500">
-                {pendingVideos.length} pending approval
+                {pendingVideos ? pendingVideos.length : 0} pending approval
               </div>
             </div>
 
-            {pendingVideos.length > 0 ? (
+            {pendingVideos && pendingVideos.length > 0 ? (
               <div className="bg-white rounded-lg shadow-md overflow-hidden">
                 <table className="min-w-full divide-y divide-gray-200">
                   <thead className="bg-gray-50">
@@ -222,13 +256,13 @@ const AdminDashboard = () => {
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
-                    {pendingVideos.map((video) => (
-                      <tr key={video.id}>
+                    {pendingVideos.map((video,index) => (
+                      <tr key={index}>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center">
                             <div className="h-10 w-16 bg-gray-200 rounded mr-3 flex-shrink-0">
                               <img
-                                src={`/api/placeholder/64/36`}
+                                src={video.thumbnail}
                                 alt="Thumbnail"
                                 className="h-full w-full object-cover"
                               />
@@ -239,26 +273,23 @@ const AdminDashboard = () => {
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {video.creator}
+                          {video.instructor.firstname}{" "}{video.instructor.lastname}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                           {video.duration}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {video.submitted}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {video.link}
+                          {getDate(video.uploadDate)}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                           <button
-                            onClick={() => handleApprove(video.id, "videos")}
+                            onClick={() => handleApprove(video._id, "videos")}
                             className="text-green-600 hover:text-green-900 mr-4"
                           >
                             <CheckCircle className="w-5 h-5" />
                           </button>
                           <button
-                            onClick={() => handleReject(video.id, "videos")}
+                            onClick={() => handleReject(video._id, "videos")}
                             className="text-red-600 hover:text-red-900"
                           >
                             <XCircle className="w-5 h-5" />
