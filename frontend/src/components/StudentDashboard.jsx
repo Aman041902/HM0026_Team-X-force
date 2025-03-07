@@ -434,7 +434,7 @@ const StudentDashboard = () => {
       </main>
 
       {/* Full Leaderboard Modal */}
-      <VideoPlayer/>
+      
       
     </div>
   );

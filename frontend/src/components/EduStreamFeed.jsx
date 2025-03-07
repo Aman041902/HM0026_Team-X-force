@@ -65,12 +65,12 @@ const EduStreamFeed = () => {
       <Navbar1/>
 
       {/* Page Title */}
-      <div className="bg-white py-3 px-4 border-b border-gray-200">
+      {/* <div className="bg-white py-3 px-4 border-b border-gray-200">
         <h1 className="text-2xl font-bold text-gray-800">EduStream</h1>
-      </div>
+      </div> */}
 
       {/* Categories - horizontally scrollable */}
-      <div className="flex gap-2 overflow-x-auto p-3 bg-white mb-4 shadow-sm">
+      <div className="flex gap-2 overflow-x-auto p-3 bg-white mb-4 shadow-sm mt-20">
         <div className="bg-blue-600 text-white rounded-full px-4 py-1 whitespace-nowrap">
           All
         </div>
