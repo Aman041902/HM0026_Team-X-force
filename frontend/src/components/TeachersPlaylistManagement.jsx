@@ -8,7 +8,8 @@ import {
   Plus,
   Edit,
   Trash2,
-  Upload
+  Upload,
+  Sparkles,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -67,16 +68,30 @@ const TeachersPlaylistManagement = () => {
     },
   ]);
 
-  // State for new playlist form
+  // State for new playlist form - now with separate thumbnail file fields
   const [newPlaylist, setNewPlaylist] = useState({
     title: "",
     description: "",
     tags: "",
     videoFile: null,
     videoFileName: "",
-    thumbnail: "",
+    thumbnailFile: null,
+    thumbnailFileName: "",
+    thumbnail: "", // For URL-based thumbnails
     duration: "",
     instructor: "",
+  });
+
+  // State for AI generation prompts
+  const [aiPrompt, setAiPrompt] = useState({
+    description: "",
+    thumbnail: "",
+  });
+
+  // State for showing AI input fields
+  const [showAiInput, setShowAiInput] = useState({
+    description: false,
+    thumbnail: false,
   });
 
   // State for active tab
@@ -94,6 +109,74 @@ const TeachersPlaylistManagement = () => {
     });
   };
 
+  // Handle input changes for AI prompts
+  const handleAiPromptChange = (e) => {
+    const { name, value } = e.target;
+    setAiPrompt({
+      ...aiPrompt,
+      [name]: value,
+    });
+  };
+
+  // Toggle AI input fields
+  const toggleAiInput = (field) => {
+    setShowAiInput({
+      ...showAiInput,
+      [field]: !showAiInput[field],
+    });
+  };
+
+  // Handle AI generation for description
+  const generateWithAi = (field) => {
+    // Simulate AI generation with sample responses
+    if (field === "description") {
+      const sampleDescriptions = [
+        "This comprehensive video explores key concepts with practical examples and in-depth explanations. Perfect for students looking to build a strong foundation in this subject.",
+        "An engaging instructional video that breaks down complex topics into easy-to-understand segments. Includes visual demonstrations and real-world applications.",
+        "A step-by-step tutorial designed for beginners, covering fundamental principles and essential techniques. Includes practice exercises and common mistake warnings.",
+      ];
+
+      // Choose a random sample or use the prompt to "generate" something
+      const generatedText = aiPrompt.description
+        ? `Based on "${aiPrompt.description}": ${
+            sampleDescriptions[
+              Math.floor(Math.random() * sampleDescriptions.length)
+            ]
+          }`
+        : sampleDescriptions[
+            Math.floor(Math.random() * sampleDescriptions.length)
+          ];
+
+      setNewPlaylist({
+        ...newPlaylist,
+        description: generatedText,
+      });
+    } else if (field === "thumbnail") {
+      // For thumbnail, generate a placeholder URL based on the prompt
+      const generatedUrl = `https://example.com/generated-thumbnail-${Date.now()}.jpg`;
+
+      setNewPlaylist({
+        ...newPlaylist,
+        thumbnail: generatedUrl,
+        // Clear thumbnail file if using generated URL
+        thumbnailFile: null,
+        thumbnailFileName: "",
+      });
+    }
+
+    // Close the AI input field after generation
+    setShowAiInput({
+      ...showAiInput,
+      [field]: false,
+    });
+
+    // Clear the AI prompt
+    setAiPrompt({
+      ...aiPrompt,
+      [field]: "",
+    });
+  };
+
   // Handle file upload for video
   const handleVideoUpload = (e) => {
     const file = e.target.files[0];
@@ -106,16 +189,41 @@ const TeachersPlaylistManagement = () => {
     }
   };
 
+  // Fixed - Handle file upload for thumbnail image
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setNewPlaylist({
+        ...newPlaylist,
+        thumbnailFile: file,
+        thumbnailFileName: file.name,
+        // Clear the URL-based thumbnail when uploading a file
+        thumbnail: "",
+      });
+    }
+  };
+
   // Handle playlist creation
   const handleCreatePlaylist = () => {
     const tagsArray = newPlaylist.tags.split(",").map((tag) => tag.trim());
+
+    // Determine which thumbnail to use (file or URL)
+    let thumbnailSource = "";
+    if (newPlaylist.thumbnailFile) {
+      // In a real app, you'd likely upload this file to a server and get a URL back
+      // For this example, we'll use a placeholder approach
+      thumbnailSource = URL.createObjectURL(newPlaylist.thumbnailFile);
+    } else if (newPlaylist.thumbnail) {
+      thumbnailSource = newPlaylist.thumbnail;
+    }
+
     const newPlaylistObj = {
       id: playlists.length + 1,
       title: newPlaylist.title,
       description: newPlaylist.description,
       tags: tagsArray,
       file: newPlaylist.videoFileName,
-      thumbnail: newPlaylist.thumbnail,
+      thumbnail: thumbnailSource,
       duration: parseInt(newPlaylist.duration) || 0,
       views: 0,
       likes: 0,
@@ -133,6 +241,8 @@ const TeachersPlaylistManagement = () => {
       tags: "",
       videoFile: null,
       videoFileName: "",
+      thumbnailFile: null,
+      thumbnailFileName: "",
       thumbnail: "",
       duration: "",
       instructor: "",
@@ -192,9 +302,36 @@ const TeachersPlaylistManagement = () => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Description
-            </label>
+            <div className="flex justify-between items-center mb-1">
+              <label className="block text-sm font-medium text-gray-700">
+                Description
+              </label>
+              <button
+                onClick={() => toggleAiInput("description")}
+                className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded flex items-center hover:bg-purple-200 transition-colors"
+              >
+                <Sparkles className="h-3 w-3 mr-1" />
+                Generate with AI
+              </button>
+            </div>
+            {showAiInput.description && (
+              <div className="mb-2 flex">
+                <input
+                  type="text"
+                  name="description"
+                  value={aiPrompt.description}
+                  onChange={handleAiPromptChange}
+                  className="flex-grow px-3 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  placeholder="Describe what kind of content you want..."
+                />
+                <button
+                  onClick={() => generateWithAi("description")}
+                  className="bg-purple-600 text-white px-3 py-2 rounded-r-md hover:bg-purple-700 transition-colors"
+                >
+                  Generate
+                </button>
+              </div>
+            )}
             <textarea
               name="description"
               value={newPlaylist.description}
@@ -217,7 +354,9 @@ const TeachersPlaylistManagement = () => {
                 />
                 <Upload className="h-5 w-5 text-gray-500 mr-2" />
                 {newPlaylist.videoFileName ? (
-                  <span className="text-gray-700">{newPlaylist.videoFileName}</span>
+                  <span className="text-gray-700">
+                    {newPlaylist.videoFileName}
+                  </span>
                 ) : (
                   <span className="text-gray-500">Choose video file</span>
                 )}
@@ -225,17 +364,58 @@ const TeachersPlaylistManagement = () => {
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Thumbnail URL
-            </label>
-            <input
-              type="text"
-              name="thumbnail"
-              value={newPlaylist.thumbnail}
-              onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="https://example.com/thumbnail.jpg"
-            />
+            <div className="flex justify-between items-center mb-1">
+              <label className="block text-sm font-medium text-gray-700">
+                Thumbnail
+              </label>
+              <button
+                onClick={() => toggleAiInput("thumbnail")}
+                className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded flex items-center hover:bg-purple-200 transition-colors"
+              >
+                <Sparkles className="h-3 w-3 mr-1" />
+                Generate with AI
+              </button>
+            </div>
+            {showAiInput.thumbnail && (
+              <div className="mb-2 flex">
+                <input
+                  type="text"
+                  name="thumbnail"
+                  value={aiPrompt.thumbnail}
+                  onChange={handleAiPromptChange}
+                  className="flex-grow px-3 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  placeholder="Describe the thumbnail you want..."
+                />
+                <button
+                  onClick={() => generateWithAi("thumbnail")}
+                  className="bg-purple-600 text-white px-3 py-2 rounded-r-md hover:bg-purple-700 transition-colors"
+                >
+                  Generate
+                </button>
+              </div>
+            )}
+            <div className="flex items-center">
+              <label className="flex items-center justify-center w-full px-4 py-2 border border-gray-300 border-dashed rounded-md cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  className="hidden"
+                />
+                <Upload className="h-5 w-5 text-gray-500 mr-2" />
+                {newPlaylist.thumbnailFileName ? (
+                  <span className="text-gray-700">
+                    {newPlaylist.thumbnailFileName}
+                  </span>
+                ) : newPlaylist.thumbnail ? (
+                  <span className="text-gray-700">
+                    Using generated thumbnail
+                  </span>
+                ) : (
+                  <span className="text-gray-500">Choose thumbnail file</span>
+                )}
+              </label>
+            </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
@@ -279,9 +459,6 @@ const TeachersPlaylistManagement = () => {
     );
   };
 
-  // Render playlist details view
-  
-
   return (
     <div className="min-h-screen bg-gray-100">
       <div className="bg-white shadow">
@@ -310,7 +487,6 @@ const TeachersPlaylistManagement = () => {
 
         {activeTab === "playlists" && (
           <div>
-            
             {renderNewPlaylistForm()}
 
             <h2 className="text-xl font-semibold mb-4">Your Playlists</h2>
