@@ -165,7 +165,7 @@ const EduStreamFeed = () => {
                 <div className="flex items-center text-gray-600 text-xs mt-1">
                   <span>{video.views} views</span>
                   <span className="mx-1">•</span>
-                  <span>{getDaysAgo(video)}</span>
+                  <span>{getDaysAgo(video.uploadDate)}</span>
                 </div>
               </div>
 
