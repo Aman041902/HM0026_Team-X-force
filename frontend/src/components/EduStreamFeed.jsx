@@ -183,7 +183,7 @@ const EduStreamFeed = () => {
           </div>
         ))}
       </div>
-      <VideoPlayer/>
+      {/* <VideoPlayer/> */}
     </div>
   );
 };
