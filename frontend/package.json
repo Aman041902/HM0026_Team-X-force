@@ -11,10 +11,12 @@
   },
   "dependencies": {
     "@clerk/clerk-react": "^5.24.0",
+    "@google-cloud/speech": "^6.7.1",
     "@reduxjs/toolkit": "^2.6.0",
     "@tailwindcss/vite": "^4.0.9",
-    "axios": "^1.8.1",
+    "axios": "^1.8.2",
     "framer-motion": "^12.4.10",
+    "groq-sdk": "^0.15.0",
     "jwt-decode": "^4.0.0",
     "lucide-react": "^0.477.0",
     "react": "^19.0.0",

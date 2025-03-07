@@ -1,7 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import Groq from "groq-sdk";
+import TranslateSummary from "./TranslateSummary";
+
+const groq = new Groq({
+  apiKey: import.meta.env.VITE_GROQ_API_KEY,
+  dangerouslyAllowBrowser: true,
+});
 
 const VideoPlayer = () => {
   const token = useSelector((state) => state.auth.token);
@@ -14,66 +21,82 @@ const VideoPlayer = () => {
     views: "12M views",
     uploadDate: "4 years ago",
     url: "https://www.w3schools.com/html/mov_bbb.mp4",
-    description: "Big Buck Bunny tells the story of a giant rabbit with a heart bigger than himself. When one sunny day three rodents rudely harass him, something snaps... and the rabbit ain't no bunny anymore! In the typical cartoon tradition he prepares the nasty rodents a comical revenge.",
+    description:
+      "Big Buck Bunny tells the story of a giant rabbit with a heart bigger than himself. When one sunny day three rodents rudely harass him, something snaps... and the rabbit ain't no bunny anymore! In the typical cartoon tradition he prepares the nasty rodents a comical revenge.",
     likes: 285000,
-    dislikes: 12500
+    dislikes: 12500,
   });
 
+  const [relatedVideos, setRelatedVideos] = useState([
+    {
+      id: 2,
+      title: "Sintel - Open Source Movie",
+      thumbnail: "/api/placeholder/180/100",
+      channel: "Blender Foundation",
+      views: "8.2M views",
+      uploadDate: "3 years ago",
+    },
+  ]);
 
-  const [relatedVideos,setRelatedVideos] = useState([{ id: 2, title: "Sintel - Open Source Movie", thumbnail: "/api/placeholder/180/100", channel: "Blender Foundation", views: "8.2M views", uploadDate: "3 years ago" }]);
-  
-  
   const location = useLocation();
-  const segments = location.pathname.split('/');
+  const segments = location.pathname.split("/");
   const videoId = segments[segments.length - 1];
 
   // State for description expand/collapse
   const [showFullDescription, setShowFullDescription] = useState(false);
 
+  const [summary, setSummary] = useState("");
+  const [showSummary, setShowSummary] = useState(false);
+  const [isGeneratingSummary, setIsGeneratingSummary] = useState(false);
+  const [showTranslation, setShowTranslation] = useState(false);
+
+  // Add these new state variables
+  const [notes, setNotes] = useState("");
+  const [showNotes, setShowNotes] = useState(false);
+  const [isGeneratingNotes, setIsGeneratingNotes] = useState(false);
+
   useEffect(() => {
     async function getVideoInformation() {
       try {
-        const response = await fetch(`http://localhost:3000/user/feed/${videoId}`, {
-          method: 'POST',
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ token: token })
-        });
+        const response = await fetch(
+          `http://localhost:3000/user/feed/${videoId}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ token: token }),
+          }
+        );
 
         const value = await response.json();
         const video = value.data[0];
-        // console.log(video)
+        // console.log(video);
         setActiveVideo(video);
-      } catch(error) {
+      } catch (error) {
         console.log(error.message);
       }
     }
 
-    async function getRelativeVideo()
-    {
-       try 
-       {
-        const response = await fetch('http://localhost:3000/user/getvideos',{
-          method : 'POST',
-          headers :
-          {
-            "Content-Type" : "application/json"
+    async function getRelativeVideo() {
+      try {
+        const response = await fetch("http://localhost:3000/user/getvideos", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
           },
-          body : JSON.stringify({token : token})
-        })
+          body: JSON.stringify({ token: token }),
+        });
 
         const value = await response.json();
         const video = value.data;
         const newVideo = video.slice(0, 10);
-        
+
         // console.log(newVideo);
         setRelatedVideos(newVideo);
-       }
-       catch(error)
-       {
+      } catch (error) {
         console.log(error.message);
-       }
+      }
     }
 
     getVideoInformation();
@@ -81,47 +104,64 @@ const VideoPlayer = () => {
   }, [token]);
 
   const [comments, setComments] = useState([
-    { id: 1, user: "VideoFan123", text: "This is one of my favorite animated shorts! The animation quality is amazing.", likes: 432, time: "2 months ago" },
-    { id: 2, user: "AnimationLover", text: "I can't believe this was made so many years ago. Still holds up today!", likes: 215, time: "3 months ago" },
-    { id: 3, user: "CreativeArtist", text: "The character design is so expressive. Love the attention to detail.", likes: 178, time: "5 months ago" }
+    {
+      id: 1,
+      user: "VideoFan123",
+      text: "This is one of my favorite animated shorts! The animation quality is amazing.",
+      likes: 432,
+      time: "2 months ago",
+    },
+    {
+      id: 2,
+      user: "AnimationLover",
+      text: "I can't believe this was made so many years ago. Still holds up today!",
+      likes: 215,
+      time: "3 months ago",
+    },
+    {
+      id: 3,
+      user: "CreativeArtist",
+      text: "The character design is so expressive. Love the attention to detail.",
+      likes: 178,
+      time: "5 months ago",
+    },
   ]);
-  
+
   const [commentText, setCommentText] = useState("");
-  const [screenSize, setScreenSize] = useState('large');
-  
+  const [screenSize, setScreenSize] = useState("large");
+
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 640) {
-        setScreenSize('small');
+        setScreenSize("small");
       } else if (window.innerWidth < 1024) {
-        setScreenSize('medium');
+        setScreenSize("medium");
       } else {
-        setScreenSize('large');
+        setScreenSize("large");
       }
     };
-    
+
     // Initial check
     handleResize();
-    
+
     // Add event listener
-    window.addEventListener('resize', handleResize);
-    
+    window.addEventListener("resize", handleResize);
+
     // Cleanup
-    return () => window.removeEventListener('resize', handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
-  
- 
+
   const addComment = () => {
     if (!commentText.trim()) return;
-    
+
     const newComment = {
       id: comments.length + 1,
       user: "CurrentUser",
       text: commentText,
       likes: 0,
-      time: "Just now"
+      time: "Just now",
     };
-    
+
     setComments([newComment, ...comments]);
     setCommentText("");
   };
@@ -131,10 +171,9 @@ const VideoPlayer = () => {
     setShowFullDescription(!showFullDescription);
   };
 
-  function clickhandler(e)
-  {
+  function clickhandler(e) {
     const id = relatedVideos[e.target.parentNode.parentNode.id]._id;
-    navigate(`/feed/${id}`)
+    navigate(`/feed/${id}`);
   }
 
   function getDate(timestamp) {
@@ -142,170 +181,611 @@ const VideoPlayer = () => {
     return dateOnly;
   }
 
+  const handleGenerateSummary = async () => {
+    setIsGeneratingSummary(true);
+    try {
+      const chatCompletion = await groq.chat.completions.create({
+        messages: [
+          {
+            role: "user",
+            content: `Generate a concise summary of this video about: ${activeVideo.title}\n\nDescription: ${activeVideo.description}`,
+          },
+        ],
+        model: "llama-3.3-70b-versatile",
+      });
+      setSummary(chatCompletion.choices[0]?.message?.content || "No response");
+      setShowSummary(true);
+    } catch (error) {
+      console.error("Error generating summary:", error);
+    } finally {
+      setIsGeneratingSummary(false);
+    }
+  };
+
+  // Add this new function for generating notes
+  const handleGenerateNotes = async () => {
+    setIsGeneratingNotes(true);
+    try {
+      const chatCompletion = await groq.chat.completions.create({
+        messages: [
+          {
+            role: "user",
+            content: `Create detailed study notes from this video description. Extract key points, concepts, and important details in a well-organized format.
+            
+            Video Title: ${activeVideo.title}
+            Description: ${activeVideo.description}`,
+          },
+        ],
+        model: "llama-3.3-70b-versatile",
+      });
+      setNotes(chatCompletion.choices[0]?.message?.content || "No response");
+      setShowNotes(true);
+    } catch (error) {
+      console.error("Error generating notes:", error);
+    } finally {
+      setIsGeneratingNotes(false);
+    }
+  };
 
   return (
-    <div className="bg-gray-100 w-full mx-auto p-1 sm:p-2 md:p-4 max-w-7xl">
-      <div className="flex flex-col lg:flex-row gap-2 md:gap-4">
-        {/* Main content area */}
-        <div className="w-full lg:w-8/12 flex flex-col">
-          {/* Video player */}
-          <div className="bg-black w-full aspect-video">
-            <video 
-              className="w-full h-full" 
-              src={activeVideo.url} 
-              controls 
-              autoPlay
-              poster="/api/placeholder/640/360"
-            />
-          </div>
-          
-          {/* Video info */}
-          <div className="mt-2 md:mt-3">
-            <h1 className="text-base sm:text-lg md:text-xl font-bold">{activeVideo.title}</h1>
-            <div className="flex flex-wrap items-center justify-between mt-1 md:mt-2 gap-2">
-              <div className="flex items-center">
-                <div className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 rounded-full bg-gray-300"></div>
-                <div className="ml-2">
-                  <p className="font-medium text-xs sm:text-sm md:text-base">{activeVideo.channel}</p>
+    <div className="bg-gray-100 min-h-screen">
+      <div className="max-w-[2000px] mx-auto p-4">
+        <div className="flex flex-col lg:flex-row gap-6">
+          {/* Main Content Column */}
+          <div className="w-full lg:w-8/12">
+            {/* Video Player */}
+            <div className="bg-black w-full aspect-video rounded-xl overflow-hidden shadow-lg">
+              <video
+                className="w-full h-full"
+                src={activeVideo.url}
+                controls
+                autoPlay
+                poster="/api/placeholder/640/360"
+              />
+            </div>
+
+            {/* Video Info Section */}
+            {/* Video Info Section */}
+            <div className="mt-4 bg-white rounded-xl p-4 shadow-sm">
+              <h1 className="text-xl md:text-2xl font-bold text-gray-900 mb-3">
+                {activeVideo.title}
+              </h1>
+
+              <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 pb-4 border-b border-gray-200">
+                {/* Channel Info */}
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white text-xl font-bold">
+                    {activeVideo.channel}
+                  </div>
+                  <div className="flex flex-col">
+                    <h3 className="font-medium text-gray-900">
+                      {activeVideo.channel}
+                    </h3>
+                    <p className="text-sm text-gray-600">
+                      {activeVideo.views} subscribers
+                    </p>
+                  </div>
+                  <button className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-full font-medium transition-colors duration-200">
+                    Subscribe
+                  </button>
                 </div>
-                <button className="ml-2 md:ml-4 bg-red-600 text-white px-2 py-1 md:px-4 md:py-2 rounded-full text-xs sm:text-sm font-medium">Subscribe</button>
-              </div>
-              
-              <div className="flex items-center">
-                <button className="flex items-center bg-gray-200 px-2 py-1 md:px-3 rounded-full text-xs sm:text-sm">
-                  <span className="material-icons text-xs sm:text-sm md:text-base">thumb_up</span>
-                  <span className="ml-1">{activeVideo.likes.toLocaleString()}</span>
-                </button>
-              </div>
-            </div>
-          </div>
-          
-          {/* Video description - with proper overflow handling */}
-          <div className="mt-3 md:mt-4 bg-gray-200 p-2 md:p-3 rounded-lg text-xs sm:text-sm md:text-base">
-            <div className="flex items-center text-xs md:text-sm text-gray-600">
-              <span>{activeVideo.views}</span>
-              <span className="mx-1"> views •</span>
-              <span>{getDate(activeVideo.uploadDate)}</span>
-            </div>
-            <div className={`mt-1 md:mt-2 ${showFullDescription ? '' : 'line-clamp-2'} overflow-hidden`}>
-              <p>{activeVideo.description}</p>
-            </div>
-            <button 
-              onClick={toggleDescription}
-              className="mt-1 md:mt-2 text-gray-700 font-medium text-xs sm:text-sm"
-            >
-              {showFullDescription ? "Show less" : "Show more"}
-            </button>
-          </div>
-          
-          {/* Comments section */}
-          <div className="mt-3 md:mt-6">
-            <h2 className="text-sm md:text-lg font-bold mb-2 md:mb-4">{comments.length} Comments</h2>
-            
-            {/* Add comment */}
-            <div className="flex items-start mb-3 md:mb-6">
-              <div className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-gray-300 flex-shrink-0"></div>
-              <div className="ml-2 flex-grow">
-                <input
-                  type="text"
-                  placeholder="Add a comment..."
-                  className="w-full p-1 md:p-2 border-b border-gray-300 focus:border-blue-500 outline-none bg-transparent text-xs sm:text-sm"
-                  value={commentText}
-                  onChange={(e) => setCommentText(e.target.value)}
-                />
-                <div className="flex justify-end mt-1 md:mt-2">
-                  <button className="px-2 py-1 mr-2 rounded-full text-gray-500 text-xs sm:text-sm">Cancel</button>
-                  <button 
-                    className="px-2 py-1 rounded-full bg-blue-500 text-white disabled:bg-gray-300 text-xs sm:text-sm"
-                    disabled={!commentText.trim()}
-                    onClick={addComment}
-                  >
-                    Comment
+
+                {/* Action Buttons */}
+                <div className="flex items-center gap-3">
+                  <button className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors duration-200">
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"
+                      />
+                    </svg>
+                    <span>{activeVideo.likes.toLocaleString()}</span>
                   </button>
                 </div>
               </div>
-            </div>
-            
-            {/* Comments list */}
-            <div className="space-y-2 md:space-y-4">
-              {comments.map((comment) => (
-                <div key={comment.id} className="flex">
-                  <div className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-gray-300 flex-shrink-0"></div>
-                  <div className="ml-2">
-                    <div className="flex items-center">
-                      <span className="font-medium text-xs sm:text-sm">{comment.user}</span>
-                      <span className="ml-2 text-xs text-gray-500">{comment.time}</span>
-                    </div>
-                    <p className="mt-1 text-xs sm:text-sm">{comment.text}</p>
-                    <div className="flex items-center mt-1 text-xs">
-                      <button className="flex items-center mr-3">
-                        <span className="material-icons text-xs">thumb_up</span>
-                        <span className="ml-1">{comment.likes}</span>
-                      </button>
-                      <button className="flex items-center mr-3">
-                        <span className="material-icons text-xs">thumb_down</span>
-                      </button>
-                      <button>Reply</button>
-                    </div>
+
+              {/* Description Section with improved show more/less */}
+              <div className="mt-4 bg-gray-50 rounded-lg p-4">
+                {/* Views and Date Info */}
+                <div className="flex items-center gap-2 text-sm text-gray-600 mb-3">
+                  <div className="flex items-center gap-2">
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                      />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                      />
+                    </svg>
+                    <span>{activeVideo.views}</span>
+                  </div>
+                  <span>•</span>
+                  <div className="flex items-center gap-2">
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                      />
+                    </svg>
+                    <span>{getDate(activeVideo.uploadDate)}</span>
                   </div>
                 </div>
-              ))}
+
+                {/* Description Content */}
+                <div className="relative">
+                  <div
+                    className={`
+                    ${!showFullDescription ? "max-h-24" : ""} 
+                    overflow-hidden 
+                    transition-all 
+                    duration-300 
+                    ${!showFullDescription ? "mask-bottom" : ""}
+                  `}
+                  >
+                    <p className="text-gray-700 whitespace-pre-wrap text-sm md:text-base leading-relaxed">
+                      {activeVideo.description}
+                    </p>
+                  </div>
+
+                  {activeVideo.description.length > 100 && (
+                    <button
+                      onClick={toggleDescription}
+                      className="mt-2 text-blue-600 hover:text-blue-700 font-medium text-sm 
+                        flex items-center gap-1 transition-all duration-200 group"
+                    >
+                      {showFullDescription ? (
+                        <>
+                          <span className="group-hover:-translate-y-0.5 transition-transform duration-200">
+                            Show less
+                          </span>
+                          <svg
+                            className="w-5 h-5 group-hover:-translate-y-0.5 transition-transform duration-200"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M5 15l7-7 7 7"
+                            />
+                          </svg>
+                        </>
+                      ) : (
+                        <>
+                          <span className="group-hover:translate-y-0.5 transition-transform duration-200">
+                            Show more
+                          </span>
+                          <svg
+                            className="w-5 h-5 group-hover:translate-y-0.5 transition-transform duration-200"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M19 9l-7 7-7-7"
+                            />
+                          </svg>
+                        </>
+                      )}
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* AI Features Section */}
+            <div className="mt-4 bg-white rounded-xl p-4 shadow-sm">
+              <h2 className="text-lg font-semibold mb-4 text-gray-900">
+                AI Features
+              </h2>
+              <div className="flex flex-wrap gap-3">
+                <button
+                  onClick={handleGenerateSummary}
+                  disabled={isGeneratingSummary}
+                  className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 
+                    text-white rounded-lg hover:from-blue-700 hover:to-blue-800 
+                    disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed 
+                    transition-all duration-200 shadow-sm"
+                >
+                  {isGeneratingSummary ? (
+                    <>
+                      <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
+                      <span>Generating Summary...</span>
+                    </>
+                  ) : (
+                    <>
+                      <svg
+                        className="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M4 6h16M4 12h16m-7 6h7"
+                        />
+                      </svg>
+                      <span>Generate Summary</span>
+                    </>
+                  )}
+                </button>
+
+                <button
+                  onClick={handleGenerateNotes}
+                  disabled={isGeneratingNotes}
+                  className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-purple-700 
+                    text-white rounded-lg hover:from-purple-700 hover:to-purple-800 
+                    disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed 
+                    transition-all duration-200 shadow-sm"
+                >
+                  {isGeneratingNotes ? (
+                    <>
+                      <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
+                      <span>Generating Notes...</span>
+                    </>
+                  ) : (
+                    <>
+                      <svg
+                        className="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                        />
+                      </svg>
+                      <span>Generate Study Notes</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+
+            {/* Comments Section */}
+            <div className="mt-4 bg-white rounded-xl p-4 shadow-sm">
+              <h2 className="text-lg font-semibold mb-4 text-gray-900">
+                {comments.length} Comments
+              </h2>
+
+              {/* Add Comment */}
+              <div className="flex gap-4 mb-6">
+                <div
+                  className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex-shrink-0 
+                  flex items-center justify-center text-white font-bold"
+                >
+                  U
+                </div>
+                <div className="flex-grow">
+                  <input
+                    type="text"
+                    placeholder="Add a comment..."
+                    className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none 
+                      focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    value={commentText}
+                    onChange={(e) => setCommentText(e.target.value)}
+                  />
+                  <div className="flex justify-end gap-2 mt-2">
+                    <button
+                      className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors duration-200"
+                      onClick={() => setCommentText("")}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 
+                        disabled:bg-gray-300 disabled:text-gray-500 transition-colors duration-200"
+                      disabled={!commentText.trim()}
+                      onClick={addComment}
+                    >
+                      Comment
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Comments List */}
+              <div className="space-y-4">
+                {comments.map((comment) => (
+                  <div key={comment.id} className="flex gap-4 group">
+                    <div
+                      className="w-10 h-10 rounded-full bg-gradient-to-br from-gray-500 to-gray-600 
+                      flex-shrink-0 flex items-center justify-center text-white font-bold"
+                    >
+                      {comment.user[0]}
+                    </div>
+                    <div className="flex-grow">
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium text-gray-900">
+                          {comment.user}
+                        </span>
+                        <span className="text-sm text-gray-500">
+                          {comment.time}
+                        </span>
+                      </div>
+                      <p className="mt-1 text-gray-700">{comment.text}</p>
+                      <div className="flex items-center gap-4 mt-2">
+                        <button className="flex items-center gap-1 text-gray-600 hover:text-blue-600">
+                          <span className="material-icons text-sm">
+                            thumb_up
+                          </span>
+                          <span>{comment.likes}</span>
+                        </button>
+                        <button className="flex items-center gap-1 text-gray-600 hover:text-blue-600">
+                          <span className="material-icons text-sm">
+                            thumb_down
+                          </span>
+                        </button>
+                        <button className="text-gray-600 hover:text-blue-600">
+                          Reply
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Sidebar */}
+          <div className="w-full lg:w-4/12">
+            <div className="bg-white rounded-xl p-4 shadow-sm">
+              <h2 className="text-lg font-semibold mb-4 text-gray-900">
+                Related Videos
+              </h2>
+              <div className="space-y-4">
+                {relatedVideos.map((video, index) => (
+                  <div
+                    key={index}
+                    id={index}
+                    className="flex gap-4 cursor-pointer hover:bg-gray-50 p-2 rounded-lg transition-colors duration-200"
+                    onClick={clickhandler}
+                  >
+                    <div className="w-40 h-24 rounded-lg overflow-hidden bg-gray-200 flex-shrink-0">
+                      <img
+                        src={video.thumbnail}
+                        alt={video.title}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div className="flex-grow">
+                      <h3 className="font-medium text-gray-900 line-clamp-2">
+                        {video.title}
+                      </h3>
+                      <p className="text-sm text-gray-600 mt-1">
+                        {video.channel}
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        {video.views} • {video.uploadDate}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
-        
-        {/* Sidebar with related videos - adapts to different screen sizes */}
-        <div className="w-full lg:w-4/12 mt-3 lg:mt-0">
-          <h2 className="text-sm md:text-lg font-bold mb-2">Related Videos</h2>
-          
-          {screenSize === 'small' ? (
-            <div className="flex overflow-x-auto pb-2 space-x-2 scrollbar-hide">
-              {relatedVideos.map((video,index) => (
-                <div key={index} id={index} className="flex-shrink-0 w-56 cursor-pointer hover:bg-gray-200 rounded p-1" onClick={clickhandler}>
-                  <div className="w-full h-32 bg-gray-300">
-                    <img src={video.thumbnail} alt={video.title} className="w-full h-full object-cover" />
-                  </div>
-                  <div className="mt-1">
-                    <h3 className="font-medium text-xs line-clamp-2">{video.title}</h3>
-                    <p className="text-xs text-gray-600">{video.channel}</p>
-                    <p className="text-xs text-gray-600">{video.views} • {video.uploadDate}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : screenSize === 'medium' ? (
-            <div className="grid grid-cols-2 gap-2">
-              {relatedVideos.map((video,index) => (
-                <div key={index} id={index} className="cursor-pointer hover:bg-gray-200 rounded p-1" onClick={clickhandler}>
-                  <div className="w-full aspect-video bg-gray-300">
-                    <img src={video.thumbnail} alt={video.title} className="w-full h-full object-cover" />
-                  </div>
-                  <div className="mt-1">
-                    <h3 className="font-medium text-xs line-clamp-2">{video.title}</h3>
-                    <p className="text-xs text-gray-600">{video.channel}</p>
-                    <p className="text-xs text-gray-600">{video.views} • {video.uploadDate}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="space-y-2">
-              {relatedVideos.map((video,index) => (
-                <div key={index} id={index} className="flex cursor-pointer hover:bg-gray-200 rounded p-1" onClick={clickhandler}>
-                  <div className="w-28 sm:w-32 md:w-40 h-16 sm:h-20 md:h-24 bg-gray-300 flex-shrink-0">
-                    <img src={video.thumbnail} alt={video.title} className="w-full h-full object-cover" />
-                  </div>
-                  <div className="ml-2 flex-grow overflow-hidden">
-                    <h3 className="font-medium text-xs line-clamp-2">{video.title}</h3>
-                    <p className="text-xs text-gray-600">{video.channel}</p>
-                    <p className="text-xs text-gray-600">{video.views} • {video.uploadDate}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
       </div>
+
+      {/* Summary and Notes Modals */}
+      {showSummary && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden">
+            <div className="flex flex-col h-full">
+              {/* Modal Header */}
+              <div className="p-6 border-b border-gray-200 flex justify-between items-center">
+                <h2 className="text-2xl font-semibold text-gray-900">
+                  Video Summary
+                </h2>
+                <button
+                  onClick={() => {
+                    setShowSummary(false);
+                    setShowTranslation(false);
+                  }}
+                  className="text-gray-500 hover:text-gray-700"
+                >
+                  <svg
+                    className="w-6 h-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+              </div>
+
+              {/* Modal Content */}
+              <div className="flex-1 overflow-y-auto p-6">
+                {/* Original Summary */}
+                <div className="prose max-w-none bg-gray-50 rounded-lg p-6 mb-6">
+                  {summary}
+                </div>
+
+                {/* Translation Section */}
+                {showTranslation ? (
+                  <div className="mt-6">
+                    <TranslateSummary summary={summary} />
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => setShowTranslation(true)}
+                    className="mt-4 px-4 py-2 bg-green-600 text-white rounded-md
+                      hover:bg-green-700 transition-colors duration-300
+                      flex items-center space-x-2"
+                  >
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"
+                      />
+                    </svg>
+                    <span>Translate Summary</span>
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showNotes && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden">
+            <div className="flex flex-col h-full">
+              {/* Modal Header */}
+              <div className="p-6 border-b border-gray-200 flex justify-between items-center bg-purple-50">
+                <h2 className="text-2xl font-semibold text-gray-900">
+                  Video Notes
+                </h2>
+                <button
+                  onClick={() => {
+                    setShowNotes(false);
+                    setShowTranslation(false);
+                  }}
+                  className="text-gray-500 hover:text-gray-700"
+                >
+                  <svg
+                    className="w-6 h-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+              </div>
+
+              {/* Modal Content */}
+              <div className="flex-1 overflow-y-auto p-6">
+                {/* Notes Content */}
+                <div className="prose max-w-none bg-gray-50 rounded-lg p-6 mb-6 whitespace-pre-wrap">
+                  {notes}
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex justify-end space-x-4">
+                  <button
+                    onClick={() => navigator.clipboard.writeText(notes)}
+                    className="px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-md
+                      hover:bg-gray-50 transition-colors duration-300
+                      flex items-center space-x-2"
+                  >
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"
+                      />
+                    </svg>
+                    <span>Copy Notes</span>
+                  </button>
+
+                  {/* Translation Button */}
+                  {!showTranslation && (
+                    <button
+                      onClick={() => setShowTranslation(true)}
+                      className="px-4 py-2 bg-green-600 text-white rounded-md
+                        hover:bg-green-700 transition-colors duration-300
+                        flex items-center space-x-2"
+                    >
+                      <svg
+                        className="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"
+                        />
+                      </svg>
+                      <span>Translate Notes</span>
+                    </button>
+                  )}
+                </div>
+
+                {/* Translation Section */}
+                {showTranslation && (
+                  <div className="mt-6">
+                    <TranslateSummary summary={notes} />
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Add this CSS to your global styles or as a style tag */}
+      <style>
+        {`
+          .mask-bottom {
+            mask-image: linear-gradient(to bottom, black calc(100% - 28px), transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, black calc(100% - 28px), transparent 100%);
+          }
+        `}
+      </style>
     </div>
   );
 };
