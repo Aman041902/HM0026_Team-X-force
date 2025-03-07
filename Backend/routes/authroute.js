@@ -28,7 +28,7 @@ router.post('/getuserdata/instructor', auth , isInstructor, getUserData);
 router.post('/getinstructorvideo', auth, isInstructor, getInstructorVideo)
 
 // Instrutor add video (done)
-router.post('/addvideo', auth, isInstructor, fileUpload)
+router.post('/addvideo', auth, isInstructor,flagVideos,fileUpload)
  
 // Admin routes
 router.post('/getuserdata/admin', auth, isAdmin, getUserData);

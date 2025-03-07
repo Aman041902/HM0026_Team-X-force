@@ -6,7 +6,17 @@ const jwt = require('jsonwebtoken')
 require('dotenv').config()
 
 exports.flagVideos = async (req, res) => {
-    
+    try 
+    {
+        
+    }
+    catch(error)
+    {
+        return res.status(500).json({
+            success : false,
+            message : "Internal Server Error"
+        })
+    }
 }
 
 exports.getInstructors = async (req, res) => {
