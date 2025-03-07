@@ -170,7 +170,7 @@ const EduStreamFeed = () => {
       </div> */}
 
       {/* Categories - horizontally scrollable */}
-      <div className="flex gap-2 overflow-x-auto p-3 bg-white mb-4 shadow-sm mt-24">
+      {/* <div className="flex gap-2 overflow-x-auto p-3 bg-white mb-4 shadow-sm mt-24">
         <div className="bg-blue-600 text-white rounded-full px-4 py-1 whitespace-nowrap">
           All
         </div>
@@ -186,10 +186,10 @@ const EduStreamFeed = () => {
         <div className="bg-gray-200 rounded-full px-4 py-1 whitespace-nowrap">
           Cyber Security
         </div>
-      </div>
+      </div> */}
 
       {/* Video Grid - responsive with different column counts */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 p-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 p-4 mt-24">
         {videos.length>0 ? videos.map((video, index) => (
           <div
             key={index}
