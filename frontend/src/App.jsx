@@ -23,9 +23,11 @@ import VideoUploadApprovalPage from "./components/VideoUploadApprovalPage";
 import EduStreamFeed from "./components/EduStreamFeed.jsx";
 // import VideoToTextConverter from "./components/VideoToTextConverter";
 import Summary from "./components/Summary";
+import GenerateImage from "./components/GenerateImage.jsx";
 
 function App() {
   const token = useSelector((state) => state.auth.token);
+  console.log("image===", import.meta.env.VITE_OPENAI_API_KEY);
 
   let role = null;
 
@@ -118,6 +120,8 @@ function App() {
 
           <Route path="/translate-summary" element={<TranslateSummary />} />
           <Route path="/summary" element={<Summary />} />
+
+          <Route path="/generate" element={<GenerateImage />} />
 
           <Route path="*" element={<Error />} />
         </Routes>
