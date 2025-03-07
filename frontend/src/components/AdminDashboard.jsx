@@ -131,11 +131,9 @@ const AdminDashboard = () => {
     if (section === "videos") {
       setPendingVideos(pendingVideos.filter((video) => video._id !== id));
     } else if (section === "teachers") {
-      // This was in the original code, keeping for compatibility
-      // but needs to be defined or removed in a real implementation
-      // setTeacherVerifications(
-      //   teacherVerifications.filter((teacher) => teacher.id !== id)
-      // );
+      setTeacherVerifications(
+        teacherVerifications.filter((teacher) => teacher.id !== id)
+      );
     }
     setAlertsCount(Math.max(0, alertsCount - 1));
 

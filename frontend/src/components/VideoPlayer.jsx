@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
-const YouTubeStylePlayer = () => {
+const VideoPlayer = () => {
   const token = useSelector((state) => state.auth.token);
   const navigate = useNavigate();
 

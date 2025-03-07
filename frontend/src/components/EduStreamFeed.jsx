@@ -146,7 +146,6 @@ const EduStreamFeed = () => {
           </div>
         ))}
       </div>
-      <VideoPlayer />
     </div>
   );
 };
