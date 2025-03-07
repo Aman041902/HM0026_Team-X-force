@@ -69,10 +69,18 @@ const fileUpload = async (req, res) => {
         instructor : userExist._id
       });
 
-      await User.findByIdAndUpdate(userExist._id,
+      const a = await User.findByIdAndUpdate(userExist._id,
         { 
           $push: { playlist: file._id } 
         },{ new: true })
+
+      const b = await Video.findByIdAndUpdate(file._id,
+        {
+          email : userExist._id
+        },{new : true}
+      )
+
+      console.log("a is ",a,"b is ",b);
 
       return res.status(200).json({
         success: true,

@@ -52,9 +52,10 @@ const Login = () => {
     e.preventDefault();
     if (validateForm()) {
       // Submit login credentials to server
+      // https://edu-backend-try.onrender.com/user/login
       console.log("Login submitted:", formData);
       axios
-        .post("https://edu-backend-try.onrender.com/user/login", formData)
+        .post("http://localhost:3000/user/login", formData)
         .then((res) => {
           console.log(res.data.token);
           localStorage.setItem("token", res.data.token);
