@@ -78,23 +78,6 @@ const AdminDashboard = () => {
     },
   ]);
 
-  const [teacherVerifications, setTeacherVerifications] = useState([
-    {
-      id: 1,
-      name: "Jane Doe",
-      subject: "Mathematics",
-      credentials: "PhD in Mathematics",
-      submitted: "2025-03-01",
-    },
-    {
-      id: 2,
-      name: "Robert Brown",
-      subject: "Physics",
-      credentials: "MSc in Physics",
-      submitted: "2025-02-28",
-    },
-  ]);
-
   const [activeTab, setActiveTab] = useState("pending");
   const [alertsCount, setAlertsCount] = useState(3);
 
@@ -127,9 +110,6 @@ const AdminDashboard = () => {
       setAnalytics({ ...analytics, totalVideos: analytics.totalVideos + 1 });
       approveVideo(id);
     } else if (section === "teachers") {
-      setTeacherVerifications(
-        teacherVerifications.filter((teacher) => teacher.id !== id)
-      );
       setAnalytics({ ...analytics, activeUsers: analytics.activeUsers + 1 });
     }
     setAlertsCount(Math.max(0, alertsCount - 1));
@@ -271,6 +251,9 @@ const AdminDashboard = () => {
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Submitted
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Link
                       </th>
                       <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Actions
