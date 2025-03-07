@@ -74,12 +74,13 @@ const Login = () => {
           }
 
           toast.success("Success")
-          toast.dismiss(toastId);
         })
         .catch((err) => {
+          toast.error(err.message)
           console.log(err);
         });
       // After successful login, you would typically redirect the user
+      toast.dismiss(toastId);
     }
   };
 
