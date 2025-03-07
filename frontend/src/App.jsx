@@ -5,6 +5,7 @@ import CoursePlaylistPage from "./components/CoursePlaylistPage";
 import ProfileProgressPage from "./components/ProfileProgressPage";
 import LeaderboardBadgeShowcase from "./components/LeaderboardBadgeShowcase";
 import TeacherDashboard from "./components/TeacherDashboard";
+import Navbar from "./components/Navbar";
 
 import { useSelector } from "react-redux";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
@@ -41,6 +42,9 @@ function App() {
           <Route path="/about-us" element={<About />} />
           <Route path="/contact" element={<Contact />} />
 
+          {token && role === "student" && (
+            <Route path="/" element={<EduStreamFeed />} />
+          )}
 
           {token && role === "student" && (
             <Route path="/dashboard/student" element={<StudentDashboard />} />
