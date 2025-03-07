@@ -420,38 +420,14 @@ const TeachersPlaylistManagement = () => {
               }`}
               onClick={() => setActiveTab("playlists")}
             >
-              Playlists
+              Create Video
             </button>
           </div>
         </div>
 
         {activeTab === "playlists" && (
           <div>
-            <div className="flex justify-between items-center mb-6">
-              <div className="relative w-64">
-                <input
-                  type="text"
-                  placeholder="Search playlists..."
-                  className="w-full px-10 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
-              </div>
-              <div>
-                <select className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 mr-3">
-                  <option>All Subjects</option>
-                  <option>Statistics</option>
-                  <option>ML</option>
-                  <option>Neural Networks</option>
-                </select>
-                <select className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                  <option>All Levels</option>
-                  <option>Beginner</option>
-                  <option>Intermediate</option>
-                  <option>Advanced</option>
-                </select>
-              </div>
-            </div>
-
+            
             {renderNewPlaylistForm()}
 
             <h2 className="text-xl font-semibold mb-4">Your Playlists</h2>
