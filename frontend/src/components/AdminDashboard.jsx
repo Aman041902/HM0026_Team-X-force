@@ -106,6 +106,11 @@ const AdminDashboard = () => {
     }
   }
 
+    function getAnalyticsData()
+    {
+      
+    }
+
   const handleApprove = (id, section) => {
     if (section === "videos") {
       setPendingVideos(pendingVideos.filter((video) => video._id !== id));
