@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Clock, MoreVertical, Search } from "lucide-react";
 import {useSelector} from 'react-redux'
 import { Link } from "react-router-dom";
+import VideoPlayer from "./VideoPlayer"
 import mlImg from "../assets/ml-app.png";
 import reImg from "../assets/react-logo.svg";
 import cssImg from "../assets/css.png";
@@ -45,6 +46,11 @@ const EduStreamFeed = () => {
 
     getVideos();
   },[])
+
+  function clickhandler()
+  {
+    console.log("clicked")
+  }
 
   function getDaysAgo(uploadDate) {
     const uploadDateObj = new Date(uploadDate);
@@ -127,6 +133,7 @@ const EduStreamFeed = () => {
           <div
             key={index}
             className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow"
+            onClick={clickhandler}
           >
             {/* Video Thumbnail */}
             <div className="relative">
@@ -176,6 +183,7 @@ const EduStreamFeed = () => {
           </div>
         ))}
       </div>
+      <VideoPlayer/>
     </div>
   );
 };
