@@ -364,7 +364,6 @@ const TeachersPlaylistManagement = () => {
             </div>
           </div>
           <div>
-<<<<<<< HEAD
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Thumbnail URL
             </label>
@@ -378,60 +377,6 @@ const TeachersPlaylistManagement = () => {
             />
 
 
-=======
-            <div className="flex justify-between items-center mb-1">
-              <label className="block text-sm font-medium text-gray-700">
-                Thumbnail
-              </label>
-              <button
-                onClick={() => toggleAiInput("thumbnail")}
-                className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded flex items-center hover:bg-purple-200 transition-colors"
-              >
-                <Sparkles className="h-3 w-3 mr-1" />
-                Generate with AI
-              </button>
-            </div>
-            {showAiInput.thumbnail && (
-              <div className="mb-2 flex">
-                <input
-                  type="text"
-                  name="thumbnail"
-                  value={aiPrompt.thumbnail}
-                  onChange={handleAiPromptChange}
-                  className="flex-grow px-3 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                  placeholder="Describe the thumbnail you want..."
-                />
-                <button
-                  onClick={() => generateWithAi("thumbnail")}
-                  className="bg-purple-600 text-white px-3 py-2 rounded-r-md hover:bg-purple-700 transition-colors"
-                >
-                  Generate
-                </button>
-              </div>
-            )}
-            <div className="flex items-center">
-              <label className="flex items-center justify-center w-full px-4 py-2 border border-gray-300 border-dashed rounded-md cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors">
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageUpload}
-                  className="hidden"
-                />
-                <Upload className="h-5 w-5 text-gray-500 mr-2" />
-                {newPlaylist.thumbnailFileName ? (
-                  <span className="text-gray-700">
-                    {newPlaylist.thumbnailFileName}
-                  </span>
-                ) : newPlaylist.thumbnail ? (
-                  <span className="text-gray-700">
-                    Using generated thumbnail
-                  </span>
-                ) : (
-                  <span className="text-gray-500">Choose thumbnail file</span>
-                )}
-              </label>
-            </div>
->>>>>>> 9de2b692cfd7f90388f8a77290d6c8ea17ec5b91
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>

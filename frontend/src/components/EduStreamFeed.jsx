@@ -1,12 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Clock, MoreVertical, Search } from "lucide-react";
-<<<<<<< HEAD
 import {useSelector} from 'react-redux'
 import { Link, useNavigate } from "react-router-dom";
-=======
-import { useSelector } from 'react-redux'
-import { Link } from "react-router-dom";
->>>>>>> 9de2b692cfd7f90388f8a77290d6c8ea17ec5b91
 import VideoPlayer from "./VideoPlayer"
 import mlImg from "../assets/ml-app.png";
 import reImg from "../assets/react-logo.svg";
@@ -20,12 +15,8 @@ import Navbar1 from "./Navbar1";
 const EduStreamFeed = () => {
   // Mock data representing educational videos
 
-<<<<<<< HEAD
   const token = useSelector((state)=>state.auth.token)
   const navigate = useNavigate();
-=======
-  const token = useSelector((state) => state.auth.token)
->>>>>>> 9de2b692cfd7f90388f8a77290d6c8ea17ec5b91
 
   const [videos, setVideos] = useState([]);
 
@@ -53,15 +44,10 @@ const EduStreamFeed = () => {
     getVideos();
   }, [])
 
-<<<<<<< HEAD
   function clickhandler(e)
   {
     const id = videos[e.target.parentNode.parentNode.id]._id;
     navigate(`/feed/${id}`)
-=======
-  function clickhandler() {
-    console.log("clicked")
->>>>>>> 9de2b692cfd7f90388f8a77290d6c8ea17ec5b91
   }
 
   function getDaysAgo(uploadDate) {
