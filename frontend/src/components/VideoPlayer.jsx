@@ -33,7 +33,7 @@ const VideoPlayer = () => {
   useEffect(() => {
     async function getVideoInformation() {
       try {
-        const response = await fetch('http://localhost:3000/user/feed/67cac2823d7ad8025f42ac34', {
+        const response = await fetch(`http://localhost:3000/user/feed/${videoId}`, {
           method: 'POST',
           headers: {
             "Content-Type": "application/json",
@@ -43,6 +43,7 @@ const VideoPlayer = () => {
 
         const value = await response.json();
         const video = value.data[0];
+        console.log(video)
         setActiveVideo(video);
       } catch(error) {
         console.log(error.message);
