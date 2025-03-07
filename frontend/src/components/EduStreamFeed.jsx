@@ -90,11 +90,10 @@ const EduStreamFeed = () => {
       </div>
 
       {/* Video Grid - responsive with different column counts */}
-<<<<<<< HEAD
+
      
 
       <VideoGallery/>
-=======
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 p-4">
         {videos.map((video,index) => (
           <div
@@ -149,7 +148,6 @@ const EduStreamFeed = () => {
           </div>
         ))}
       </div>
->>>>>>> 26c3de0e7dd50b341ea442deee300c679fa22044
     </div>
   );
 };
