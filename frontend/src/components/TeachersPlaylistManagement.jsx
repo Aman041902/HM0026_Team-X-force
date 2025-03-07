@@ -5,7 +5,6 @@ import {
   Award,
   BarChart,
   Star,
-  Users,
   Plus,
   Edit,
   Trash2,
@@ -14,9 +13,7 @@ import { useNavigate } from "react-router-dom";
 
 const TeachersPlaylistManagement = () => {
   const navigate = useNavigate();
-  const showleaderboard = () => {
-    navigate("/dashboard/student/leaderboard");
-  };
+
   // Sample data for playlists
   const [playlists, setPlaylists] = useState([
     {
@@ -28,16 +25,16 @@ const TeachersPlaylistManagement = () => {
         {
           id: 1,
           title: "Variables and Constants",
-          duration: "10:25",
+          description: "Learn about variables and constants in algebra",
+          url: "https://example.com/video1",
+          thumbnail: "https://example.com/thumbnail1.jpg",
+          duration: 625, // in seconds (10:25)
           views: 158,
+          likes: 42,
+          uploadDate: new Date("2025-02-15"),
+          instructor: "6073a3e752faff34e8562c2a",
+          tags: ["algebra", "variables", "beginner"],
           engagement: 87,
-        },
-        {
-          id: 2,
-          title: "Solving Simple Equations",
-          duration: "15:10",
-          views: 142,
-          engagement: 91,
         },
       ],
       completionRate: 68,
@@ -52,59 +49,20 @@ const TeachersPlaylistManagement = () => {
         {
           id: 3,
           title: "Data cleaning",
-          duration: "12:45",
+          description: "Learn techniques for cleaning messy datasets",
+          url: "https://example.com/video3",
+          thumbnail: "https://example.com/thumbnail3.jpg",
+          duration: 765, // in seconds (12:45)
           views: 132,
+          likes: 35,
+          uploadDate: new Date("2025-02-20"),
+          instructor: "6073a3e752faff34e8562c2a",
+          tags: ["data science", "cleaning", "begineer"],
           engagement: 78,
-        },
-        {
-          id: 4,
-          title: "Data Tranformation",
-          duration: "9:30",
-          views: 127,
-          engagement: 85,
         },
       ],
       completionRate: 54,
       rewards: { badge: "Data Science Begineer", points: 40 },
-    },
-  ]);
-
-  // Sample data for leaderboard
-  const [students, setStudents] = useState([
-    {
-      id: 1,
-      name: "Emma Johnson",
-      completedPlaylists: 8,
-      totalPoints: 380,
-      badges: 5,
-    },
-    {
-      id: 2,
-      name: "Noah Williams",
-      completedPlaylists: 7,
-      totalPoints: 350,
-      badges: 4,
-    },
-    {
-      id: 3,
-      name: "Olivia Brown",
-      completedPlaylists: 6,
-      totalPoints: 320,
-      badges: 4,
-    },
-    {
-      id: 4,
-      name: "Liam Davis",
-      completedPlaylists: 6,
-      totalPoints: 310,
-      badges: 3,
-    },
-    {
-      id: 5,
-      name: "Ava Miller",
-      completedPlaylists: 5,
-      totalPoints: 290,
-      badges: 3,
     },
   ]);
 
@@ -113,6 +71,10 @@ const TeachersPlaylistManagement = () => {
     title: "",
     description: "",
     tags: "",
+    url: "",
+    thumbnail: "",
+    duration: "",
+    instructor: "",
   });
 
   // State for active tab
@@ -138,13 +100,28 @@ const TeachersPlaylistManagement = () => {
       title: newPlaylist.title,
       description: newPlaylist.description,
       tags: tagsArray,
+      url: newPlaylist.url,
+      thumbnail: newPlaylist.thumbnail,
+      duration: parseInt(newPlaylist.duration) || 0,
+      views: 0,
+      likes: 0,
+      uploadDate: new Date(),
+      instructor: newPlaylist.instructor || "6073a3e752faff34e8562c2a",
       videos: [],
       completionRate: 0,
       rewards: { badge: "", points: 0 },
     };
 
     setPlaylists([...playlists, newPlaylistObj]);
-    setNewPlaylist({ title: "", description: "", tags: "" });
+    setNewPlaylist({
+      title: "",
+      description: "",
+      tags: "",
+      url: "",
+      thumbnail: "",
+      duration: "",
+      instructor: "",
+    });
   };
 
   // Render playlist cards
@@ -173,15 +150,6 @@ const TeachersPlaylistManagement = () => {
           <div className="flex flex-col items-end">
             <div className="flex items-center mb-1">
               <Video className="h-4 w-4 text-gray-500 mr-1" />
-              <span className="text-sm text-gray-600">
-                {playlist.videos.length} videos
-              </span>
-            </div>
-            <div className="flex items-center">
-              <BarChart className="h-4 w-4 text-gray-500 mr-1" />
-              <span className="text-sm text-gray-600">
-                {playlist.completionRate}% completion
-              </span>
             </div>
           </div>
         </div>
@@ -193,7 +161,7 @@ const TeachersPlaylistManagement = () => {
   const renderNewPlaylistForm = () => {
     return (
       <div className="bg-white rounded-lg shadow p-6 mb-6">
-        <h2 className="text-xl font-semibold mb-4">Create New video</h2>
+        <h2 className="text-xl font-semibold mb-4">Create New Video</h2>
         <div className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -222,6 +190,47 @@ const TeachersPlaylistManagement = () => {
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
+              Video URL
+            </label>
+            <input
+              type="text"
+              name="url"
+              value={newPlaylist.url}
+              onChange={handleInputChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="https://example.com/video"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Thumbnail URL
+            </label>
+            <input
+              type="text"
+              name="thumbnail"
+              value={newPlaylist.thumbnail}
+              onChange={handleInputChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="https://example.com/thumbnail.jpg"
+            />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Duration (seconds)
+              </label>
+              <input
+                type="number"
+                name="duration"
+                value={newPlaylist.duration}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Enter duration in seconds"
+              />
+            </div>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
               Tags (comma-separated)
             </label>
             <input
@@ -239,7 +248,7 @@ const TeachersPlaylistManagement = () => {
               className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors flex items-center"
             >
               <Plus className="h-4 w-4 mr-2" />
-              Create video
+              Create Video
             </button>
           </div>
         </div>
@@ -353,7 +362,8 @@ const TeachersPlaylistManagement = () => {
                       <div>
                         <h4 className="font-medium">{video.title}</h4>
                         <p className="text-gray-500 text-sm">
-                          {video.duration}
+                          {Math.floor(video.duration / 60)}:
+                          {(video.duration % 60).toString().padStart(2, "0")}
                         </p>
                       </div>
                     </div>
@@ -361,6 +371,10 @@ const TeachersPlaylistManagement = () => {
                       <div className="flex items-center mr-4 text-sm text-gray-600">
                         <Video className="h-4 w-4 mr-1" />
                         {video.views}
+                      </div>
+                      <div className="flex items-center mr-4 text-sm text-gray-600">
+                        <Star className="h-4 w-4 mr-1" />
+                        {video.likes}
                       </div>
                       <div className="flex items-center mr-4 text-sm text-gray-600">
                         <BarChart className="h-4 w-4 mr-1" />
@@ -380,77 +394,6 @@ const TeachersPlaylistManagement = () => {
               </div>
             )}
           </div>
-        </div>
-      </div>
-    );
-  };
-
-  // Render leaderboard
-  const renderLeaderboard = () => {
-    return (
-      <div className="bg-white rounded-lg shadow overflow-hidden">
-        <div className="p-6 bg-blue-600">
-          <h2 className="text-xl font-semibold text-white flex items-center">
-            <Award className="mr-2 h-6 w-6" />
-            Top Students Leaderboard
-          </h2>
-        </div>
-
-        <div className="p-4">
-          <div className="bg-gray-100 py-3 px-4 rounded-t-lg grid grid-cols-12 gap-4 font-medium text-gray-600">
-            <div className="col-span-1">Rank</div>
-            <div className="col-span-5">Student</div>
-            <div className="col-span-2 text-center">Playlists</div>
-            <div className="col-span-2 text-center">Points</div>
-            <div className="col-span-2 text-center">Badges</div>
-          </div>
-
-          {students.map((student, index) => (
-            <div
-              key={student.id}
-              className={`py-4 px-4 grid grid-cols-12 gap-4 border-b ${
-                index % 2 === 0 ? "bg-white" : "bg-gray-50"
-              }`}
-            >
-              <div className="col-span-1 flex items-center">
-                {index < 3 ? (
-                  <div
-                    className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                      index === 0
-                        ? "bg-yellow-100 text-yellow-800"
-                        : index === 1
-                        ? "bg-gray-200 text-gray-700"
-                        : "bg-yellow-600 text-yellow-100"
-                    }`}
-                  >
-                    {index + 1}
-                  </div>
-                ) : (
-                  <div className="w-8 h-8 flex items-center justify-center text-gray-500">
-                    {index + 1}
-                  </div>
-                )}
-              </div>
-              <div className="col-span-5 flex items-center">
-                <div className="w-8 h-8 bg-blue-100 text-blue-800 rounded-full flex items-center justify-center mr-3">
-                  {student.name.charAt(0)}
-                </div>
-                <span className="font-medium">{student.name}</span>
-              </div>
-              <div className="col-span-2 flex items-center justify-center">
-                {student.completedPlaylists}
-              </div>
-              <div className="col-span-2 flex items-center justify-center text-green-600 font-medium">
-                {student.totalPoints}
-              </div>
-              <div className="col-span-2 flex items-center justify-center">
-                <div className="flex items-center">
-                  <Award className="h-4 w-4 text-purple-600 mr-1" />
-                  <span>{student.badges}</span>
-                </div>
-              </div>
-            </div>
-          ))}
         </div>
       </div>
     );
@@ -479,60 +422,42 @@ const TeachersPlaylistManagement = () => {
             >
               Playlists
             </button>
-            <button
-              className={`py-3 px-6 ${
-                activeTab === "leaderboard"
-                  ? "border-b-2 border-blue-600 text-blue-600 font-medium"
-                  : "text-gray-600 hover:text-gray-800"
-              }`}
-              onClick={showleaderboard}
-            >
-              Student Leaderboard
-            </button>
           </div>
         </div>
 
         {activeTab === "playlists" && (
           <div>
-            {!selectedPlaylist ? (
-              <>
-                <div className="flex justify-between items-center mb-6">
-                  <div className="relative w-64">
-                    <input
-                      type="text"
-                      placeholder="Search playlists..."
-                      className="w-full px-10 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                    <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
-                  </div>
-                  <div>
-                    <select className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 mr-3">
-                      <option>All Subjects</option>
-                      <option>Statistics</option>
-                      <option>ML</option>
-                      <option>Neural Networks</option>
-                    </select>
-                    <select className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                      <option>All Levels</option>
-                      <option>Beginner</option>
-                      <option>Intermediate</option>
-                      <option>Advanced</option>
-                    </select>
-                  </div>
-                </div>
+            <div className="flex justify-between items-center mb-6">
+              <div className="relative w-64">
+                <input
+                  type="text"
+                  placeholder="Search playlists..."
+                  className="w-full px-10 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
+              </div>
+              <div>
+                <select className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 mr-3">
+                  <option>All Subjects</option>
+                  <option>Statistics</option>
+                  <option>ML</option>
+                  <option>Neural Networks</option>
+                </select>
+                <select className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                  <option>All Levels</option>
+                  <option>Beginner</option>
+                  <option>Intermediate</option>
+                  <option>Advanced</option>
+                </select>
+              </div>
+            </div>
 
-                {renderNewPlaylistForm()}
+            {renderNewPlaylistForm()}
 
-                <h2 className="text-xl font-semibold mb-4">Your Playlists</h2>
-                {renderPlaylistCards()}
-              </>
-            ) : (
-              renderPlaylistDetails()
-            )}
+            <h2 className="text-xl font-semibold mb-4">Your Playlists</h2>
+            {renderPlaylistCards()}
           </div>
         )}
-
-        {activeTab === "leaderboard" && renderLeaderboard()}
       </div>
     </div>
   );

@@ -22,6 +22,7 @@ const AdminDashboard = () => {
       title: "Advanced Algebra Concepts",
       creator: "Prof. Smith",
       duration: "45:22",
+      link: "#",
       submitted: "2025-02-28",
     },
     {
@@ -29,6 +30,7 @@ const AdminDashboard = () => {
       title: "Introduction to database",
       creator: "Dr. Johnson",
       duration: "32:15",
+      link: "#",
       submitted: "2025-03-01",
     },
   ]);
@@ -57,23 +59,6 @@ const AdminDashboard = () => {
     },
   ]);
 
-  const [teacherVerifications, setTeacherVerifications] = useState([
-    {
-      id: 1,
-      name: "Jane Doe",
-      subject: "Mathematics",
-      credentials: "PhD in Mathematics",
-      submitted: "2025-03-01",
-    },
-    {
-      id: 2,
-      name: "Robert Brown",
-      subject: "Physics",
-      credentials: "MSc in Physics",
-      submitted: "2025-02-28",
-    },
-  ]);
-
   const [activeTab, setActiveTab] = useState("pending");
   const [alertsCount, setAlertsCount] = useState(3);
 
@@ -82,9 +67,6 @@ const AdminDashboard = () => {
       setPendingVideos(pendingVideos.filter((video) => video.id !== id));
       setAnalytics({ ...analytics, totalVideos: analytics.totalVideos + 1 });
     } else if (section === "teachers") {
-      setTeacherVerifications(
-        teacherVerifications.filter((teacher) => teacher.id !== id)
-      );
       setAnalytics({ ...analytics, activeUsers: analytics.activeUsers + 1 });
     }
     setAlertsCount(Math.max(0, alertsCount - 1));
@@ -93,10 +75,6 @@ const AdminDashboard = () => {
   const handleReject = (id, section) => {
     if (section === "videos") {
       setPendingVideos(pendingVideos.filter((video) => video.id !== id));
-    } else if (section === "teachers") {
-      setTeacherVerifications(
-        teacherVerifications.filter((teacher) => teacher.id !== id)
-      );
     }
     setAlertsCount(Math.max(0, alertsCount - 1));
   };
@@ -200,15 +178,7 @@ const AdminDashboard = () => {
                 : "text-gray-600"
             }`}
             onClick={() => setActiveTab("teachers")}
-          >
-            <UserCheck className="w-5 h-5" />
-            <span>Teacher Verification</span>
-            {teacherVerifications.length > 0 && (
-              <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
-                {teacherVerifications.length}
-              </span>
-            )}
-          </button>
+          ></button>
         </nav>
       </div>
 
@@ -243,6 +213,9 @@ const AdminDashboard = () => {
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Submitted
                       </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Link
+                      </th>
                       <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Actions
                       </th>
@@ -273,6 +246,9 @@ const AdminDashboard = () => {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                           {video.submitted}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {video.link}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                           <button
@@ -462,94 +438,6 @@ const AdminDashboard = () => {
                 </h3>
                 <p className="text-gray-500 mt-1">
                   There are no user reports that need attention.
-                </p>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Teacher Verification */}
-        {activeTab === "teachers" && (
-          <div>
-            <h2 className="text-xl font-bold mb-6">Verify Teacher Profiles</h2>
-
-            {teacherVerifications.length > 0 ? (
-              <div className="bg-white rounded-lg shadow-md overflow-hidden">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Name
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Subject
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Credentials
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Submitted
-                      </th>
-                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Actions
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
-                    {teacherVerifications.map((teacher) => (
-                      <tr key={teacher.id}>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex items-center">
-                            <div className="h-10 w-10 rounded-full bg-gray-200 mr-3">
-                              <img
-                                src={`/api/placeholder/40/40`}
-                                alt="Profile"
-                                className="h-10 w-10 rounded-full"
-                              />
-                            </div>
-                            <div className="text-sm font-medium text-gray-900">
-                              {teacher.name}
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {teacher.subject}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {teacher.credentials}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {teacher.submitted}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                          <button
-                            onClick={() =>
-                              handleApprove(teacher.id, "teachers")
-                            }
-                            className="text-green-600 hover:text-green-900 mr-4"
-                          >
-                            <CheckCircle className="w-5 h-5" />
-                          </button>
-                          <button
-                            onClick={() => handleReject(teacher.id, "teachers")}
-                            className="text-red-600 hover:text-red-900"
-                          >
-                            <XCircle className="w-5 h-5" />
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            ) : (
-              <div className="bg-white p-6 rounded-lg shadow-md text-center">
-                <UserCheck className="w-12 h-12 text-gray-400 mx-auto mb-2" />
-                <h3 className="text-lg font-medium text-gray-900">
-                  No pending verifications
-                </h3>
-                <p className="text-gray-500 mt-1">
-                  All teacher profiles have been verified.
                 </p>
               </div>
             )}
