@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import teacherImg from "../assets/teacher-img.avif";
 import genImg from "../assets/genai-img.jpeg";
 import probImg from "../assets/prob-img.webp";
@@ -39,6 +40,8 @@ import {
   ArrowDown,
   Grid,
   List,
+  Menu,
+  X,
 } from "lucide-react";
 
 // Sample data for demonstration purposes
@@ -134,8 +137,28 @@ const TeacherDashboard = () => {
   const [currentPlaylist, setCurrentPlaylist] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
   const [draggedItem, setDraggedItem] = useState(null);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+      if (window.innerWidth < 768) {
+        setSidebarOpen(false);
+      } else {
+        setSidebarOpen(true);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    handleResize();
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   const handleSort = (field) => {
     if (sortBy === field) {
@@ -189,15 +212,35 @@ const TeacherDashboard = () => {
     localStorage.removeItem("token");
     navigate("/");
   }
+
   const handleAddPlaylist = () => {
     navigate("/dashboard/instructor/playlist");
+  };
+
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen);
   };
 
   return (
     <div className="min-h-screen bg-gray-100">
       <div className="flex">
+        {/* Mobile Menu Toggle */}
+        <div className="fixed top-4 left-4 z-40 md:hidden">
+          <button
+            onClick={toggleSidebar}
+            className="bg-white p-2 rounded-full shadow-md hover:bg-gray-50 transition-all duration-300 cursor-pointer"
+          >
+            {sidebarOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
+        </div>
+
         {/* Sidebar */}
-        <div className="w-64 h-screen bg-gray-900 text-white fixed">
+        <motion.div
+          className={`w-64 h-screen bg-gray-900 text-white fixed z-30 shadow-lg overflow-hidden`}
+          initial={{ x: windowWidth < 768 ? -256 : 0 }}
+          animate={{ x: sidebarOpen ? 0 : -256 }}
+          transition={{ duration: 0.3, ease: "easeInOut" }}
+        >
           <div className="px-6 py-8">
             <h1 className="text-xl font-bold mb-8">Teacher Portal</h1>
 
@@ -214,75 +257,79 @@ const TeacherDashboard = () => {
             </div>
 
             <nav className="space-y-2">
-              <a
+              <motion.a
                 href="#"
-                className="flex items-center px-4 py-3 rounded-lg bg-indigo-700 text-white"
+                className="flex items-center px-4 py-3 rounded-lg bg-indigo-700 text-white cursor-pointer"
+                whileHover={{ x: 4 }}
+                transition={{ duration: 0.2 }}
               >
                 <Book className="mr-3" size={18} />
                 <span>Courses</span>
-              </a>
-              <a
+              </motion.a>
+              <motion.a
                 href="#"
-                className="flex items-center px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
+                className="flex items-center px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition cursor-pointer"
+                whileHover={{ x: 4 }}
+                transition={{ duration: 0.2 }}
               >
                 <Video className="mr-3" size={18} />
                 <span>Videos</span>
-              </a>
-              <a
+              </motion.a>
+              <motion.a
                 href="#"
-                className="flex items-center px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
+                className="flex items-center px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition cursor-pointer"
+                whileHover={{ x: 4 }}
+                transition={{ duration: 0.2 }}
               >
                 <BarChart2 className="mr-3" size={18} />
                 <span>Analytics</span>
-              </a>
-              <a
-                href="#"
-                className="flex items-center px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
-              >
-                <Users className="mr-3" size={18} />
-                <span>Students</span>
-              </a>
-              <a
-                href="#"
-                className="flex items-center px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition"
-              >
-                <Settings className="mr-3" size={18} />
-                <span>Settings</span>
-              </a>
+              </motion.a>
             </nav>
           </div>
 
           <div className="absolute bottom-0 w-full px-6 py-4 border-t border-gray-800">
-            <a
+            <motion.a
               href="#"
-              className="flex items-center text-gray-300 hover:text-white transition"
+              className="flex items-center text-gray-300 hover:text-white transition cursor-pointer"
+              whileHover={{ x: 4 }}
+              onClick={signouthandler}
             >
               <LogOut className="mr-3" size={18} />
-              <span onClick={signouthandler}>Sign Out</span>
-            </a>
+              <span>Sign Out</span>
+            </motion.a>
           </div>
-        </div>
+        </motion.div>
 
         {/* Main Content */}
-        <div className="ml-64 flex-1 p-6">
-          <div className="flex justify-between items-center mb-6">
+        <motion.div
+          className={`flex-1 p-4 sm:p-6 transition-all duration-300 ease-in-out`}
+          initial={{ marginLeft: windowWidth < 768 ? 0 : 256 }}
+          animate={{ marginLeft: sidebarOpen && windowWidth >= 768 ? 256 : 0 }}
+        >
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 mt-8 md:mt-0">
             <div>
               <h1 className="text-2xl font-bold">Course Playlists</h1>
               <p className="text-gray-600">Manage your educational content</p>
             </div>
 
-            <button
-              className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition flex items-center"
+            <motion.button
+              className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition flex items-center mt-4 sm:mt-0 cursor-pointer"
               onClick={handleAddPlaylist}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
             >
               <Plus className="mr-2" size={18} />
               New Video
-            </button>
+            </motion.button>
           </div>
 
           {/* Stats Overview */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-            <div className="bg-white p-4 rounded-lg shadow">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6">
+            <motion.div
+              className="bg-white p-4 rounded-lg shadow"
+              whileHover={{ y: -5, boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)" }}
+              transition={{ duration: 0.2 }}
+            >
               <div className="flex justify-between">
                 <div>
                   <p className="text-gray-500 text-sm">Total Playlists</p>
@@ -298,9 +345,13 @@ const TeacherDashboard = () => {
                 <ArrowUp size={14} />
                 <span>12% from last month</span>
               </div>
-            </div>
+            </motion.div>
 
-            <div className="bg-white p-4 rounded-lg shadow">
+            <motion.div
+              className="bg-white p-4 rounded-lg shadow"
+              whileHover={{ y: -5, boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)" }}
+              transition={{ duration: 0.2 }}
+            >
               <div className="flex justify-between">
                 <div>
                   <p className="text-gray-500 text-sm">Total Videos</p>
@@ -316,9 +367,12 @@ const TeacherDashboard = () => {
                 <ArrowUp size={14} />
                 <span>8% from last month</span>
               </div>
-            </div>
-
-            <div className="bg-white p-4 rounded-lg shadow">
+            </motion.div>
+            <motion.div
+              className="bg-white p-4 rounded-lg shadow"
+              whileHover={{ y: -5, boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)" }}
+              transition={{ duration: 0.2 }}
+            >
               <div className="flex justify-between">
                 <div>
                   <p className="text-gray-500 text-sm">Total Views</p>
@@ -334,9 +388,13 @@ const TeacherDashboard = () => {
                 <ArrowUp size={14} />
                 <span>15% from last month</span>
               </div>
-            </div>
+            </motion.div>
 
-            <div className="bg-white p-4 rounded-lg shadow">
+            <motion.div
+              className="bg-white p-4 rounded-lg shadow"
+              whileHover={{ y: -5, boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)" }}
+              transition={{ duration: 0.2 }}
+            >
               <div className="flex justify-between">
                 <div>
                   <p className="text-gray-500 text-sm">Followers</p>
@@ -352,15 +410,20 @@ const TeacherDashboard = () => {
                 <ArrowUp size={14} />
                 <span>5% from last month</span>
               </div>
-            </div>
+            </motion.div>
           </div>
 
           {/* Views Insights */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-            <div className="md:col-span-2 bg-white p-4 rounded-lg shadow">
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="font-bold">Playlist Views Trend</h3>
-                <select className="bg-gray-100 border border-gray-300 rounded px-2 py-1 text-sm">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+            <motion.div
+              className="lg:col-span-2 bg-white p-4 rounded-lg shadow"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4 }}
+            >
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
+                <h3 className="font-bold mb-2 sm:mb-0">Playlist Views Trend</h3>
+                <select className="bg-gray-100 border border-gray-300 rounded px-2 py-1 text-sm cursor-pointer">
                   <option>Last 9 Months</option>
                   <option>Last 6 Months</option>
                   <option>Last 3 Months</option>
@@ -379,16 +442,22 @@ const TeacherDashboard = () => {
                       stroke="#6366f1"
                       strokeWidth={2}
                       dot={{ r: 4 }}
+                      animationDuration={1500}
                     />
                   </LineChart>
                 </ResponsiveContainer>
               </div>
-            </div>
+            </motion.div>
 
-            <div className="bg-white p-4 rounded-lg shadow">
+            <motion.div
+              className="bg-white p-4 rounded-lg shadow"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.2 }}
+            >
               <div className="flex justify-between items-center mb-4">
                 <h3 className="font-bold">Top Performing Videos</h3>
-                <a href="#" className="text-indigo-600 text-sm hover:underline">
+                <a href="#" className="text-indigo-600 text-sm hover:underline cursor-pointer">
                   View all
                 </a>
               </div>
@@ -409,23 +478,29 @@ const TeacherDashboard = () => {
                       fill="#6366f1"
                       barSize={20}
                       radius={[0, 4, 4, 0]}
+                      animationDuration={1500}
                     />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
-            </div>
+            </motion.div>
           </div>
 
           {/* Playlist Management */}
-          <div className="bg-white p-4 rounded-lg shadow mb-6">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="font-bold">Manage Playlists</h3>
-              <div className="flex items-center space-x-3">
-                <div className="relative">
+          <motion.div
+            className="bg-white p-4 rounded-lg shadow mb-6"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.4 }}
+          >
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
+              <h3 className="font-bold mb-2 sm:mb-0">Manage Playlists</h3>
+              <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-3 w-full sm:w-auto">
+                <div className="relative w-full sm:w-auto">
                   <input
                     type="text"
                     placeholder="Search playlists..."
-                    className="pl-8 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    className="pl-8 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent w-full"
                   />
                   <Search
                     className="absolute left-2 top-2.5 text-gray-400"
@@ -435,21 +510,19 @@ const TeacherDashboard = () => {
 
                 <div className="border border-gray-300 rounded-lg overflow-hidden">
                   <button
-                    className={`px-3 py-2 ${
-                      view === "grid"
-                        ? "bg-indigo-50 text-indigo-600"
-                        : "bg-white text-gray-600"
-                    }`}
+                    className={`px-3 py-2 ${view === "grid"
+                      ? "bg-indigo-50 text-indigo-600"
+                      : "bg-white text-gray-600"
+                      } cursor-pointer`}
                     onClick={() => setView("grid")}
                   >
                     <Grid size={16} />
                   </button>
                   <button
-                    className={`px-3 py-2 ${
-                      view === "list"
-                        ? "bg-indigo-50 text-indigo-600"
-                        : "bg-white text-gray-600"
-                    }`}
+                    className={`px-3 py-2 ${view === "list"
+                      ? "bg-indigo-50 text-indigo-600"
+                      : "bg-white text-gray-600"
+                      } cursor-pointer`}
                     onClick={() => setView("list")}
                   >
                     <List size={16} />
@@ -487,7 +560,7 @@ const TeacherDashboard = () => {
                         Status
                       </th>
                       <th
-                        className="px-4 py-3 text-left text-xs font-medium text-gray-500 tracking-wider cursor-pointer"
+                        className="px-4 py-3 text-left text-xs font-medium text-gray-500 tracking-wider cursor-pointer hidden sm:table-cell"
                         onClick={() => handleSort("created")}
                       >
                         <div className="flex items-center">
@@ -507,7 +580,7 @@ const TeacherDashboard = () => {
                   </thead>
                   <tbody>
                     {sortedPlaylists.map((playlist, index) => (
-                      <tr
+                      <motion.tr
                         key={playlist.id}
                         className="border-b border-gray-200 hover:bg-gray-50 transition"
                         draggable
@@ -516,6 +589,10 @@ const TeacherDashboard = () => {
                         onDragEnd={handleDragEnd}
                         onClick={() => handlePlaylistClick(playlist)}
                         style={{ cursor: isDragging ? "grabbing" : "grab" }}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.3, delay: index * 0.1 }}
+                        whileHover={{ backgroundColor: "rgba(243, 244, 246, 0.8)" }}
                       >
                         <td className="px-4 py-3 text-sm text-gray-500">
                           {index + 1}
@@ -542,40 +619,48 @@ const TeacherDashboard = () => {
                         </td>
                         <td className="px-4 py-3">
                           <span
-                            className={`px-2 py-1 text-xs rounded-full ${
-                              playlist.status === "Published"
-                                ? "bg-green-100 text-green-800"
-                                : "bg-yellow-100 text-yellow-800"
-                            }`}
+                            className={`px-2 py-1 text-xs rounded-full ${playlist.status === "Published"
+                              ? "bg-green-100 text-green-800"
+                              : "bg-yellow-100 text-yellow-800"
+                              }`}
                           >
                             {playlist.status}
                           </span>
                         </td>
-                        <td className="px-4 py-3 text-sm text-gray-500">
+                        <td className="px-4 py-3 text-sm text-gray-500 hidden sm:table-cell">
                           {playlist.created}
                         </td>
                         <td className="px-4 py-3">
                           <div className="flex space-x-2">
-                            <button className="p-1 text-gray-500 hover:text-indigo-600">
+                            <motion.button className="p-1 text-gray-500 hover:text-indigo-600 cursor-pointer"
+                              whileHover={{ scale: 1.2 }}
+                              whileTap={{ scale: 0.9 }}
+                            >
                               <Edit size={16} />
-                            </button>
-                            <button className="p-1 text-gray-500 hover:text-red-600">
+                            </motion.button>
+                            <motion.button className="p-1 text-gray-500 hover:text-red-600 cursor-pointer"
+                              whileHover={{ scale: 1.2 }}
+                              whileTap={{ scale: 0.9 }}
+                            >
                               <Trash2 size={16} />
-                            </button>
-                            <button className="p-1 text-gray-500 hover:text-gray-800">
+                            </motion.button>
+                            <motion.button className="p-1 text-gray-500 hover:text-gray-800 cursor-pointer"
+                              whileHover={{ scale: 1.2 }}
+                              whileTap={{ scale: 0.9 }}
+                            >
                               <MoreVertical size={16} />
-                            </button>
+                            </motion.button>
                           </div>
                         </td>
-                      </tr>
+                      </motion.tr>
                     ))}
                   </tbody>
                 </table>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {sortedPlaylists.map((playlist, index) => (
-                  <div
+                  <motion.div
                     key={playlist.id}
                     className="border border-gray-200 rounded-lg overflow-hidden hover:border-indigo-300 transition"
                     draggable
@@ -584,6 +669,10 @@ const TeacherDashboard = () => {
                     onDragEnd={handleDragEnd}
                     onClick={() => handlePlaylistClick(playlist)}
                     style={{ cursor: isDragging ? "grabbing" : "grab" }}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: index * 0.1 }}
+                    whileHover={{ y: -5, boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)" }}
                   >
                     <div className="relative">
                       <img
@@ -616,11 +705,10 @@ const TeacherDashboard = () => {
                         </div>
 
                         <span
-                          className={`px-2 py-0.5 text-xs rounded-full ${
-                            playlist.status === "Published"
-                              ? "bg-green-100 text-green-800"
-                              : "bg-yellow-100 text-yellow-800"
-                          }`}
+                          className={`px-2 py-0.5 text-xs rounded-full ${playlist.status === "Published"
+                            ? "bg-green-100 text-green-800"
+                            : "bg-yellow-100 text-yellow-800"
+                            }`}
                         >
                           {playlist.status}
                         </span>
@@ -642,31 +730,45 @@ const TeacherDashboard = () => {
                     </div>
 
                     <div className="bg-gray-50 p-2 flex justify-end border-t border-gray-200">
-                      <button className="p-1 text-gray-500 hover:text-indigo-600 ml-1">
+                      <motion.button className="p-1 text-gray-500 hover:text-indigo-600 ml-1 cursor-pointer"
+                        whileHover={{ scale: 1.2 }}
+                        whileTap={{ scale: 0.9 }}
+                      >
                         <Edit size={16} />
-                      </button>
-                      <button className="p-1 text-gray-500 hover:text-red-600 ml-1">
+                      </motion.button>
+                      <motion.button className="p-1 text-gray-500 hover:text-red-600 ml-1 cursor-pointer"
+                        whileHover={{ scale: 1.2 }}
+                        whileTap={{ scale: 0.9 }}
+                      >
                         <Trash2 size={16} />
-                      </button>
-                      <button className="p-1 text-gray-500 hover:text-gray-800 ml-1">
+                      </motion.button>
+                      <motion.button className="p-1 text-gray-500 hover:text-gray-800 ml-1 cursor-pointer"
+                        whileHover={{ scale: 1.2 }}
+                        whileTap={{ scale: 0.9 }}
+                      >
                         <MoreVertical size={16} />
-                      </button>
+                      </motion.button>
                     </div>
-                  </div>
+                  </motion.div>
                 ))}
               </div>
             )}
-          </div>
+          </motion.div>
 
           {/* Playlist Details (Shows when a playlist is selected) */}
           {currentPlaylist && (
-            <div className="bg-white p-4 rounded-lg shadow">
+            <motion.div
+              className="bg-white p-4 rounded-lg shadow"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.3 }}
+            >
               <div className="flex justify-between items-center mb-4">
                 <h3 className="font-bold">
                   Playlist Details: {currentPlaylist.title}
                 </h3>
                 <button
-                  className="text-gray-400 hover:text-gray-600"
+                  className="text-gray-400 hover:text-gray-600 cursor-pointer"
                   onClick={() => setCurrentPlaylist(null)}
                 >
                   ×
@@ -681,7 +783,7 @@ const TeacherDashboard = () => {
                 />
 
                 <div className="flex-1">
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <p className="text-sm text-gray-500">Category</p>
                       <p className="font-medium">{currentPlaylist.category}</p>
@@ -738,19 +840,27 @@ const TeacherDashboard = () => {
                     )}
                   </div>
 
-                  <div className="mt-4 flex justify-end space-x-2">
-                    <button className="bg-gray-100 text-gray-700 px-3 py-1 rounded hover:bg-gray-200 transition text-sm">
+                  <div className="mt-4 flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-2">
+                    <motion.button
+                      className="bg-gray-100 text-gray-700 px-3 py-1 rounded hover:bg-gray-200 transition text-sm cursor-pointer"
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
                       View Analytics
-                    </button>
-                    <button className="bg-indigo-600 text-white px-3 py-1 rounded hover:bg-indigo-700 transition text-sm">
+                    </motion.button>
+                    <motion.button
+                      className="bg-indigo-600 text-white px-3 py-1 rounded hover:bg-indigo-700 transition text-sm cursor-pointer"
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
                       Edit Playlist
-                    </button>
+                    </motion.button>
                   </div>
                 </div>
               </div>
-            </div>
+            </motion.div>
           )}
-        </div>
+        </motion.div>
       </div>
     </div>
   );
