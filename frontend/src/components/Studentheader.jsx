@@ -4,9 +4,9 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
-const Studentheader = ({ userData, profileImg, signouthandler, handleleaderboard }) => {
+const Studentheader = ({ userData, signouthandler, handleleaderboard }) => {
   const [showLeaderboard, setShowLeaderboard] = useState(false);
-  
+
   return (
     <motion.header
       initial={{ y: -50, opacity: 0 }}
@@ -24,16 +24,7 @@ const Studentheader = ({ userData, profileImg, signouthandler, handleleaderboard
         </motion.div>
 
         <div className="flex items-center space-x-4">
-          <motion.button
-            whileTap={{ scale: 0.9 }}
-            className="relative p-1 rounded-full text-gray-500 hover:text-gray-700 focus:outline-none cursor-pointer"
-          >
-            <Bell className="h-6 w-6" />
-            <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-red-500 flex items-center justify-center text-xs text-white">
-              3
-            </span>
-          </motion.button>
-
+         
           <motion.button
             whileTap={{ scale: 0.95 }}
             onClick={() => setShowLeaderboard(true)}
@@ -56,13 +47,13 @@ const Studentheader = ({ userData, profileImg, signouthandler, handleleaderboard
 
           <div className="flex items-center ml-2 cursor-pointer">
             <motion.img
-              src={profileImg}
+              src={userData.avatar}
               alt="User avatar"
               className="h-10 w-10 rounded-full"
               whileHover={{ scale: 1.1 }}
             />
             <span className="ml-2 font-medium text-gray-900 hidden sm:block hover:text-gray-500">
-              {userData.name}
+              {userData.firstname} {""} {userData.lastname}
             </span>
           </div>
         </div>

@@ -21,7 +21,7 @@ const schema = new mongoose.Schema({
       ref: 'Video' 
     }
   ],
-  points: Number,
+  points: { type : Number, default : 0},
   token: String,
   avatar: String,
 });

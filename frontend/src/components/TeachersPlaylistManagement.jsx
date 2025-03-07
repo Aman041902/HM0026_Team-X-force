@@ -456,7 +456,7 @@ const VideoUploadForm = () => {
           {/* Video Upload */}
           <div className="space-y-2">
             <label className="block text-sm font-medium text-gray-700">
-              Upload Video (MP4, MOV, max 1MB)
+              Upload Video (MP4, MOV, max 50MB)
             </label>
             <div className="flex items-center justify-center w-full">
               <label className="flex flex-col items-center justify-center w-full h-64 border-2 border-dashed rounded-lg cursor-pointer hover:bg-gray-50 border-indigo-300 bg-indigo-50">
@@ -489,7 +489,7 @@ const VideoUploadForm = () => {
                         </span>
                       </p>
                       <p className="text-xs text-gray-500">
-                        MP4 or MOV (MAX. 1MB)
+                        MP4 or MOV (MAX. 50MB)
                       </p>
                     </>
                   )}
