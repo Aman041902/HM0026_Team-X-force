@@ -9,8 +9,6 @@ import aiImg from "../assets/aif.jpeg";
 import techImg from "../assets/tech.webp";
 import wizImg from "../assets/wizard.png";
 import jsImg from "../assets/js-img.jpeg";
-import Navbar1 from "./Navbar1";
-import VideoGallery from "./VideoGallery";
 
 const EduStreamFeed = () => {
   // Mock data representing educational videos
@@ -60,18 +58,52 @@ const EduStreamFeed = () => {
   return (
     <div className="max-w-6xl mx-auto bg-gray-50 min-h-screen font-sans">
       {/* Header */}
+      <div className="flex justify-between items-center p-3 bg-white sticky top-0 z-10 shadow-sm">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold">
+            E
+          </div>
+          <span className="font-bold text-xl hidden sm:inline">EduStream</span>
+        </div>
 
-      
-      <Navbar1/>
-      
+        {/* Search bar - responsive */}
+        <div className="hidden md:flex flex-grow mx-6 max-w-xl">
+          <div className="relative w-full">
+            <input
+              type="text"
+              placeholder="Search for educational content..."
+              className="w-full py-2 px-4 rounded-l-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <button className="absolute right-0 top-0 bottom-0 bg-gray-100 px-4 rounded-r-full border border-l-0 border-gray-300">
+              <Search size={18} />
+            </button>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <div className="bg-gray-100 rounded-full p-2 md:hidden">
+            <Search size={18} />
+          </div>
+          <div className="bg-gray-100 rounded-full p-2">
+            <Clock size={18} />
+          </div>
+
+          <Link
+            to="/dashboard/student"
+            className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center text-white font-bold"
+          >
+            A
+          </Link>
+        </div>
+      </div>
 
       {/* Page Title */}
-      {/* <div className="bg-white py-3 px-4 border-b border-gray-200">
+      <div className="bg-white py-3 px-4 border-b border-gray-200">
         <h1 className="text-2xl font-bold text-gray-800">EduStream</h1>
-      </div> */}
+      </div>
 
       {/* Categories - horizontally scrollable */}
-      <div className="mt-20 flex gap-2 overflow-x-auto p-3 bg-white mb-4 shadow-sm">
+      <div className="flex gap-2 overflow-x-auto p-3 bg-white mb-4 shadow-sm">
         <div className="bg-blue-600 text-white rounded-full px-4 py-1 whitespace-nowrap">
           All
         </div>
@@ -90,10 +122,6 @@ const EduStreamFeed = () => {
       </div>
 
       {/* Video Grid - responsive with different column counts */}
-
-     
-
-      <VideoGallery/>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 p-4">
         {videos.map((video,index) => (
           <div
@@ -137,7 +165,7 @@ const EduStreamFeed = () => {
                 <div className="flex items-center text-gray-600 text-xs mt-1">
                   <span>{video.views} views</span>
                   <span className="mx-1">•</span>
-                  <span>{getDaysAgo(video.uploadDate)}</span>
+                  <span>{getDaysAgo(video)}</span>
                 </div>
               </div>
 
