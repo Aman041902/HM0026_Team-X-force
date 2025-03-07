@@ -6,18 +6,18 @@ require('dotenv').config();
 exports.auth = async (req,res,next) =>{
     try 
     {
-        const token = req.body.token;
-        console.log(token)
+        const token = req.body.token || req.headers.token;
+        // console.log(token,req.headers.Authorization)
         const decodedtoken = jwttoken.verify(token,process.env.JWT_SECRET);
 
-        console.log("dedoded",decodedtoken);
+        // console.log("dedoded",decodedtoken);
 
         req.body.email = decodedtoken.email;
         req.body.role = decodedtoken.role;
 
         const UserExist = await User.findOne({email : decodedtoken.email});
 
-        console.log(UserExist)
+        // console.log(UserExist) 
         if(!UserExist)
         {
             return res.status(400).json({
@@ -25,7 +25,8 @@ exports.auth = async (req,res,next) =>{
                 message : "User not exist"
             })
         }
-
+        
+        console.log("calling next route");
         next();
     }
     catch(error)

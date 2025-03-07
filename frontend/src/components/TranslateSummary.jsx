@@ -73,9 +73,9 @@ function TranslateSummary({ summary }) {
   };
 
   return (
-    <div className="w-full max-w-full mb-6">
+    <div className="w-full space-y-4">
       {/* Translation Controls */}
-      <div className="sticky top-0 z-10 flex flex-wrap gap-4 items-center p-4 bg-white border border-gray-200 rounded-lg shadow-sm mb-4">
+      <div className="flex flex-wrap gap-4 items-center p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
         <select
           value={selectedLanguage}
           onChange={(e) => setSelectedLanguage(e.target.value)}
@@ -124,25 +124,25 @@ function TranslateSummary({ summary }) {
 
       {/* Error Message */}
       {error && (
-        <div className="p-3 mb-4 bg-red-50 border border-red-200 rounded-md text-red-600 text-sm">
+        <div className="p-3 bg-red-50 border border-red-200 rounded-md text-red-600 text-sm">
           {error}
         </div>
       )}
 
       {/* Text Containers */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Original Text Panel */}
-        <div className="bg-white border border-gray-200 rounded-lg shadow-sm max-h-[600px] flex flex-col">
+        <div className="bg-white border border-gray-200 rounded-lg shadow-sm">
           <div className="p-3 border-b bg-gray-50">
             <h3 className="font-semibold text-gray-700">Original Text</h3>
           </div>
-          <div className="p-4 overflow-y-auto flex-grow">
+          <div className="p-4 h-[300px] overflow-y-auto">
             <p className="text-gray-600 whitespace-pre-wrap">{summary}</p>
           </div>
         </div>
 
         {/* Translated Text Panel */}
-        <div className="bg-white border border-gray-200 rounded-lg shadow-sm max-h-[600px] flex flex-col">
+        <div className="bg-white border border-gray-200 rounded-lg shadow-sm">
           <div className="p-3 border-b bg-gray-50">
             <h3 className="font-semibold text-gray-700 flex items-center justify-between">
               <span>Translated Text</span>
@@ -159,7 +159,7 @@ function TranslateSummary({ summary }) {
               )}
             </h3>
           </div>
-          <div className="p-4 overflow-y-auto flex-grow">
+          <div className="p-4 h-[300px] overflow-y-auto">
             {translatedText ? (
               <p className="text-gray-600 whitespace-pre-wrap">
                 {translatedText}
@@ -171,7 +171,7 @@ function TranslateSummary({ summary }) {
             )}
           </div>
           {translatedText && (
-            <div className="p-3 border-t bg-gray-50 mt-auto">
+            <div className="p-3 border-t bg-gray-50">
               <button
                 onClick={() => navigator.clipboard.writeText(translatedText)}
                 className="px-3 py-1.5 text-sm text-gray-600 bg-white 

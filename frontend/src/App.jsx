@@ -5,7 +5,7 @@ import CoursePlaylistPage from "./components/CoursePlaylistPage";
 import ProfileProgressPage from "./components/ProfileProgressPage";
 import LeaderboardBadgeShowcase from "./components/LeaderboardBadgeShowcase";
 import TeacherDashboard from "./components/TeacherDashboard";
-import Navbar from "./components/Navbar";
+
 import TranslateSummary from "./components/TranslateSummary.jsx";
 
 import { useSelector } from "react-redux";
@@ -22,8 +22,7 @@ import TeachersPlaylistManagement from "./components/TeachersPlaylistManagement"
 import VideoUploadApprovalPage from "./components/VideoUploadApprovalPage";
 import EduStreamFeed from "./components/EduStreamFeed.jsx";
 // import VideoToTextConverter from "./components/VideoToTextConverter";
-import Summary from "./components/Summary";
-import GenerateImage from "./components/GenerateImage.jsx";
+import VideoPlayer from "./components/VideoPlayer.jsx";
 
 function App() {
   const token = useSelector((state) => state.auth.token);
@@ -121,11 +120,6 @@ function App() {
               element={<CoursePlaylistPage />}
             />
           )}
-
-          <Route path="/translate-summary" element={<TranslateSummary />} />
-          <Route path="/summary" element={<Summary />} />
-
-          <Route path="/generate" element={<GenerateImage />} />
 
           <Route path="*" element={<Error />} />
         </Routes>
