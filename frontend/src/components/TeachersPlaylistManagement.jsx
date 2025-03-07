@@ -234,6 +234,7 @@ const TeachersPlaylistManagement = () => {
       rewards: { badge: "", points: 0 },
     };
 
+    console.log(newPlaylistObj)
     setPlaylists([...playlists, newPlaylistObj]);
     setNewPlaylist({
       title: "",
