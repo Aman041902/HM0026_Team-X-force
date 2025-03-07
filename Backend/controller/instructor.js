@@ -5,11 +5,6 @@ const jwt = require('jsonwebtoken')
 
 require('dotenv').config()
 
-exports.addVideo = async (req, res) => {
-    
-}
-
-
 exports.getInstructorVideo = async(req, res) => {
     try 
     {
