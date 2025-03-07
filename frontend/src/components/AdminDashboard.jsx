@@ -261,7 +261,7 @@ const AdminDashboard = () => {
                 {selectedVideo?.url ? (
                   <iframe
                     src={selectedVideo.url}
-                    className="w-full h-96"
+                    className="w-full"
                     title={selectedVideo.title}
                     allowFullScreen
                   ></iframe>

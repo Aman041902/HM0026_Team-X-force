@@ -5,6 +5,8 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 
+import {toast} from 'react-hot-toast'
+
 import { setToken } from "../Redux/slices/authslice";
 import { setRole } from "../Redux/slices/authslice";
 import { setEmail } from "../Redux/slices/authslice";
@@ -54,6 +56,7 @@ const Login = () => {
       // Submit login credentials to server
       // https://edu-backend-try.onrender.com/user/login
       console.log("Login submitted:", formData);
+      const toastId = toast.loading("Loading")
       axios
         .post("http://localhost:3000/user/login", formData)
         .then((res) => {
@@ -69,6 +72,9 @@ const Login = () => {
           } else {
             navigate("/dashboard/admin");
           }
+
+          toast.success("Success")
+          toast.dismiss(toastId);
         })
         .catch((err) => {
           console.log(err);

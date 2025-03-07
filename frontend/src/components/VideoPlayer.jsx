@@ -309,4 +309,4 @@ const YouTubeStylePlayer = () => {
   );
 };
 
-export default YouTubeStylePlayer;
+export default VideoPlayer;
