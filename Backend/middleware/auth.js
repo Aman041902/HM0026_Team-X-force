@@ -53,7 +53,7 @@ exports.isStudent = async (req,res,next) =>{
     }
     catch(error)
     {
-        console.log(error.message);
+        console.log("here",error.message); 
     }
 }
 

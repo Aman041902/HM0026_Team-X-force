@@ -120,10 +120,11 @@ const playlistData = [
   },
 ];
 
+
 const videoInsights = [
-  { name: "Data Preprocessing", views: 1250 },
-  { name: "Supervised Learning", views: 980 },
-  { name: "Gen AI", views: 1420 },
+  { name: "Data Preprocessing", views: parseInt(Math.random()*20) },
+  { name: "Supervised Learning", views: parseInt(Math.random()*20) },
+  { name: "Gen AI", views: parseInt(Math.random()*20) },
 ];
 
 const TeacherDashboard = () => {

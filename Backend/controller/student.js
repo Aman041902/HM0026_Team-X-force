@@ -136,3 +136,30 @@ exports.getVideoById = async(req,res) =>{
         })
     }
 }
+
+exports.searchVideos = async (req,res) => {
+    try {
+        const searchInput = req.body.searchInput;
+
+        const videos = await Video.find({
+            $or: [
+                { title: { $regex: searchInput, $options: "i" } }, // Case-insensitive match for the title
+                { description: { $regex: searchInput, $options: "i" } }, // Case-insensitive match for the description
+                { tags: { $regex: searchInput, $options: "i" } } // Case-insensitive match for tags
+            ]
+        });
+
+        return res.status(200).json({
+            success : true,
+            message : "Videos searched successfully",
+            data : videos
+        });
+    } catch (error) {
+        
+        console.log("Error searching videos:", error);
+        return res.status(500).json({
+            success : false,
+            message : "Internal server error"
+        })
+    }
+};

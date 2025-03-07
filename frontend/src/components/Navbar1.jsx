@@ -4,6 +4,7 @@ import { BookOpen, Search, User,Clock } from "lucide-react";
 
 const Navbar1 = () => {
   const [isScrolled, setIsScrolled] = useState(false);
+  
   const location = useLocation();
 
   // Close mobile menu when route changes
