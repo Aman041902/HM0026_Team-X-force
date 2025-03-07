@@ -13,6 +13,7 @@ connectMail();
  
 app.use(express.json());
 app.use("/user", router);
+
 app.use('',contactrouter);
 
 app.listen(3000, () => {
