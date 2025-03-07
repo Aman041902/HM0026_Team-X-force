@@ -85,3 +85,25 @@ exports.login = async (req,res) => {
     console.log(error.message);
   }
 }
+
+
+exports.getUserData = async (req,res) =>{
+  try 
+  {
+    const {email} = req.body;
+    console.log("email is ",email);
+
+    const UserExist = await User.findOne({email : email});
+
+    return res.status(200).json({
+      success : true,
+      message : "User data fetched successfully",
+      data : UserExist
+    })
+
+  }
+  catch(error)
+  {
+    console.log(error.message);
+  }
+}

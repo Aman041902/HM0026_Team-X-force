@@ -9,7 +9,19 @@ const schema = new mongoose.Schema({
     type: String,
     enum: ["instructor", "admin", "student"],
   },
-  course: String,
+  videoplaylist: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Video'
+    }
+  ],
+  history: [ 
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Video' 
+    }
+  ],
+  points: Number,
   token: String,
   avatar: String,
 });

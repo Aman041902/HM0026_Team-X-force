@@ -54,7 +54,7 @@ const Login = () => {
       // Submit login credentials to server
       console.log("Login submitted:", formData);
       axios
-        .post("http://localhost:3000/user/login", formData)
+        .post("https://edu-backend-try.onrender.com/user/login", formData)
         .then((res) => {
           console.log(res.data.token);
           localStorage.setItem("token", res.data.token);
