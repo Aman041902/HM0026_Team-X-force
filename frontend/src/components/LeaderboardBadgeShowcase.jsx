@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import profileImg from "../assets/profile-img.jpg";
+import { motion } from "framer-motion";
 import {
   Bell,
   Award,
@@ -8,331 +9,166 @@ import {
   ChevronDown,
   Filter,
   Trophy,
+  LogOut,
+  BookOpen,
 } from "lucide-react";
 
-// Sample data - in a real app this would come from your API
+import { useSelector } from "react-redux";
+// import profileImg from "../assets/profile-img.jpg";
 const sampleStudents = [
-  {
-    id: 1,
-    name: "Aman Jain",
-    avatar: profileImg,
-    points: 2450,
-    badges: 12,
-    rank: 1,
-    prevRank: 2,
-    region: "North",
-    subjects: ["Math", "Science"],
-  },
-  {
-    id: 2,
-    name: "Onkar Jondhale",
-    avatar: profileImg,
-    points: 2300,
-    badges: 10,
-    rank: 2,
-    prevRank: 1,
-    region: "East",
-    subjects: ["History", "English"],
-  },
-  {
-    id: 3,
-    name: "Brijmohan Gour",
-    avatar: profileImg,
-    points: 2100,
-    badges: 9,
-    rank: 3,
-    prevRank: 3,
-    region: "West",
-    subjects: ["Science", "Art"],
-  },
-  {
-    id: 4,
-    name: "Ratul Kulkarni",
-    avatar: profileImg,
-    points: 1950,
-    badges: 8,
-    rank: 4,
-    prevRank: 6,
-    region: "South",
-    subjects: ["Math", "Music"],
-  },
-  {
-    id: 5,
-    name: "Ansh Gaigawali",
-    avatar: profileImg,
-    points: 1820,
-    badges: 7,
-    rank: 5,
-    prevRank: 4,
-    region: "North",
-    subjects: ["English", "History"],
-  },
-  {
-    id: 6,
-    name: "Arjun Sharma",
-    avatar: profileImg,
-    points: 1700,
-    badges: 7,
-    rank: 6,
-    prevRank: 5,
-    region: "East",
-    subjects: ["Science", "Math"],
-  },
-];
-
-const sampleBadges = [
-  { id: 1, name: "ML Master", icon: "🧮", earned: true, date: "2025-02-15" },
-  { id: 2, name: "OS Begineer", icon: "🔬", earned: true, date: "2025-02-20" },
-  {
-    id: 3,
-    name: "Database Master",
-    icon: "📜",
-    earned: true,
-    date: "2025-01-10",
-  },
-];
-
-const sampleChallenges = [
-  {
-    id: 1,
-    name: "Complete 10 Data Science quizzes",
-    reward: "Data Scientist Badge",
-    deadline: "Mar 15, 2025",
-    progress: 7,
-  },
+  { id: 1, name: "Aman Jain", avatar: profileImg, points: 2450, badges: 12, rank: 1, prevRank: 2, region: "North", subjects: ["Math", "Science"] },
+  { id: 2, name: "Onkar Jondhale", avatar: profileImg, points: 2300, badges: 10, rank: 2, prevRank: 1, region: "East", subjects: ["History", "English"] },
+  { id: 3, name: "Brijmohan Gour", avatar: profileImg, points: 2100, badges: 9, rank: 3, prevRank: 3, region: "West", subjects: ["Science", "Art"] },
+  { id: 4, name: "Ratul Kulkarni", avatar: profileImg, points: 1950, badges: 8, rank: 4, prevRank: 6, region: "South", subjects: ["Math", "Music"] },
+  { id: 5, name: "Ansh Gaigawali", avatar: profileImg, points: 1820, badges: 7, rank: 5, prevRank: 4, region: "North", subjects: ["English", "History"] },
+  { id: 6, name: "Arjun Sharma", avatar: profileImg, points: 1700, badges: 7, rank: 6, prevRank: 5, region: "East", subjects: ["Science", "Math"] },
 ];
 
 const regions = ["All Regions", "North", "South", "East", "West"];
-const subjects = [
-  "All Subjects",
-  "Math",
-  "Science",
-  "History",
-  "English",
-  "Art",
-  "Music",
-];
+const subjects = ["All Subjects", "Math", "Science", "History", "English", "Art", "Music"];
 
 const LeaderboardBadgeShowcase = () => {
   const [students, setStudents] = useState(sampleStudents);
-  const [badges, setBadges] = useState(sampleBadges);
-  const [challenges, setChallenges] = useState(sampleChallenges);
   const [regionFilter, setRegionFilter] = useState("All Regions");
   const [subjectFilter, setSubjectFilter] = useState("All Subjects");
   const [showAnimation, setShowAnimation] = useState(false);
-  const [badgeAnimation, setBadgeAnimation] = useState(false);
-
+  const token = useSelector((state)=>state.auth.token)
+  const userData = {
+    name: "Aman Jain",
+    avatar: "../assets/profile-img.jpg",
+    points: 2840,
+    badges: 12,
+    level: "Advanced Learner",
+    completedCourses: 8,
+    hoursWatched: 124,
+  };
   useEffect(() => {
-    // Simulate rank change animations on component mount
     setShowAnimation(true);
     setTimeout(() => setShowAnimation(false), 3000);
-
-    // Simulate a badge unlock after 2 seconds
-    setTimeout(() => {
-      setBadgeAnimation(true);
-      setTimeout(() => setBadgeAnimation(false), 3000);
-    }, 2000);
   }, []);
+  function signouthandler() {
+    localStorage.removeItem("token");
+    navigate("/");
+  }
 
-  // Filter students based on selected region and subject
   const filteredStudents = students.filter((student) => {
-    const regionMatch =
-      regionFilter === "All Regions" || student.region === regionFilter;
-    const subjectMatch =
-      subjectFilter === "All Subjects" ||
-      student.subjects.includes(subjectFilter);
+    const regionMatch = regionFilter === "All Regions" || student.region === regionFilter;
+    const subjectMatch = subjectFilter === "All Subjects" || student.subjects.includes(subjectFilter);
     return regionMatch && subjectMatch;
   });
 
   const getRankChangeIcon = (student) => {
     if (student.rank < student.prevRank) {
-      return (
-        <ChevronUp
-          className={`text-green-500 ${showAnimation ? "animate-bounce" : ""}`}
-        />
-      );
+      return <ChevronUp className={`text-green-500 ${showAnimation ? "animate-bounce" : ""}`} />;
     } else if (student.rank > student.prevRank) {
-      return (
-        <ChevronDown
-          className={`text-red-500 ${showAnimation ? "animate-bounce" : ""}`}
-        />
-      );
+      return <ChevronDown className={`text-red-500 ${showAnimation ? "animate-bounce" : ""}`} />;
     }
     return <span className="px-2">-</span>;
   };
 
   return (
-    <div className="bg-gray-100 p-4 rounded-lg shadow-lg max-w-6xl mx-auto">
-      <h1 className="text-2xl font-bold mb-6 text-center text-indigo-700">
-        Leaderboard & Badge Showcase
-      </h1>
+    <>
+     <motion.header
+      initial={{ y: -50, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.5 }}
+      className="bg-white shadow w-full fixed top-0 left-0 z-50"
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+        <motion.div 
+          whileHover={{ scale: 1.05 }} 
+          className="flex items-center cursor-pointer"
+        >
+          <BookOpen className="h-8 w-8 text-indigo-600" />
+          <span className="ml-2 text-2xl font-bold text-gray-900 ">EduStream</span>
+        </motion.div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Leaderboard Panel */}
-        <div className="lg:col-span-2 bg-white rounded-lg shadow-md overflow-hidden">
-          <div className="bg-indigo-600 text-white p-4 flex justify-between items-center">
-            <h2 className="text-xl font-bold flex items-center">
-              <Trophy className="mr-2" /> Top Students
-            </h2>
-            <div className="flex space-x-2">
-              <div className="relative">
-                <select
-                  className="bg-indigo-700 text-white p-2 rounded-md text-sm appearance-none pr-8"
-                  value={regionFilter}
-                  onChange={(e) => setRegionFilter(e.target.value)}
-                >
-                  {regions.map((region) => (
-                    <option key={region} value={region}>
-                      {region}
-                    </option>
-                  ))}
-                </select>
-                <Filter className="absolute right-2 top-2.5 w-4 h-4" />
-              </div>
-              <div className="relative">
-                <select
-                  className="bg-indigo-700 text-white p-2 rounded-md text-sm appearance-none pr-8"
-                  value={subjectFilter}
-                  onChange={(e) => setSubjectFilter(e.target.value)}
-                >
-                  {subjects.map((subject) => (
-                    <option key={subject} value={subject}>
-                      {subject}
-                    </option>
-                  ))}
-                </select>
-                <Filter className="absolute right-2 top-2.5 w-4 h-4" />
-              </div>
-            </div>
-          </div>
+        <div className="flex items-center space-x-4">
+          <motion.button
+            whileTap={{ scale: 0.95 }}
+            onClick={signouthandler}
+            className="flex items-center px-3 py-1.5 bg-red-50 text-red-600 rounded-md hover:bg-red-100 transition-colors"
+          >
+            <LogOut className="h-4 w-4 mr-1.5 cursor-pointer" />
+            <span className="text-sm font-medium">Logout</span>
+          </motion.button>
 
-          <div className="divide-y divide-gray-200">
-            {filteredStudents.map((student) => (
-              <div
-                key={student.id}
-                className="p-4 flex items-center hover:bg-gray-50 transition-colors"
-              >
-                <div className="flex items-center w-12 justify-center">
-                  <span
-                    className={`font-bold text-lg ${
-                      student.rank <= 3 ? "text-amber-500" : "text-gray-500"
-                    }`}
-                  >
-                    {student.rank}
-                  </span>
-                  <span className="ml-1">{getRankChangeIcon(student)}</span>
-                </div>
-
-                <div className="flex-shrink-0 ml-2">
-                  <img
-                    src={student.avatar}
-                    alt={student.name}
-                    className="w-10 h-10 rounded-full border-2 border-indigo-200"
-                  />
-                </div>
-
-                <div className="ml-4 flex-grow">
-                  <div className="font-medium">{student.name}</div>
-                  <div className="text-xs text-gray-500">
-                    {student.subjects.join(", ")} • {student.region}
-                  </div>
-                </div>
-
-                <div className="flex items-center">
-                  <div className="px-3 text-right">
-                    <div className="text-amber-600 font-bold">
-                      {student.points}
-                    </div>
-                    <div className="text-xs text-gray-500">points</div>
-                  </div>
-
-                  <div className="px-3 flex items-center">
-                    <Award className="text-indigo-500 mr-1" size={16} />
-                    <span className="font-medium">{student.badges}</span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="bg-gray-50 p-3 flex justify-center">
-            <button className="text-indigo-600 text-sm font-medium flex items-center hover:text-indigo-800">
-              <Users size={16} className="mr-1" /> Compete with Friends
-            </button>
+          <div className="flex items-center ml-2 cursor-pointer">
+            <motion.img
+              src={profileImg}
+              alt="User avatar"
+              className="h-10 w-10 rounded-full"
+              whileHover={{ scale: 1.1 }}
+            />
+            <span className="ml-2 font-medium text-gray-900 hidden sm:block hover:text-gray-500">
+              {userData.name}
+            </span>
           </div>
         </div>
+      </div>
+    </motion.header>
 
-        {/* Badges and Challenges Panel */}
-        <div className="lg:col-span-1 space-y-6">
-          {/* Earned Badges */}
+    <div className="min-h-screen w-full mt-10">
+
+
+
+    <div className="flex justify-center items-center min-h-screen bg-gray-100 p-4 animate-fade-in w-full">
+      <div className="bg-white p-4 sm:p-6 rounded-lg shadow-lg w-full max-w-6xl mx-auto animate-fade-in">
+        <h1 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-center text-indigo-700">Leaderboard & Badge Showcase</h1>
+
+        <div className="grid grid-cols-1 gap-6">
           <div className="bg-white rounded-lg shadow-md overflow-hidden">
-            <div className="bg-indigo-600 text-white p-4">
-              <h2 className="text-xl font-bold flex items-center">
-                <Award className="mr-2" /> Your Badges
+            <div className="bg-indigo-600 text-white p-3 sm:p-4 flex flex-col sm:flex-row justify-between items-center">
+              <h2 className="text-lg sm:text-xl font-bold flex items-center mb-2 sm:mb-0">
+                <Trophy className="mr-2" /> Top Students
               </h2>
+              <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 w-full sm:w-auto">
+                <select className="bg-indigo-700 text-white p-2 rounded-md text-sm appearance-none pr-8 w-full sm:w-auto" value={regionFilter} onChange={(e) => setRegionFilter(e.target.value)}>
+                  {regions.map((region) => <option key={region} value={region}>{region}</option>)}
+                </select>
+                <select className="bg-indigo-700 text-white p-2 rounded-md text-sm appearance-none pr-8 w-full sm:w-auto" value={subjectFilter} onChange={(e) => setSubjectFilter(e.target.value)}>
+                  {subjects.map((subject) => <option key={subject} value={subject}>{subject}</option>)}
+                </select>
+              </div>
             </div>
 
-            <div className="p-4 grid grid-cols-3 gap-3">
-              {badges.map((badge) => (
-                <div
-                  key={badge.id}
-                  className={`p-2 flex flex-col items-center justify-center text-center rounded-lg border ${
-                    badge.earned
-                      ? "border-indigo-200 bg-indigo-50"
-                      : "border-gray-200 bg-gray-50 opacity-70"
-                  } ${
-                    badgeAnimation && badge.id === 2
-                      ? "animate-pulse bg-yellow-100"
-                      : ""
-                  }`}
-                >
-                  <div className="text-2xl mb-1">{badge.icon}</div>
-                  <div className="text-xs font-medium">{badge.name}</div>
-                  {!badge.earned && (
-                    <div className="w-full bg-gray-200 rounded-full h-1.5 mt-1">
-                      <div
-                        className="bg-indigo-500 h-1.5 rounded-full"
-                        style={{ width: `${badge.progress}%` }}
-                      ></div>
+            <div className="divide-y divide-gray-200 overflow-x-auto">
+              {filteredStudents.map((student) => (
+                <div key={student.id} className="p-3 sm:p-4 flex items-center hover:bg-gray-50 transition-transform transform hover:scale-95 duration-200">
+                  <div className="flex items-center w-10 sm:w-12 justify-center flex-shrink-0">
+                    <span className={`font-bold text-base sm:text-lg ${student.rank <= 3 ? "text-amber-500" : "text-gray-500"}`}>{student.rank}</span>
+                    {getRankChangeIcon(student)}
+                  </div>
+                  <img src={student.avatar} alt={student.name} className="w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 border-indigo-200 flex-shrink-0" />
+                  <div className="ml-2 sm:ml-4 flex-grow min-w-0">
+                    <div className="font-medium text-sm sm:text-base truncate">{student.name}</div>
+                    <div className="text-xs text-gray-500 truncate">{student.subjects.join(", ")} • {student.region}</div>
+                  </div>
+                  <div className="flex items-center flex-shrink-0">
+                    <div className="px-2 sm:px-3 text-right">
+                      <div className="text-amber-600 font-bold text-sm sm:text-base">{student.points}</div>
+                      <div className="text-xs text-gray-500">points</div>
                     </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Upcoming Challenges */}
-          <div className="bg-white rounded-lg shadow-md overflow-hidden">
-            <div className="bg-indigo-600 text-white p-4">
-              <h2 className="text-xl font-bold flex items-center">
-                <Bell className="mr-2" /> Upcoming Challenges
-              </h2>
-            </div>
-
-            <div className="divide-y divide-gray-200">
-              {challenges.map((challenge) => (
-                <div key={challenge.id} className="p-4">
-                  <div className="font-medium">{challenge.name}</div>
-                  <div className="flex justify-between mt-1 text-xs text-gray-500">
-                    <span>Reward: {challenge.reward}</span>
-                    <span>Due: {challenge.deadline}</span>
-                  </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
-                    <div
-                      className="bg-indigo-500 h-2 rounded-full"
-                      style={{ width: `${(challenge.progress / 10) * 100}%` }}
-                    ></div>
-                  </div>
-                  <div className="text-right text-xs mt-1 text-gray-600">
-                    {challenge.progress}/10 completed
+                    <div className="px-2 sm:px-3 flex items-center">
+                      <Award className="text-indigo-500 mr-1" size={16} />
+                      <span className="font-medium text-sm sm:text-base">{student.badges}</span>
+                    </div>
                   </div>
                 </div>
               ))}
+            </div>
+
+            <div className="bg-gray-50 p-3 flex justify-center">
+              <button className="text-indigo-600 text-sm font-medium flex items-center hover:text-indigo-800 animate-pulse">
+                <Users size={16} className="mr-1" /> Compete with Friends
+              </button>
             </div>
           </div>
         </div>
       </div>
     </div>
+    </div>
+    </>
   );
 };
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const YouTubeStylePlayer = () => {
+const VideoPlayer = () => {
   const [activeVideo, setActiveVideo] = useState({
     id: 1,
     title: "Big Buck Bunny",
@@ -235,4 +235,4 @@ const YouTubeStylePlayer = () => {
   );
 };
 
-export default YouTubeStylePlayer;
+export default VideoPlayer;
