@@ -29,7 +29,8 @@ exports.getLeaderBoard = async (req, res) => {
 exports.getVideos = async (req, res) => {
     try 
     {
-        const videos = await Video.find({});
+        const videos = await Video.find({}).populate('instructor')
+        .exec();
 
         return res.status(200).json({
             success : true,
@@ -89,5 +90,26 @@ exports.videoIsClicked = async (req,res) =>{
 }
 
 exports.watchHistory = async(req, res) => {
+    try
+    {
+        const email = req.body.email;
 
+        const response = await User.findOne({ email: email })
+        .select('history')
+        .populate('history')
+        .exec();
+
+        return res.status(200).json({
+            success : true,
+            message : "History fetched successfully",
+            data : response
+        })
+    }
+    catch(error)
+    {
+        return res.status(500).json({
+            success : false,
+            message : "Internal Server error"
+        })
+    }
 }
