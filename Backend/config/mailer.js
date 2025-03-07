@@ -7,16 +7,16 @@ let transporter = nodemailer.createTransport({
   auth : {
     user : process.env.EMAIL_USER,
     pass : process.env.EMAIL_PASS,
-  },
-  port: 587,
-  secure: false, 
+  }, 
+  port : 587,
+  secure : false
 })
-
+ 
 const connectMail = ()=>{
   transporter.verify(function(error,success){
     if(error)
     {
-      console.log(error.message);
+      console.log("Error in mail connection",error.message);
     }
     else 
     {
