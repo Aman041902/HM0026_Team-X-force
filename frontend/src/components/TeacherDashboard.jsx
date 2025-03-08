@@ -43,29 +43,20 @@ import {
   Menu,
   X,
 } from "lucide-react";
+import { useSelector } from "react-redux";
 
 // Sample data for demonstration purposes
-const teacherData = {
-  name: "Dr. Rohit Sharma",
-  avatar: teacherImg,
-  subject: "Data Scientist",
-  joinDate: "August 2023",
-  totalPlaylists: 14,
-  totalVideos: 87,
-  totalViews: 45920,
-  followers: 1283,
-};
 
 const viewsData = [
-  { month: "Jan", views: 3540 },
-  { month: "Feb", views: 4120 },
-  { month: "Mar", views: 3890 },
-  { month: "Apr", views: 4680 },
-  { month: "May", views: 5230 },
-  { month: "Jun", views: 4870 },
-  { month: "Jul", views: 6350 },
-  { month: "Aug", views: 7120 },
-  { month: "Sep", views: 6020 },
+  { month: "Jan", views: Math.floor(Math.random() * 8001) },
+  { month: "Feb", views: Math.floor(Math.random() * 8001) },
+  { month: "Mar", views: Math.floor(Math.random() * 8001) },
+  { month: "Apr", views: Math.floor(Math.random() * 8001) },
+  { month: "May", views: Math.floor(Math.random() * 8001) },
+  { month: "Jun", views: Math.floor(Math.random() * 8001) },
+  { month: "Jul", views: Math.floor(Math.random() * 8001) },
+  { month: "Aug", views: Math.floor(Math.random() * 8001) },
+  { month: "Sep", views: Math.floor(Math.random() * 8001) },
 ];
 
 const playlistData = [
@@ -123,14 +114,14 @@ const playlistData = [
   },
 ];
 
-
 const videoInsights = [
-  { name: "Data Preprocessing", views: parseInt(Math.random()*20) },
-  { name: "Supervised Learning", views: parseInt(Math.random()*20) },
-  { name: "Gen AI", views: parseInt(Math.random()*20) },
+  { name: "Data Preprocessing", views: parseInt(Math.random() * 20) },
+  { name: "Supervised Learning", views: parseInt(Math.random() * 20) },
+  { name: "Gen AI", views: parseInt(Math.random() * 20) },
 ];
 
 const TeacherDashboard = () => {
+  const token = useSelector((state) => state.auth.token);
   const [view, setView] = useState("grid");
   const [playlists, setPlaylists] = useState(playlistData);
   const [sortBy, setSortBy] = useState("views");
@@ -140,8 +131,38 @@ const TeacherDashboard = () => {
   const [draggedItem, setDraggedItem] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [videoData, setVideoData] = useState([]);
+  const [firstname, setFirstName] = useState("");
+  const [lastname, setLastName] = useState("");
+  const [avatar, setAvatar] = useState("");
+  const [role, setRole] = useState("");
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    async function getData() {
+      const response = await fetch(
+        "http://localhost:3000/user/getuserdata/instructor",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ token: token }),
+        }
+      );
+
+      const value = await response.json();
+      setFirstName(value.data.firstname);
+      setLastName(value.data.lastname);
+      setAvatar(value.data.avatar);
+      setRole(value.data.role);
+    }
+
+    getData();
+  }, []);
+
+  console.log(firstname, lastname);
 
   useEffect(() => {
     const handleResize = () => {
@@ -160,6 +181,29 @@ const TeacherDashboard = () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+
+  // TODO : get all videos
+  useEffect(() => {
+    async function getData() {
+      const response = await fetch(
+        "http://localhost:3000/user/getinstructorvideo",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ token: token }),
+        }
+      );
+
+      const value = await response.json();
+      setVideoData(value.data[0].playlist);
+    }
+
+    getData();
+  }, []);
+
+  console.log(videoData);
 
   const handleSort = (field) => {
     if (sortBy === field) {
@@ -247,13 +291,13 @@ const TeacherDashboard = () => {
 
             <div className="flex items-center mb-8">
               <img
-                src={teacherData.avatar}
-                alt={teacherData.name}
+                src={avatar}
+                alt={firstname}
                 className="w-12 h-12 rounded-full"
               />
               <div className="ml-3">
-                <h2 className="font-semibold">{teacherData.name}</h2>
-                <p className="text-sm text-gray-400">{teacherData.subject}</p>
+                <h2 className="font-semibold">{firstname + " " + lastname}</h2>
+                <p className="text-sm text-gray-400">{role}</p>
               </div>
             </div>
 
@@ -328,7 +372,10 @@ const TeacherDashboard = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6">
             <motion.div
               className="bg-white p-4 rounded-lg shadow"
-              whileHover={{ y: -5, boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)" }}
+              whileHover={{
+                y: -5,
+                boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
+              }}
               transition={{ duration: 0.2 }}
             >
               <div className="flex justify-between">
@@ -350,7 +397,10 @@ const TeacherDashboard = () => {
 
             <motion.div
               className="bg-white p-4 rounded-lg shadow"
-              whileHover={{ y: -5, boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)" }}
+              whileHover={{
+                y: -5,
+                boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
+              }}
               transition={{ duration: 0.2 }}
             >
               <div className="flex justify-between">
@@ -371,7 +421,10 @@ const TeacherDashboard = () => {
             </motion.div>
             <motion.div
               className="bg-white p-4 rounded-lg shadow"
-              whileHover={{ y: -5, boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)" }}
+              whileHover={{
+                y: -5,
+                boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
+              }}
               transition={{ duration: 0.2 }}
             >
               <div className="flex justify-between">
@@ -393,7 +446,10 @@ const TeacherDashboard = () => {
 
             <motion.div
               className="bg-white p-4 rounded-lg shadow"
-              whileHover={{ y: -5, boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)" }}
+              whileHover={{
+                y: -5,
+                boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
+              }}
               transition={{ duration: 0.2 }}
             >
               <div className="flex justify-between">
@@ -458,7 +514,10 @@ const TeacherDashboard = () => {
             >
               <div className="flex justify-between items-center mb-4">
                 <h3 className="font-bold">Top Performing Videos</h3>
-                <a href="#" className="text-indigo-600 text-sm hover:underline cursor-pointer">
+                <a
+                  href="#"
+                  className="text-indigo-600 text-sm hover:underline cursor-pointer"
+                >
                   View all
                 </a>
               </div>
@@ -488,379 +547,236 @@ const TeacherDashboard = () => {
           </div>
 
           {/* Playlist Management */}
-          <motion.div
-            className="bg-white p-4 rounded-lg shadow mb-6"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.4 }}
-          >
+          <div className="mb-8">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
-              <h3 className="font-bold mb-2 sm:mb-0">Manage Playlists</h3>
-              {/* <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-3 w-full sm:w-auto">
-                <div className="relative w-full sm:w-auto">
+              <h3 className="font-bold">Your Playlists</h3>
+              <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3 mt-2 sm:mt-0">
+                <div className="relative">
+                  <Search
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                    size={18}
+                  />
                   <input
                     type="text"
                     placeholder="Search playlists..."
-                    className="pl-8 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent w-full"
-                  />
-                  <Search
-                    className="absolute left-2 top-2.5 text-gray-400"
-                    size={16}
+                    className="pl-10 pr-4 py-1.5 bg-gray-100 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                   />
                 </div>
-
-                <div className="border border-gray-300 rounded-lg overflow-hidden">
+                <div className="flex space-x-2">
                   <button
-                    className={`px-3 py-2 ${view === "grid"
-                      ? "bg-indigo-50 text-indigo-600"
-                      : "bg-white text-gray-600"
-                      } cursor-pointer`}
+                    className={`p-1.5 rounded ${
+                      view === "grid"
+                        ? "bg-indigo-100 text-indigo-600"
+                        : "bg-gray-100 text-gray-600"
+                    }`}
                     onClick={() => setView("grid")}
                   >
-                    <Grid size={16} />
+                    <Grid size={18} />
                   </button>
                   <button
-                    className={`px-3 py-2 ${view === "list"
-                      ? "bg-indigo-50 text-indigo-600"
-                      : "bg-white text-gray-600"
-                      } cursor-pointer`}
+                    className={`p-1.5 rounded ${
+                      view === "list"
+                        ? "bg-indigo-100 text-indigo-600"
+                        : "bg-gray-100 text-gray-600"
+                    }`}
                     onClick={() => setView("list")}
                   >
-                    <List size={16} />
+                    <List size={18} />
+                  </button>
+                  <button className="flex items-center space-x-1 bg-gray-100 text-gray-700 px-2 py-1 rounded">
+                    <Filter size={18} />
+                    <span className="text-sm">Filter</span>
                   </button>
                 </div>
-              </div> */}
+              </div>
             </div>
 
-            {view === "list" ? (
-              <div className="overflow-x-auto">
-                {/* <table className="min-w-full border-collapse">
-                  <thead>
-                    <tr className="border-b border-gray-200">
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
-                        #
-                      </th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
-                        Playlist
-                      </th>
-                      <th
-                        className="px-4 py-3 text-left text-xs font-medium text-gray-500 tracking-wider cursor-pointer"
-                        onClick={() => handleSort("views")}
-                      >
-                        <div className="flex items-center">
-                          Views
-                          {sortBy === "views" &&
-                            (sortDirection === "asc" ? (
-                              <ArrowUp size={14} className="ml-1" />
-                            ) : (
-                              <ArrowDown size={14} className="ml-1" />
-                            ))}
-                        </div>
-                      </th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
-                        Status
-                      </th>
-                      <th
-                        className="px-4 py-3 text-left text-xs font-medium text-gray-500 tracking-wider cursor-pointer hidden sm:table-cell"
-                        onClick={() => handleSort("created")}
-                      >
-                        <div className="flex items-center">
-                          Created
-                          {sortBy === "created" &&
-                            (sortDirection === "asc" ? (
-                              <ArrowUp size={14} className="ml-1" />
-                            ) : (
-                              <ArrowDown size={14} className="ml-1" />
-                            ))}
-                        </div>
-                      </th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
-                        Actions
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {sortedPlaylists.map((playlist, index) => (
-                      <motion.tr
-                        key={playlist.id}
-                        className="border-b border-gray-200 hover:bg-gray-50 transition"
-                        draggable
-                        onDragStart={(e) => handleDragStart(e, playlist, index)}
-                        onDragOver={(e) => handleDragOver(e, index)}
-                        onDragEnd={handleDragEnd}
-                        onClick={() => handlePlaylistClick(playlist)}
-                        style={{ cursor: isDragging ? "grabbing" : "grab" }}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.3, delay: index * 0.1 }}
-                        whileHover={{ backgroundColor: "rgba(243, 244, 246, 0.8)" }}
-                      >
-                        <td className="px-4 py-3 text-sm text-gray-500">
-                          {index + 1}
-                        </td>
-                        <td className="px-4 py-3">
-                          <div className="flex items-center">
-                            <img
-                              src={playlist.thumbnail}
-                              alt={playlist.title}
-                              className="w-12 h-8 object-cover rounded mr-3"
-                            />
-                            <div>
-                              <div className="font-medium">
-                                {playlist.title}
-                              </div>
-                              <div className="text-xs text-gray-500">
-                                {playlist.videos} videos • {playlist.category}
-                              </div>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-4 py-3 text-sm">
-                          {playlist.views.toLocaleString()}
-                        </td>
-                        <td className="px-4 py-3">
-                          <span
-                            className={`px-2 py-1 text-xs rounded-full ${playlist.status === "Published"
-                              ? "bg-green-100 text-green-800"
-                              : "bg-yellow-100 text-yellow-800"
-                              }`}
-                          >
-                            {playlist.status}
-                          </span>
-                        </td>
-                        <td className="px-4 py-3 text-sm text-gray-500 hidden sm:table-cell">
-                          {playlist.created}
-                        </td>
-                        <td className="px-4 py-3">
-                          <div className="flex space-x-2">
-                            <motion.button className="p-1 text-gray-500 hover:text-indigo-600 cursor-pointer"
-                              whileHover={{ scale: 1.2 }}
-                              whileTap={{ scale: 0.9 }}
-                            >
-                              <Edit size={16} />
-                            </motion.button>
-                            <motion.button className="p-1 text-gray-500 hover:text-red-600 cursor-pointer"
-                              whileHover={{ scale: 1.2 }}
-                              whileTap={{ scale: 0.9 }}
-                            >
-                              <Trash2 size={16} />
-                            </motion.button>
-                            <motion.button className="p-1 text-gray-500 hover:text-gray-800 cursor-pointer"
-                              whileHover={{ scale: 1.2 }}
-                              whileTap={{ scale: 0.9 }}
-                            >
-                              <MoreVertical size={16} />
-                            </motion.button>
-                          </div>
-                        </td>
-                      </motion.tr>
-                    ))}
-                  </tbody>
-                </table> */}
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {/* {sortedPlaylists.map((playlist, index) => (
+            {/* Grid View */}
+            {view === "grid" && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                {videoData.map((video, index) => (
                   <motion.div
-                    key={playlist.id}
-                    className="border border-gray-200 rounded-lg overflow-hidden hover:border-indigo-300 transition"
+                    key={video._id}
+                    className="bg-white rounded-lg shadow overflow-hidden hover:shadow-md transition cursor-pointer"
+                    whileHover={{ y: -5 }}
+                    transition={{ duration: 0.2 }}
                     draggable
-                    onDragStart={(e) => handleDragStart(e, playlist, index)}
+                    onDragStart={(e) => handleDragStart(e, video, index)}
                     onDragOver={(e) => handleDragOver(e, index)}
                     onDragEnd={handleDragEnd}
-                    onClick={() => handlePlaylistClick(playlist)}
-                    style={{ cursor: isDragging ? "grabbing" : "grab" }}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3, delay: index * 0.1 }}
-                    whileHover={{ y: -5, boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)" }}
+                    onClick={() => handlePlaylistClick(video)}
+                    style={{
+                      opacity:
+                        isDragging && draggedItem?.index === index ? 0.5 : 1,
+                    }}
                   >
                     <div className="relative">
                       <img
-                        src={playlist.thumbnail}
-                        alt={playlist.title}
-                        className="w-full h-36 object-cover"
+                        src={video.thumbnail}
+                        alt={video.title}
+                        className="w-full h-40 object-cover"
                       />
-                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-3">
-                        <div className="flex items-center text-white">
-                          <Video size={14} className="mr-1" />
-                          <span className="text-xs">
-                            {playlist.videos} videos
-                          </span>
+                      <div className="absolute top-2 right-2">
+                        <div className="bg-white rounded-full p-1 shadow">
+                          <MoreVertical size={18} className="text-gray-600" />
                         </div>
                       </div>
-                    </div>
-
-                    <div className="p-3">
-                      <h3 className="font-medium line-clamp-1">
-                        {playlist.title}
-                      </h3>
-                      <p className="text-xs text-gray-500 mt-1">
-                        {playlist.category}
-                      </p>
-
-                      <div className="flex justify-between items-center mt-2">
-                        <div className="flex items-center text-sm">
-                          <Eye size={14} className="text-gray-500 mr-1" />
-                          <span>{playlist.views.toLocaleString()}</span>
-                        </div>
-
-                        <span
-                          className={`px-2 py-0.5 text-xs rounded-full ${playlist.status === "Published"
-                            ? "bg-green-100 text-green-800"
-                            : "bg-yellow-100 text-yellow-800"
-                            }`}
-                        >
-                          {playlist.status}
-                        </span>
-                      </div>
-
-                      {playlist.rating && (
-                        <div className="flex justify-between items-center mt-2">
-                          <div className="flex items-center">
-                            <Star size={14} className="text-amber-500 mr-1" />
-                            <span className="text-sm">{playlist.rating}</span>
-                          </div>
-
-                          <div className="flex items-center text-xs text-gray-500">
-                            <Clock size={12} className="mr-1" />
-                            <span>Updated {playlist.lastUpdated}</span>
-                          </div>
+                      {video.isVerified && (
+                        <div className="absolute bottom-2 left-2 bg-green-500 text-white text-xs px-2 py-0.5 rounded">
+                          Verified
                         </div>
                       )}
                     </div>
-
-                    <div className="bg-gray-50 p-2 flex justify-end border-t border-gray-200">
-                      <motion.button className="p-1 text-gray-500 hover:text-indigo-600 ml-1 cursor-pointer"
-                        whileHover={{ scale: 1.2 }}
-                        whileTap={{ scale: 0.9 }}
-                      >
-                        <Edit size={16} />
-                      </motion.button>
-                      <motion.button className="p-1 text-gray-500 hover:text-red-600 ml-1 cursor-pointer"
-                        whileHover={{ scale: 1.2 }}
-                        whileTap={{ scale: 0.9 }}
-                      >
-                        <Trash2 size={16} />
-                      </motion.button>
-                      <motion.button className="p-1 text-gray-500 hover:text-gray-800 ml-1 cursor-pointer"
-                        whileHover={{ scale: 1.2 }}
-                        whileTap={{ scale: 0.9 }}
-                      >
-                        <MoreVertical size={16} />
-                      </motion.button>
+                    <div className="p-3">
+                      <h4 className="font-medium text-gray-900 truncate">
+                        {video.title}
+                      </h4>
+                      <div className="flex justify-between items-center mt-2">
+                        <div className="flex items-center text-sm text-gray-500">
+                          <Eye size={14} className="mr-1" />
+                          <span>{video.views}</span>
+                        </div>
+                        <div className="flex items-center text-sm text-gray-500">
+                          <Clock size={14} className="mr-1" />
+                          <span>{video.duration} min</span>
+                        </div>
+                      </div>
+                      <div className="flex items-center mt-2 text-xs">
+                        <span className="bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded">
+                          {video.tags[0]}
+                        </span>
+                        <span className="ml-auto text-gray-500">
+                          {new Date(video.uploadDate).toLocaleDateString(
+                            "en-US",
+                            { year: "numeric", month: "short", day: "numeric" }
+                          )}
+                        </span>
+                      </div>
                     </div>
                   </motion.div>
-                ))} */}
+                ))}
               </div>
             )}
-          </motion.div>
 
-          {/* Playlist Details (Shows when a playlist is selected) */}
-          {currentPlaylist && (
-            <motion.div
-              className="bg-white p-4 rounded-lg shadow"
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.3 }}
-            >
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="font-bold">
-                  Playlist Details: {currentPlaylist.title}
-                </h3>
-                <button
-                  className="text-gray-400 hover:text-gray-600 cursor-pointer"
-                  onClick={() => setCurrentPlaylist(null)}
-                >
-                  ×
-                </button>
-              </div>
-
-              <div className="flex flex-col md:flex-row">
-                <img
-                  src={currentPlaylist.thumbnail}
-                  alt={currentPlaylist.title}
-                  className="w-full md:w-64 h-36 object-cover rounded-lg mb-4 md:mb-0 md:mr-4"
-                />
-
-                <div className="flex-1">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <p className="text-sm text-gray-500">Category</p>
-                      <p className="font-medium">{currentPlaylist.category}</p>
-                    </div>
-
-                    <div>
-                      <p className="text-sm text-gray-500">Status</p>
-                      <p className="font-medium">{currentPlaylist.status}</p>
-                    </div>
-
-                    <div>
-                      <p className="text-sm text-gray-500">Created</p>
-                      <p className="font-medium">{currentPlaylist.created}</p>
-                    </div>
-
-                    <div>
-                      <p className="text-sm text-gray-500">Last Updated</p>
-                      <p className="font-medium">
-                        {currentPlaylist.lastUpdated}
-                      </p>
-                    </div>
-
-                    <div>
-                      <p className="text-sm text-gray-500">Total Views</p>
-                      <p className="font-medium">
-                        {currentPlaylist.views.toLocaleString()}
-                      </p>
-                    </div>
-
-                    <div>
-                      <p className="text-sm text-gray-500">Videos</p>
-                      <p className="font-medium">{currentPlaylist.videos}</p>
-                    </div>
-
-                    {currentPlaylist.rating && (
-                      <>
-                        <div>
-                          <p className="text-sm text-gray-500">Rating</p>
-                          <div className="flex items-center">
-                            <Star size={14} className="text-amber-500 mr-1" />
-                            <span className="font-medium">
-                              {currentPlaylist.rating}
-                            </span>
-                          </div>
-                        </div>
-
-                        <div>
-                          <p className="text-sm text-gray-500">Engagement</p>
-                          <p className="font-medium">
-                            {currentPlaylist.engagement}%
-                          </p>
-                        </div>
-                      </>
+            {/* List View */}
+            {view === "list" && (
+              <div className="bg-white rounded-lg shadow overflow-hidden">
+                <div className="grid grid-cols-12 bg-gray-100 py-2 px-4 text-sm font-medium text-gray-700">
+                  <div
+                    className="col-span-5 flex items-center cursor-pointer"
+                    onClick={() => handleSort("title")}
+                  >
+                    <span>Title</span>
+                    {sortBy === "title" && (
+                      <span className="ml-1">
+                        {sortDirection === "asc" ? (
+                          <ArrowUp size={14} />
+                        ) : (
+                          <ArrowDown size={14} />
+                        )}
+                      </span>
                     )}
                   </div>
-
-                  <div className="mt-4 flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-2">
-                    <motion.button
-                      className="bg-gray-100 text-gray-700 px-3 py-1 rounded hover:bg-gray-200 transition text-sm cursor-pointer"
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                    >
-                      View Analytics
-                    </motion.button>
-                    <motion.button
-                      className="bg-indigo-600 text-white px-3 py-1 rounded hover:bg-indigo-700 transition text-sm cursor-pointer"
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                    >
-                      Edit Playlist
-                    </motion.button>
+                  <div
+                    className="col-span-2 cursor-pointer"
+                    onClick={() => handleSort("views")}
+                  >
+                    <span>Views</span>
+                    {sortBy === "views" && (
+                      <span className="ml-1">
+                        {sortDirection === "asc" ? (
+                          <ArrowUp size={14} />
+                        ) : (
+                          <ArrowDown size={14} />
+                        )}
+                      </span>
+                    )}
                   </div>
+                  <div className="col-span-1">Duration</div>
+                  <div
+                    className="col-span-2 cursor-pointer"
+                    onClick={() => handleSort("uploadDate")}
+                  >
+                    <span>Date</span>
+                    {sortBy === "uploadDate" && (
+                      <span className="ml-1">
+                        {sortDirection === "asc" ? (
+                          <ArrowUp size={14} />
+                        ) : (
+                          <ArrowDown size={14} />
+                        )}
+                      </span>
+                    )}
+                  </div>
+                  <div className="col-span-2 text-right">Actions</div>
                 </div>
+
+                {videoData.map((video, index) => (
+                  <div
+                    key={video._id}
+                    className="grid grid-cols-12 py-3 px-4 border-b border-gray-100 hover:bg-gray-50 transition"
+                    draggable
+                    onDragStart={(e) => handleDragStart(e, video, index)}
+                    onDragOver={(e) => handleDragOver(e, index)}
+                    onDragEnd={handleDragEnd}
+                    style={{
+                      opacity:
+                        isDragging && draggedItem?.index === index ? 0.5 : 1,
+                    }}
+                  >
+                    <div className="col-span-5 flex items-center">
+                      <div className="relative w-12 h-12 mr-3 flex-shrink-0">
+                        <img
+                          src={video.thumbnail}
+                          alt={video.title}
+                          className="w-full h-full object-cover rounded"
+                        />
+                        {video.isVerified && (
+                          <div className="absolute -top-1 -right-1 bg-green-500 w-4 h-4 rounded-full flex items-center justify-center">
+                            <div className="w-2 h-2 bg-white rounded-full"></div>
+                          </div>
+                        )}
+                      </div>
+                      <div className="truncate">
+                        <div className="font-medium text-gray-900">
+                          {video.title}
+                        </div>
+                        <div className="text-xs text-gray-500 truncate">
+                          {video.description}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="col-span-2 flex items-center">
+                      <Eye size={14} className="text-gray-400 mr-1" />
+                      <span>{video.views}</span>
+                    </div>
+                    <div className="col-span-1 flex items-center">
+                      <Clock size={14} className="text-gray-400 mr-1" />
+                      <span>{video.duration} min</span>
+                    </div>
+                    <div className="col-span-2 flex items-center text-sm text-gray-500">
+                      {new Date(video.uploadDate).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "short",
+                        day: "numeric",
+                      })}
+                    </div>
+                    <div className="col-span-2 flex justify-end items-center space-x-2">
+                      <button className="p-1 text-blue-600 hover:bg-blue-50 rounded">
+                        <Eye size={18} />
+                      </button>
+                      <button className="p-1 text-indigo-600 hover:bg-indigo-50 rounded">
+                        <Edit size={18} />
+                      </button>
+                      <button className="p-1 text-red-600 hover:bg-red-50 rounded">
+                        <Trash2 size={18} />
+                      </button>
+                    </div>
+                  </div>
+                ))}
               </div>
-            </motion.div>
-          )}
+            )}
+          </div>
         </motion.div>
       </div>
     </div>

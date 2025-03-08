@@ -10,6 +10,7 @@ exports.getInstructorVideo = async(req, res) => {
     {
         const email = req.body.email;
 
+        console.log(email)
         const response = await User.find({email : email}).select('playlist')
         .populate('playlist')
         .exec();
