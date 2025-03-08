@@ -118,7 +118,7 @@ exports.getVideoById = async(req,res) =>{
     try 
     {
         const videoId = req.params.id
-        const response = await Video.find({_id : videoId});
+        const response = await Video.find({_id : videoId}).populate('instructor').exec();
 
         console.log(response);
         return res.status(200).json({

@@ -263,7 +263,7 @@ const VideoPlayer = () => {
                       </h3>
                       <span className="text-gray-500">•</span>
                       <span className="text-sm text-gray-600">
-                        Demo Instructor
+                       Harshal Gayakwad
                       </span>
                     </div>
                     <p className="text-sm text-gray-600">
