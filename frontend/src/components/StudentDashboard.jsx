@@ -154,15 +154,14 @@ const StudentDashboard = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      
       <Studentheader userData={userData} 
         signouthandler={signouthandler} 
         handleleaderboard={handleleaderboard} />
 
-      <main className="mt-14 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <main className="pt-14 pb-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left Column - Profile & Progress */}
-          <div className="space-y-8">
+          <div className="space-y-6">
             {/* Profile Card */}
             <div className="bg-white shadow rounded-lg overflow-hidden">
               <div className="bg-indigo-600 h-24 flex items-center justify-center">
@@ -231,47 +230,44 @@ const StudentDashboard = () => {
               </p>
 
               {/* Simple bar chart showing learning progress */}
-              <div className="mt-8flex items-end justify-between h-48 space-x-2">
-              <ResponsiveContainer width="100%" height={200} className={'-left-12 '}>
-            <BarChart data={learningData} layout="horizontal">
-                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                <XAxis type="category" dataKey="month" />
-                <YAxis type="number" />
-                <Tooltip />
-                <Bar
-                    dataKey="hours"
-                    fill="#6366f1"
-                    barSize={20}
-                    radius={[4, 4, 0, 0]}
-                />
-            </BarChart>
-        </ResponsiveContainer>
+              <div className="h-48">
+                <ResponsiveContainer width="100%" height="100%" className="-left-12">
+                  <BarChart data={learningData} layout="horizontal">
+                    <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                    <XAxis type="category" dataKey="month" />
+                    <YAxis type="number" />
+                    <Tooltip />
+                    <Bar
+                      dataKey="hours"
+                      fill="#6366f1"
+                      barSize={20}
+                      radius={[4, 4, 0, 0]}
+                    />
+                  </BarChart>
+                </ResponsiveContainer>
               </div>
             </div>
-
-            {/* Upcoming Quizzes/Challenges */}
-            
           </div>
 
           {/* Middle Column - Current Learning & Recommended */}
-          <div className="space-y-8 lg:col-span-2">
+          <div className="space-y-6 lg:col-span-2">
             {/* My Learning Section */}
-            <div className="h-1/2 lg:h-1/4 bg-white shadow rounded-lg p-6  overflow-y-scroll">
-              <div className="flex items-center justify-between mb-6">
+            <div className="bg-white shadow rounded-lg p-6">
+              <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-bold text-gray-900">My Learning</h3>
               </div>
-              <div className="space-y-4">
+              <div className="space-y-4 max-h-[400px] overflow-y-auto">
                 {ongoingCourses.map((course,index) => (
                   <div
                     key={index}
                     className="border rounded-lg p-4 hover:shadow-md transition-shadow"
                   >
-                    <h4 className="font-medium text-gray-900 mb-2 flex gap-2">
-                      <img src={course.thumbnail} className="h-10 rounded-full"/>
-                      {course.title}
+                    <h4 className="font-medium text-gray-900 mb-2 flex items-center gap-2">
+                      <img src={course.thumbnail} className="h-10 w-10 rounded-full object-cover"/>
+                      <span className="flex-1">{course.title}</span>
                     </h4>
-                    <div className="w-full mb-2 overflow-hidden">
-                      <p className="w-[90%] text-wrap mb-2"> 
+                    <div className="w-full mb-2">
+                      <p className="text-sm text-gray-600 line-clamp-2 mb-2"> 
                         {course.description}
                       </p>
                       <div className="w-full bg-gray-200 rounded-full h-2">
@@ -281,12 +277,14 @@ const StudentDashboard = () => {
                         />
                       </div>
                     </div>
-                    <div className="flex justify-between">
-                      <button className="text-indigo-600 hover:text-indigo-800 text-sm font-medium flex items-center" onClick={()=>{continuelearningclickhandler(course._id)}}>
-                        <Play className="h-4 w-4 mr-1" />
+                    <div className="flex justify-between items-center">
+                      <button 
+                        className="text-indigo-600 hover:text-indigo-800 text-sm font-medium flex items-center gap-1" 
+                        onClick={() => continuelearningclickhandler(course._id)}
+                      >
+                        <Play className="h-4 w-4" />
                         Continue Learning
                       </button>
-
                     </div>
                   </div>
                 ))}
@@ -295,47 +293,49 @@ const StudentDashboard = () => {
 
             {/* Recommended For You */}
             <div className="bg-white shadow rounded-lg p-6">
-  <div className="flex items-center justify-between mb-6">
-    <h3 className="text-lg font-bold text-gray-900">Recommended For You</h3>
-    <button className="text-sm text-indigo-600 hover:text-indigo-800 font-medium transition-colors duration-200">
-      View All
-    </button>
-  </div>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-bold text-gray-900">Recommended For You</h3>
+                <button className="text-sm text-indigo-600 hover:text-indigo-800 font-medium">
+                  View All
+                </button>
+              </div>
 
-  <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-    {recommendedCourses.map((course,index) => (
-      <motion.div
-        key={index}
-        whileHover={{ scale: 1.05 }}
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
-        className="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300"
-      >
-        <motion.img
-          src={course.value.thumbnail}
-          alt={course.value.title}
-          className="w-full h-52 object-cover"
-          whileHover={{ scale: 1.1 }}
-          transition={{ duration: 0.3 }}
-        />
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {recommendedCourses.map((course,index) => (
+                  <motion.div
+                    key={index}
+                    whileHover={{ scale: 1.02 }}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="border rounded-lg overflow-hidden shadow-sm hover:shadow-md"
+                  >
+                    <div className="aspect-video relative overflow-hidden">
+                      <motion.img
+                        src={course.value.thumbnail}
+                        alt={course.value.title}
+                        className="w-full h-full object-cover"
+                        whileHover={{ scale: 1.05 }}
+                        transition={{ duration: 0.2 }}
+                      />
+                    </div>
 
-        <div className="p-4">
-          <h4 className="font-medium text-gray-900 mb-1">{course.value.title}</h4>
-          <p className="text-sm text-gray-500 mb-2">{course.value.instructor.firstname} {" "} {course.value.instructor.lastname}</p>
-          <div className="flex justify-between items-center">
-            <button className="text-indigo-600 hover:text-indigo-800 text-xs font-medium transition-colors duration-200" onClick={()=>{continuelearningclickhandler(course.value._id)}}>
-              View
-            </button>
-          </div>
-        </div>
-      </motion.div>
-    ))}
-  </div>
-</div>
-
-            {/* Badges & Achievement Section */}
-            
+                    <div className="p-4">
+                      <h4 className="font-medium text-gray-900 line-clamp-1">{course.value.title}</h4>
+                      <p className="text-sm text-gray-500 mb-2 line-clamp-1">
+                        {course.value.instructor.firstname} {course.value.instructor.lastname}
+                      </p>
+                      <button 
+                        onClick={() => continuelearningclickhandler(course.value._id)}
+                        className="text-indigo-600 hover:text-indigo-800 text-sm font-medium"
+                      >
+                        View
+                      </button>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </main>

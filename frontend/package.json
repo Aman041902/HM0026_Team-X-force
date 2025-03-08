@@ -11,7 +11,11 @@
   },
   "dependencies": {
     "@clerk/clerk-react": "^5.24.0",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
     "@google-cloud/speech": "^6.7.1",
+    "@mui/icons-material": "^6.4.7",
+    "@mui/material": "^6.4.7",
     "@reduxjs/toolkit": "^2.6.0",
     "@tailwindcss/vite": "^4.0.9",
     "axios": "^1.8.2",

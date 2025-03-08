@@ -267,7 +267,7 @@ const TeacherDashboard = () => {
                 <Book className="mr-3" size={18} />
                 <span>Courses</span>
               </motion.a>
-              <motion.a
+              {/* <motion.a
                 href="#"
                 className="flex items-center px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition cursor-pointer"
                 whileHover={{ x: 4 }}
@@ -275,8 +275,8 @@ const TeacherDashboard = () => {
               >
                 <Video className="mr-3" size={18} />
                 <span>Videos</span>
-              </motion.a>
-              <motion.a
+              </motion.a> */}
+              {/* <motion.a
                 href="#"
                 className="flex items-center px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition cursor-pointer"
                 whileHover={{ x: 4 }}
@@ -284,7 +284,7 @@ const TeacherDashboard = () => {
               >
                 <BarChart2 className="mr-3" size={18} />
                 <span>Analytics</span>
-              </motion.a>
+              </motion.a> */}
             </nav>
           </div>
 
@@ -496,7 +496,7 @@ const TeacherDashboard = () => {
           >
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
               <h3 className="font-bold mb-2 sm:mb-0">Manage Playlists</h3>
-              <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-3 w-full sm:w-auto">
+              {/* <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-3 w-full sm:w-auto">
                 <div className="relative w-full sm:w-auto">
                   <input
                     type="text"
@@ -529,12 +529,12 @@ const TeacherDashboard = () => {
                     <List size={16} />
                   </button>
                 </div>
-              </div>
+              </div> */}
             </div>
 
             {view === "list" ? (
               <div className="overflow-x-auto">
-                <table className="min-w-full border-collapse">
+                {/* <table className="min-w-full border-collapse">
                   <thead>
                     <tr className="border-b border-gray-200">
                       <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
@@ -656,11 +656,11 @@ const TeacherDashboard = () => {
                       </motion.tr>
                     ))}
                   </tbody>
-                </table>
+                </table> */}
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {sortedPlaylists.map((playlist, index) => (
+                {/* {sortedPlaylists.map((playlist, index) => (
                   <motion.div
                     key={playlist.id}
                     className="border border-gray-200 rounded-lg overflow-hidden hover:border-indigo-300 transition"
@@ -751,7 +751,7 @@ const TeacherDashboard = () => {
                       </motion.button>
                     </div>
                   </motion.div>
-                ))}
+                ))} */}
               </div>
             )}
           </motion.div>

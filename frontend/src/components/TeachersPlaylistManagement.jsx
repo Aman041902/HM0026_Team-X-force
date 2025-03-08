@@ -1,7 +1,23 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
-
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  Bell,
+  CheckCircle,
+  XCircle,
+  BarChart2,
+  Flag,
+  UserCheck,
+  Video,
+  Users,
+  LogOut,
+  X,
+  Play,
+  BookOpen
+} from "lucide-react";
+import { useNavigate } from "react-router-dom";
 const VideoUploadForm = () => {
+  
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -14,6 +30,7 @@ const VideoUploadForm = () => {
   const [message, setMessage] = useState({ text: "", type: "" });
   const [videoPreview, setVideoPreview] = useState("");
   const [imagePreview, setImagePreview] = useState("");
+  const navigate = useNavigate()
 
   const token = useSelector((state) => state.auth.token);
 
@@ -23,6 +40,14 @@ const VideoUploadForm = () => {
       ...formData,
       [name]: value,
     });
+  };
+  const [isScrolled, setIsScrolled] = useState(false);
+  const handleScroll = () => {
+    if (window.scrollY > 20) {
+      setIsScrolled(true);
+    } else {
+      setIsScrolled(false);
+    }
   };
 
   const handleVideoChange = (e) => {
@@ -350,9 +375,82 @@ const VideoUploadForm = () => {
       </div>
     );
   };
+  function signouthandler() {
+    // localStorage.removeItem("token");
+    navigate("/");
+  }
+
+  function backToprevious(){
+    navigate("/dashboard/instructor");
+  }
 
   return (
-    <div className="w-full max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg">
+    <>
+    <motion.header
+        initial={{ y: -20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.5 }}
+        onClick={backToprevious}
+        className={`fixed top-0 left-0 w-full z-[100] transition-all duration-300 ${isScrolled ? "bg-white shadow-lg py-2" : "bg-gradient-to-r from-blue-600 to-indigo-700 py-4"
+          } `}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center">
+            {/* Logo Section */}
+            <div className="flex items-center group">
+              <motion.div
+                whileHover={{ rotate: 360 }}
+                transition={{ duration: 0.7 }}
+              >
+                <BookOpen className={`h-8 w-8 ${isScrolled ? "text-blue-600" : "text-white"}`} />
+              </motion.div>
+              <span
+                className={`ml-2 text-xl md:text-2xl font-bold transition-colors duration-300 ${isScrolled ? "text-blue-600" : "text-white"
+                  }`}
+              >
+                Edu<span className="text-yellow-400">Stream</span>
+              </span>
+            </div>
+
+            {/* Right Section */}
+            <div className="flex items-center space-x-2 sm:space-x-4">
+              
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={signouthandler}
+                className={`flex items-center space-x-1 px-2 sm:px-3 py-1 rounded transition-colors ${isScrolled
+                    ? "bg-blue-600 hover:bg-blue-700 text-white"
+                    : "bg-white/20 hover:bg-white/30 text-white"
+                  }`}
+              >
+                <LogOut className="w-4 h-4" />
+                <span className="hidden sm:inline">Back to Dashboard</span>
+              </motion.button>
+              {/* <div className="flex items-center space-x-2">
+                <motion.div
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="overflow-hidden rounded-full"
+                >
+                  <img
+                    src={adminImg}
+                    alt=""
+                    className="rounded-full object-cover w-8 h-8 sm:w-10 sm:h-10"
+                  />
+                </motion.div>
+                <span className={`hidden sm:inline ${isScrolled ? "text-gray-700" : "text-white"}`}>
+                  Admin
+                </span>
+              </div> */}
+            </div>
+          </div>
+        </div>
+      </motion.header>
+      <div className="mt-14">
+
+      
+    <div className="w-full max-w-4xl mx-auto p-6 bg-white rounded-lg ">
       <h2 className="text-2xl font-bold mb-6 text-indigo-700">
         Upload Educational Video
       </h2>
@@ -594,6 +692,8 @@ const VideoUploadForm = () => {
         </div>
       </form>
     </div>
+    </div>
+    </>
   );
 };
 
