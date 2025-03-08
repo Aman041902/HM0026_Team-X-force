@@ -266,9 +266,9 @@ const VideoPlayer = () => {
                        Harshal Gayakwad
                       </span>
                     </div>
-                    <p className="text-sm text-gray-600">
+                    {/* <p className="text-sm text-gray-600">
                       {activeVideo.views} subscribers
-                    </p>
+                    </p> */}
                   </div>
                 </div>
 
