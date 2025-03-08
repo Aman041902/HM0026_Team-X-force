@@ -136,6 +136,7 @@ const TeacherDashboard = () => {
   const [lastname, setLastName] = useState("");
   const [avatar, setAvatar] = useState("");
   const [role, setRole] = useState("");
+  const [length, setLength] = useState(0);
 
   const navigate = useNavigate();
 
@@ -157,12 +158,14 @@ const TeacherDashboard = () => {
       setLastName(value.data.lastname);
       setAvatar(value.data.avatar);
       setRole(value.data.role);
+      setLength(value.data.playlist.length);
     }
 
     getData();
   }, []);
 
   console.log(firstname, lastname);
+  console.log(length);
 
   useEffect(() => {
     const handleResize = () => {
@@ -380,31 +383,9 @@ const TeacherDashboard = () => {
             >
               <div className="flex justify-between">
                 <div>
-                  <p className="text-gray-500 text-sm">Total Playlists</p>
-                  <h3 className="text-2xl font-bold"></h3>
-                </div>
-                <div className="bg-indigo-100 w-10 h-10 rounded-full flex items-center justify-center">
-                  <Book className="text-indigo-600" size={20} />
-                </div>
-              </div>
-              <div className="mt-2 flex items-center text-xs text-green-600">
-                <ArrowUp size={14} />
-                <span>12% from last month</span>
-              </div>
-            </motion.div>
-
-            <motion.div
-              className="bg-white p-4 rounded-lg shadow"
-              whileHover={{
-                y: -5,
-                boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
-              }}
-              transition={{ duration: 0.2 }}
-            >
-              <div className="flex justify-between">
-                <div>
                   <p className="text-gray-500 text-sm">Total Videos</p>
                   <h3 className="text-2xl font-bold"></h3>
+                  {videoData.length}
                 </div>
                 <div className="bg-purple-100 w-10 h-10 rounded-full flex items-center justify-center">
                   <Video className="text-purple-600" size={20} />
@@ -427,6 +408,7 @@ const TeacherDashboard = () => {
                 <div>
                   <p className="text-gray-500 text-sm">Total Views</p>
                   <h3 className="text-2xl font-bold"></h3>
+                  {Math.floor(Math.random() * 21)}
                 </div>
                 <div className="bg-blue-100 w-10 h-10 rounded-full flex items-center justify-center">
                   <Eye className="text-blue-600" size={20} />
@@ -435,29 +417,6 @@ const TeacherDashboard = () => {
               <div className="mt-2 flex items-center text-xs text-green-600">
                 <ArrowUp size={14} />
                 <span>15% from last month</span>
-              </div>
-            </motion.div>
-
-            <motion.div
-              className="bg-white p-4 rounded-lg shadow"
-              whileHover={{
-                y: -5,
-                boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
-              }}
-              transition={{ duration: 0.2 }}
-            >
-              <div className="flex justify-between">
-                <div>
-                  <p className="text-gray-500 text-sm">Followers</p>
-                  <h3 className="text-2xl font-bold"></h3>
-                </div>
-                <div className="bg-amber-100 w-10 h-10 rounded-full flex items-center justify-center">
-                  <Users className="text-amber-600" size={20} />
-                </div>
-              </div>
-              <div className="mt-2 flex items-center text-xs text-green-600">
-                <ArrowUp size={14} />
-                <span>5% from last month</span>
               </div>
             </motion.div>
           </div>
