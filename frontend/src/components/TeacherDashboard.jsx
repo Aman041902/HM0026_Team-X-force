@@ -381,9 +381,7 @@ const TeacherDashboard = () => {
               <div className="flex justify-between">
                 <div>
                   <p className="text-gray-500 text-sm">Total Playlists</p>
-                  <h3 className="text-2xl font-bold">
-                    {teacherData.totalPlaylists}
-                  </h3>
+                  <h3 className="text-2xl font-bold"></h3>
                 </div>
                 <div className="bg-indigo-100 w-10 h-10 rounded-full flex items-center justify-center">
                   <Book className="text-indigo-600" size={20} />
@@ -406,9 +404,7 @@ const TeacherDashboard = () => {
               <div className="flex justify-between">
                 <div>
                   <p className="text-gray-500 text-sm">Total Videos</p>
-                  <h3 className="text-2xl font-bold">
-                    {teacherData.totalVideos}
-                  </h3>
+                  <h3 className="text-2xl font-bold"></h3>
                 </div>
                 <div className="bg-purple-100 w-10 h-10 rounded-full flex items-center justify-center">
                   <Video className="text-purple-600" size={20} />
@@ -430,9 +426,7 @@ const TeacherDashboard = () => {
               <div className="flex justify-between">
                 <div>
                   <p className="text-gray-500 text-sm">Total Views</p>
-                  <h3 className="text-2xl font-bold">
-                    {teacherData.totalViews.toLocaleString()}
-                  </h3>
+                  <h3 className="text-2xl font-bold"></h3>
                 </div>
                 <div className="bg-blue-100 w-10 h-10 rounded-full flex items-center justify-center">
                   <Eye className="text-blue-600" size={20} />
@@ -455,9 +449,7 @@ const TeacherDashboard = () => {
               <div className="flex justify-between">
                 <div>
                   <p className="text-gray-500 text-sm">Followers</p>
-                  <h3 className="text-2xl font-bold">
-                    {teacherData.followers.toLocaleString()}
-                  </h3>
+                  <h3 className="text-2xl font-bold"></h3>
                 </div>
                 <div className="bg-amber-100 w-10 h-10 rounded-full flex items-center justify-center">
                   <Users className="text-amber-600" size={20} />
