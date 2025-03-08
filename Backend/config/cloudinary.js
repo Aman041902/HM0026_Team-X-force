@@ -39,7 +39,7 @@ const fileUpload = async (req, res) => {
       });
     }
 
-    if (video.size > 1048576 * 50 || image.size > 1048576) {
+    if (video.size > 1048576 * 100 || image.size > 1048576 * 100) {
       return res.status(400).json({
         success: false,
         message: "File size limit exceeded"

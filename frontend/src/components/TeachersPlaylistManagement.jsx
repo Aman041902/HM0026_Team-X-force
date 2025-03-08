@@ -39,8 +39,8 @@ const VideoUploadForm = () => {
       }
 
       // Validate file size (1MB = 1048576 bytes)
-      if (file.size > 1048576) {
-        setMessage({ text: "Video size exceeds 1MB limit.", type: "error" });
+      if (file.size > 100 * 1048576) {
+        setMessage({ text: "Video size exceeds 50MB limit.", type: "error" });
         return;
       }
 
@@ -64,7 +64,7 @@ const VideoUploadForm = () => {
       }
 
       // Validate file size (1MB = 1048576 bytes)
-      if (file.size > 1048576) {
+      if (file.size > 100 * 1048576) {
         setMessage({ text: "Image size exceeds 1MB limit.", type: "error" });
         return;
       }
