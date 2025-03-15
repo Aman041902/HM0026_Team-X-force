@@ -5,7 +5,12 @@
 ---
 
 ## **📖 Description**
-EduStream is an advanced **e-learning video platform** designed to make online education more engaging and structured. It allows students to access **curated learning playlists**, complete **quizzes**, earn **badges**, and track progress using a **graphical learning dashboard**. Teachers can **upload and manage course content**, while admins **ensure content quality** by approving educational videos. With **AI-driven recommendations** and a **leaderboard system**, EduVision creates a **personalized and competitive learning experience**.
+Developed an AI-powered video recommendation system using the MERN stack for personalized learning
+experiences.
+• Implemented content-based and collaborative filtering techniques to recommend videos based on user
+engagement.
+• Integrated AI-driven video summarization and multilingual note generation to enhance accessibility.
+• Designed an admin moderation system to ensure only high-quality educational content is approve.
 
 ---
 
@@ -13,7 +18,6 @@ EduStream is an advanced **e-learning video platform** designed to make online e
 
 ### **👩‍🎓 Student Features:**
 - 🎥 **Watch Educational Videos** (Structured Playlists)
-- 🏆 **Earn Badges & Points** via Quizzes & Achievements
 - 📌 **Personalized Video Recommendations**
 - 📊 **Graphical Learning Progress Tracker**
 - 🎯 **Leaderboard for Top Students**
@@ -48,7 +52,6 @@ EduStream is an advanced **e-learning video platform** designed to make online e
 
 ## 🌍 Deployed URL  
 🔗 [Live Demo](https://edu-stream-delta.vercel.app/)  
-🔗 
 
 
 
